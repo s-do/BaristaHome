@@ -1,0 +1,230 @@
+﻿#nullable disable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BaristaHome.Data;
+using BaristaHome.Models;
+using Microsoft.AspNetCore.Authorization;
+
+namespace BaristaHome.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly RegisterContext _context;
+
+        public AccountController(RegisterContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Account/Register
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Account/Register
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel register)
+        {
+            if (ModelState.IsValid)
+            {
+                // ඞ
+                var trollQuery = (from u in _context.Register
+                                       where u.Password.Equals(register.Password)
+                                       select u).FirstOrDefault();
+                if (trollQuery != null)
+                {
+                    ModelState.AddModelError(string.Empty, "PAsSWOrd aLREAdy EXisTs!!! IT's BEinG USED bY " + trollQuery.Email + "ඞ꧅H𒈙ඞE𒐫ඞL﷽ဪP𒈙𒈙M﷽꧅Eဪ꧅𒈙﷽ඞ꧅ဪ꧅﷽ඞ𒈙ဪ꧅﷽꧅﷽﷽ဪဪ𒈙");
+                    return View(register);
+                }
+                // ඞ
+
+                var existingEmail = (from u in _context.Register
+                                       where u.Email.Equals(register.Email)
+                                       select u).FirstOrDefault();
+
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                    return View(register);
+                }
+
+                _context.Add(register);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Login", "Account");
+            }
+            return View(register);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                // checking valid login credentials
+                var validUser = (from u in _context.Register
+                                where u.Email.Equals(user.Email) && u.Password.Equals(user.Password)
+                                select u).FirstOrDefault();
+                if (validUser != null)
+                {
+                    return RedirectToAction("Index", "Account");
+                }
+                ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
+            }
+            return View(user);
+        }
+         
+        /*
+         * literally a shit ton of code from creating a new scaffolding
+         * this just helps you setup a lot of the crud operations for your model
+         * not sure if we need this and their views or not
+         */
+
+        // GET: Account
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Register.ToListAsync());
+        }
+        
+        // GET: Account/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registerViewModel = await _context.Register
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (registerViewModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(registerViewModel);
+        }
+
+        // GET: Account/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Account/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel registerViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(registerViewModel);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(registerViewModel);
+        }
+
+        // GET: Account/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registerViewModel = await _context.Register.FindAsync(id);
+            if (registerViewModel == null)
+            {
+                return NotFound();
+            }
+            return View(registerViewModel);
+        }
+
+        // POST: Account/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel registerViewModel)
+        {
+            if (id != registerViewModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(registerViewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RegisterViewModelExists(registerViewModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(registerViewModel);
+        }
+
+        // GET: Account/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registerViewModel = await _context.Register
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (registerViewModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(registerViewModel);
+        }
+
+        // POST: Account/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var registerViewModel = await _context.Register.FindAsync(id);
+            _context.Register.Remove(registerViewModel);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool RegisterViewModelExists(int id)
+        {
+            return _context.Register.Any(e => e.Id == id);
+        }
+    }
+}
