@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using BaristaHome.Data;
 using System;
 using System.Linq;
+using System.Web.Helpers;
 
 namespace BaristaHome.Models
 {
@@ -26,8 +27,7 @@ namespace BaristaHome.Models
                       FirstName = "John",
                       LastName = "Nguyen",
                       Email = "johnnguyen@gmail.com",
-                      Password = "Password123!",
-                      ConfirmPassword = "Password123!"
+                      Password = Crypto.HashPassword("Johnpass123!"),
                   },
 
                   new RegisterViewModel
@@ -35,8 +35,7 @@ namespace BaristaHome.Models
                       FirstName = "Test",
                       LastName = "Name",
                       Email = "test@gmail.com",
-                      Password = "Test123!",
-                      ConfirmPassword = "Test123!"
+                      Password = Crypto.HashPassword("Testpass123!"),
                   },
 
                   new RegisterViewModel
@@ -44,8 +43,7 @@ namespace BaristaHome.Models
                       FirstName = "Fei",
                       LastName = "Hoffman",
                       Email = "feihoffman@gmail.com",
-                      Password = "Fei123!!",
-                      ConfirmPassword = "Fei123!!"
+                      Password = Crypto.HashPassword("Feipass123!"),
                   }
                 );
                 context.SaveChanges();

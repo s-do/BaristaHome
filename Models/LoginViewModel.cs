@@ -7,7 +7,7 @@ namespace BaristaHome.Models
     {
         [Required, EmailAddress]
         public string Email { get; set; }
-        [Required, DataType(DataType.Password)]
+        [Required, DataType(DataType.Password), StringLength(24)]
         public string Password { get; set; }
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }

@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using BaristaHome.Data;
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web.Helpers;
 
 namespace BaristaHome.Controllers
 {
@@ -36,20 +39,9 @@ namespace BaristaHome.Controllers
         {
             if (ModelState.IsValid)
             {
-                // ඞ
-                var trollQuery = (from u in _context.Register
-                                       where u.Password.Equals(register.Password)
-                                       select u).FirstOrDefault();
-                if (trollQuery != null)
-                {
-                    ModelState.AddModelError(string.Empty, "PAsSWOrd aLREAdy EXisTs!!! IT's BEinG USED bY " + trollQuery.Email + "ඞ꧅H𒈙ඞE𒐫ඞL﷽ဪP𒈙𒈙M﷽꧅Eဪ꧅𒈙﷽ඞ꧅ဪ꧅﷽ඞ𒈙ဪ꧅﷽꧅﷽﷽ဪဪ𒈙");
-                    return View(register);
-                }
-                // ඞ
-
                 var existingEmail = (from u in _context.Register
-                                       where u.Email.Equals(register.Email)
-                                       select u).FirstOrDefault();
+                                     where u.Email.Equals(register.Email)
+                                     select u).FirstOrDefault();
 
                 if (existingEmail != null)
                 {
@@ -57,6 +49,8 @@ namespace BaristaHome.Controllers
                     return View(register);
                 }
 
+                // hashing password (salt is also applied)
+                register.Password = Crypto.HashPassword(register.Password);
                 _context.Add(register);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login", "Account");
@@ -77,11 +71,13 @@ namespace BaristaHome.Controllers
         {
             if (ModelState.IsValid)
             {
-                // checking valid login credentials
+                // checking existing email
                 var validUser = (from u in _context.Register
-                                where u.Email.Equals(user.Email) && u.Password.Equals(user.Password)
-                                select u).FirstOrDefault();
-                if (validUser != null)
+                                 where u.Email.Equals(user.Email)
+                                 select u).FirstOrDefault();
+
+                // validating password with email's hashed password with input password
+                if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
                     return RedirectToAction("Index", "Account");
                 }
@@ -89,7 +85,7 @@ namespace BaristaHome.Controllers
             }
             return View(user);
         }
-         
+
         /*
          * literally a shit ton of code from creating a new scaffolding
          * this just helps you setup a lot of the crud operations for your model
@@ -101,7 +97,7 @@ namespace BaristaHome.Controllers
         {
             return View(await _context.Register.ToListAsync());
         }
-        
+
         // GET: Account/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -117,28 +113,6 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            return View(registerViewModel);
-        }
-
-        // GET: Account/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Account/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel registerViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(registerViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
             return View(registerViewModel);
         }
 
@@ -170,10 +144,21 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
+            var existingEmail = (from u in _context.Register
+                                 where u.Email.Equals(registerViewModel.Email)
+                                 select u).FirstOrDefault();
+
+            if (existingEmail != null)
+            {
+                ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                return View(registerViewModel);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    registerViewModel.Password = Crypto.HashPassword(registerViewModel.Password);
                     _context.Update(registerViewModel);
                     await _context.SaveChangesAsync();
                 }
