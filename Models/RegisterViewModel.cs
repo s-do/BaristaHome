@@ -25,5 +25,8 @@ namespace BaristaHome.Models
         [NotMapped, DataType(DataType.Password), Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and confirmation password not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required, InviteCode, StringLength(64)]
+        public string InviteCode { get; set; }
     }
 }

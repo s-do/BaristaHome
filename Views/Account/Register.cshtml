@@ -4,6 +4,7 @@
 }
 
 <h1>Register</h1>
+<link rel="stylesheet" href="~/css/register.css">
 
 <div class="row">
     <div class="col-md-12">
@@ -20,6 +21,8 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+
+
 
             <div class="form-group">
                 <label asp-for="Email"></label>
@@ -38,6 +41,13 @@
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="InviteCode"></label>
+                <input asp-for="InviteCode" class="form-control" />
+                <span asp-validation-for="InviteCode" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Register" class="btn btn-primary" />
             </div>
