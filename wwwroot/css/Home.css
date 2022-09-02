@@ -1,5 +1,5 @@
 body {
-    background-color: #ffe2af;
+    background-color: #FEE6B7;
 }
 
 .box-row {
@@ -9,12 +9,9 @@ body {
     height: 300px;
 }
 
-.worker-div {
-    align-items: end
-}
 
 .black {
-    background-color: #feb6fc;
+    background-color: #ffdcf4;
     position: relative;
     margin-top: 2%;
     margin-bottom: 2%;
@@ -29,23 +26,23 @@ body {
     color: black;
     text-align: center;
     font-size: 40px;
-    font-family: 'Comic Sans MS';
+    font-family: 'Javanese Text';
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
 }
 
-.workers {
-    background-color: #feb6fc;
+.pink-button {
+    background-color: #ffdcf4;
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
     color: black;
     font-family: 'Comic Sans MS';
     width: 200px;
     height: 50px;
-    display: inherit;
     align-items: center;
     text-align: center;
     float: right;
     margin-right: 50px;
-    padding-left: 49%;
+    text-decoration-line: none;
+    font-size: 20px;
 }
 
 .testing {
