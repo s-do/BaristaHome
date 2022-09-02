@@ -24,6 +24,8 @@
     font-size: 40px;
     font-family: 'Inter';
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
+    align-items: center;
+    justify-content: center;
 }
 
 .pink-button {
@@ -38,6 +40,7 @@
     font-size: 25px;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .testing {
