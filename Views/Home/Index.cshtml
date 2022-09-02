@@ -1,20 +1,74 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    Layout = null;
 }
+<!DOCTYPE html>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome!!</h1>
-    <h2>To Bඞristඞ Home ඞ</h2>
-</div>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Account" asp-action="Login">Barista Home</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+                <a class="workers" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
+        </nav>
+    </header>
 
-<div>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="Menu">Menu</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Shared Calendar</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Clocking</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Payroll</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Inventory" asp-action="Inventory">Inventory</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Feedback</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Timers</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Checklist</a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
-</div>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <!--Store Title-->
+            <div class="text-center">
+                <h2>Generic Store Name</h2>
+            </div>
+            <!--First row of containers-->
+            <div class = "box-row">
+                <a class="nav-link black" asp-area="" asp-controller="Menu" asp-action="Menu">Menu</a>
+                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Shared Calendar</a>
+                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Clocking</a>
+                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Payroll</a>
+            </div>
+            <!--Second row of containers-->
+            <div class = "box-row">
+                <a class="nav-link black" asp-area="" asp-controller="inventory" asp-action="inventory">Inventory</a>
+                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Feedback</a>
+                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Timers</a>
+                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Checklist</a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
