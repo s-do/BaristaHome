@@ -1,0 +1,61 @@
+.box-row {
+    margin-top: 2%;
+    object-fit: contain;
+    min-width: fit-content;
+    height: 300px;
+}
+
+
+.black {
+    background-color: #ffdcf4;
+    position: relative;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    margin-right: 2%;
+    margin-left: 3%;
+    float: left;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    color: black;
+    text-align: center;
+    font-size: 40px;
+    font-family: 'Inter';
+    box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.pink-button {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: right;
+    margin-right: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.testing {
+    background-color: #feb6fc;
+    width: 200px;
+    height: 50px;
+    text-align: center;
+    float: right;
+    margin-right: 50px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
