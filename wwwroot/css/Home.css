@@ -1,3 +1,5 @@
+@import url('https://rsms.me/inter/inter.css');
+
 body {
     background-color: #FEE6B7;
 }
@@ -26,14 +28,18 @@ body {
     color: black;
     text-align: center;
     font-size: 40px;
-    font-family: 'Javanese Text';
+    font-family: 'Inter';
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
+}
+
+html {
+    font-family: 'Inter', sans-serif;
 }
 
 .pink-button {
     background-color: #DFB3D3;
     color: black;
-    font-family: 'Comic Sans MS';
+    font-family: 'Inter';
     width: 200px;
     height: 50px;
     align-items: center;
