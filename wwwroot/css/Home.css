@@ -32,12 +32,12 @@
     font-family: 'Inter';
     width: 200px;
     height: 50px;
-    align-items: center;
-    text-align: center;
     float: right;
-    margin-right: 50px;
+    margin-right: 45px;
     text-decoration-line: none;
-    font-size: 20px;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
 }
 
 .testing {
