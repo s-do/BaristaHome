@@ -4,21 +4,14 @@ using System.Diagnostics;
 
 namespace BaristaHome.Controllers
 {
-    public class HomeController : Controller
+    public class FeedbackController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ILogger<FeedbackController> _logger;
+        public FeedbackController(ILogger<FeedbackController> logger)
         {
             _logger = logger;
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
+        public IActionResult Feedback()
         {
             return View();
         }
@@ -28,6 +21,5 @@ namespace BaristaHome.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
     }
 }
