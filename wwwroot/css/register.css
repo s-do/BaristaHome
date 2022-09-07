@@ -1,0 +1,50 @@
+﻿body {
+    background-image: url(../images/coffee.png);
+}
+
+div {
+    /*background-color: #d5f4e6;*/
+    /*#ffe4bc is background #feb6fc is pink*/
+    /*#ffe2af background-color: rgb(255,250,231);*/
+}
+
+/*.box {
+    background-color: #F8DDAA;
+}*/
+
+.center {
+    text-align: center;
+}
+
+#FirstName, #LastName, #Email, #Password, #ConfirmPassword, #InviteCode {
+    background-color: #F8DDAA;
+    opacity: 0.6;
+}
+
+.btn-primary {
+    color: #000000;
+    background-color: #F5CD80;
+    border-color: #F8DDAA;
+    opacity: 0.6;
+    margin-top: 15px;
+}
+
+.btn-float-left {
+    float: left;
+}
+
+.btn-float-right {
+    float: right;
+}
+
+.border {
+    background-color: #FFFAE7;
+    border: 1px solid black;
+    border-radius: 25px;
+    display: block;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 50px;
+}

@@ -35,7 +35,7 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel register)
+        public async Task<IActionResult> Register([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword, InviteCode")] RegisterViewModel register)
         {
             if (ModelState.IsValid)
             {
@@ -137,7 +137,7 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword, InviteCode")] RegisterViewModel registerViewModel)
         {
             if (id != registerViewModel.Id)
             {

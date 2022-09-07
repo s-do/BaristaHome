@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\images\.vs\VSWorkspaceState.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebHelpers" Version="3.2.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -22,7 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Account\Payroll\" />
+    <Folder Include="wwwroot\images\.vs\images\v17\" />
+    <Folder Include="wwwroot\NewFolder1\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\.vs\slnx.sqlite" />
   </ItemGroup>
 
 </Project>
