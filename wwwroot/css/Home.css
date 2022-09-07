@@ -5,8 +5,7 @@
     height: 300px;
 }
 
-
-.black {
+.feature {
     background-color: #ffdcf4;
     position: relative;
     margin-top: 2%;
@@ -28,7 +27,12 @@
     justify-content: center;
 }
 
-.pink-button {
+.center{
+    width:75%;
+    text-align: center;
+}
+
+.pink-button-right {
     background-color: #DFB3D3;
     color: black;
     font-family: 'Inter';
@@ -43,14 +47,26 @@
     text-align: center;
 }
 
-.testing {
-    background-color: #feb6fc;
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
     width: 200px;
     height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    float: right;
-    margin-right: 50px;
 }
+
+.store-name{
+    margin-top:50px;
+    font-size: 50px
+}
+
 
 .footer {
     position: absolute;
