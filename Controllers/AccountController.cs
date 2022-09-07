@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Helpers;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using WebMatrix.WebData;
 
 namespace BaristaHome.Controllers
 {
@@ -23,6 +28,8 @@ namespace BaristaHome.Controllers
         {
             _context = context;
         }
+
+        
 
         // GET: Account/Register
         public IActionResult Register()
@@ -79,6 +86,22 @@ namespace BaristaHome.Controllers
                 // validating password with email's hashed password with input password
                 if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
+                    //A claim is a statement about a subject by an issuer and    
+                    //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
+                    var claims = new List<Claim>() {
+                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
+                        new Claim(ClaimTypes.Email, validUser.Email),
+                        };
+
+                    //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties()
+                    {
+                        IsPersistent = user.RememberMe
+                    });
                     return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
@@ -145,12 +168,12 @@ namespace BaristaHome.Controllers
             }
 
             var existingEmail = (from u in _context.Register
-                                 where u.Email.Equals(registerViewModel.Email)
+                                 where u.Email.Equals(registerViewModel.Email) && !u.Id.Equals(registerViewModel.Id)
                                  select u).FirstOrDefault();
 
             if (existingEmail != null)
             {
-                ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
                 return View(registerViewModel);
             }
 
