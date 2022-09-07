@@ -17,14 +17,34 @@
     height: 250px;
     display: flex;
     padding: 10px;
-    align-items: center;
     color: black;
     text-align: center;
     font-size: 40px;
     font-family: 'Inter';
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
-    align-items: center;
     justify-content: center;
+    align-items:center;
+    position:relative;
+}
+
+.contain {
+    width: inherit;
+    height: inherit;
+    object-fit: contain;
+}
+
+.top {
+    width: 200px;
+    height: 200px;
+    /*outline: 5px dotted red;*/
+    align-self: flex-start;
+    position:absolute;
+
+}
+
+.bottom {
+    /*outline: 5px dotted green;*/
+    margin-top: 210px;
 }
 
 .center{
@@ -45,6 +65,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    object-fit:contain;
 }
 
 .pink-button-left {
