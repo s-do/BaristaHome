@@ -74,7 +74,7 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel user)
+        public async Task<IActionResult> Login(LoginViewModel user, IFormCollection form)
         {
             if (ModelState.IsValid)
             {
@@ -86,22 +86,27 @@ namespace BaristaHome.Controllers
                 // validating password with email's hashed password with input password
                 if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
-                    //A claim is a statement about a subject by an issuer and    
-                    //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
-                    var claims = new List<Claim>() {
-                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
-                        new Claim(ClaimTypes.Email, validUser.Email),
-                        };
+                    
+                        //A claim is a statement about a subject by an issuer and    
+                        //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
+                        var claims = new List<Claim>() {
+                        new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
+                            new Claim(ClaimTypes.Email, validUser.Email),
+                            };
 
-                    //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
-                    var principal = new ClaimsPrincipal(identity);
+                        //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
+                        var principal = new ClaimsPrincipal(identity);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties()
-                    {
-                        IsPersistent = user.RememberMe
-                    });
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
+                        new AuthenticationProperties()
+                        {
+                            IsPersistent = user.RememberMe,
+                            ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
+                        });
+                    
+
                     return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
@@ -116,6 +121,7 @@ namespace BaristaHome.Controllers
          */
 
         // GET: Account
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Register.ToListAsync());
