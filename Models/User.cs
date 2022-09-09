@@ -28,13 +28,12 @@ namespace BaristaHome.Models
         public string ConfirmPassword { get; set; }
 
         [StringLength(7)]
-        public string Color { get; set; } = "#000000";
-
+        public string? Color { get; set; }
         [StringLength(5), Display(Name = "Store Invitation Code")]
-        public string InviteCode { get; set; } = "12345";
+        public string? InviteCode { get; set; }
 
         // Relationships
         public int? RoleId { get; set; }
-        public Role Role { get; set; }
+        public Role? Role { get; set; }
     }
 }

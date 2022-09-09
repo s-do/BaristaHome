@@ -42,12 +42,13 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode")] User register)
+        public async Task<IActionResult> Register([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User register)
         {
-            register.Color = "#FFFFFF";
+            // IF SOMEONE COULD TELL ME A BETTER WAY TO SET DEFAULTS THAN DOING THIS PLEASE LET ME KNOW!!! DOING IT IN THE MODELS FOLDER DOESN'T FUCKING WORK
+            register.Color = "#000000";
+            register.RoleId = 1;
             if (ModelState.IsValid)
             {
-                Console.WriteLine("gaygayygaygaygayag");
                 var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
