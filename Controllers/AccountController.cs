@@ -74,7 +74,7 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel user, IFormCollection form)
+        public async Task<IActionResult> Login(LoginViewModel user, string ReturnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -86,28 +86,49 @@ namespace BaristaHome.Controllers
                 // validating password with email's hashed password with input password
                 if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
-                    
-                        //A claim is a statement about a subject by an issuer and    
-                        //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
-                        var claims = new List<Claim>() {
-                        new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
-                            new Claim(ClaimTypes.Email, validUser.Email),
-                            };
+                    //A claim is a statement about a subject by an issuer and    
+                    //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
+                    var claims = new List<Claim>() {
+                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
+                        new Claim(ClaimTypes.Email, validUser.Email),
+                        };
 
-                        //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
-                        var principal = new ClaimsPrincipal(identity);
+                    //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
+                    var principal = new ClaimsPrincipal(identity);
 
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
-                        new AuthenticationProperties()
-                        {
-                            IsPersistent = user.RememberMe,
-                            ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
-                        });
-                    
+                    // AUTHENTICATION PROPERTIES
+                    // AllowRefresh = <bool>,
+                    // Refreshing the authentication session should be allowed.
 
-                    return RedirectToAction("Index", "Account");
+                    //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    // The time at which the authentication ticket expires. A 
+                    // value set here overrides the ExpireTimeSpan option of 
+                    // CookieAuthenticationOptions set with AddCookie.
+
+                    //IsPersistent = true,
+                    // Whether the authentication session is persisted across 
+                    // multiple requests. When used with cookies, controls
+                    // whether the cookie's lifetime is absolute (matching the
+                    // lifetime of the authentication ticket) or session-based.
+
+                    //IssuedUtc = <DateTimeOffset>,
+                    // The time at which the authentication ticket was issued.
+
+                            
+                    // The full path or absolute URI to be used as an http 
+                    // redirect response value.
+
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
+                    new AuthenticationProperties()
+                    {
+                        IsPersistent = user.RememberMe,
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
+                    });
+                    return Redirect(ReturnUrl == null ? "/Account/Index" : ReturnUrl);
+                    //return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
             }
