@@ -32,5 +32,9 @@ namespace BaristaHome.Models
 
         [StringLength(5), Display(Name = "Store Invitation Code")]
         public string InviteCode { get; set; } = "12345";
+
+        // Relationships
+        public int? RoleId { get; set; }
+        public Role Role { get; set; }
     }
 }
