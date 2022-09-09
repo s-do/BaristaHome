@@ -22,9 +22,9 @@ namespace BaristaHome.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly RegisterContext _context;
+        private readonly BaristaHomeContext _context;
 
-        public AccountController(RegisterContext context)
+        public AccountController(BaristaHomeContext context)
         {
             _context = context;
         }
@@ -42,11 +42,13 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword, InviteCode")] RegisterViewModel register)
+        public async Task<IActionResult> Register([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode")] User register)
         {
+            register.Color = "#FFFFFF";
             if (ModelState.IsValid)
             {
-                var existingEmail = (from u in _context.Register
+                Console.WriteLine("gaygayygaygaygayag");
+                var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
 
@@ -62,6 +64,7 @@ namespace BaristaHome.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login", "Account");
             }
+            ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
             return View(register);
         }
 
@@ -79,7 +82,7 @@ namespace BaristaHome.Controllers
             if (ModelState.IsValid)
             {
                 // checking existing email
-                var validUser = (from u in _context.Register
+                var validUser = (from u in _context.User
                                  where u.Email.Equals(user.Email)
                                  select u).FirstOrDefault();
 
@@ -89,7 +92,7 @@ namespace BaristaHome.Controllers
                     //A claim is a statement about a subject by an issuer and    
                     //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
                     var claims = new List<Claim>() {
-                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.Id)),
+                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.UserId)),
                         new Claim(ClaimTypes.Email, validUser.Email),
                         };
 
@@ -145,7 +148,7 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Register.ToListAsync());
+            return View(await _context.User.ToListAsync());
         }
 
         // GET: Account/Details/5
@@ -156,8 +159,8 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var registerViewModel = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -174,7 +177,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register.FindAsync(id);
+            var registerViewModel = await _context.User.FindAsync(id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -187,15 +190,15 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword, InviteCode")] RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode")] User registerViewModel)
         {
-            if (id != registerViewModel.Id)
+            if (id != registerViewModel.UserId)
             {
                 return NotFound();
             }
 
-            var existingEmail = (from u in _context.Register
-                                 where u.Email.Equals(registerViewModel.Email) && !u.Id.Equals(registerViewModel.Id)
+            var existingEmail = (from u in _context.User
+                                 where u.Email.Equals(registerViewModel.Email) && !u.UserId.Equals(registerViewModel.UserId)
                                  select u).FirstOrDefault();
 
             if (existingEmail != null)
@@ -214,7 +217,7 @@ namespace BaristaHome.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegisterViewModelExists(registerViewModel.Id))
+                    if (!RegisterViewModelExists(registerViewModel.UserId))
                     {
                         return NotFound();
                     }
@@ -236,8 +239,8 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var registerViewModel = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -251,15 +254,15 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var registerViewModel = await _context.Register.FindAsync(id);
-            _context.Register.Remove(registerViewModel);
+            var registerViewModel = await _context.User.FindAsync(id);
+            _context.User.Remove(registerViewModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RegisterViewModelExists(int id)
         {
-            return _context.Register.Any(e => e.Id == id);
+            return _context.User.Any(e => e.UserId == id);
         }
     }
 }

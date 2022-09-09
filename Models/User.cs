@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaristaHome.Models
 {
-    public class RegisterViewModel
+    public class User
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         [Required, StringLength(32), Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -26,7 +27,10 @@ namespace BaristaHome.Models
         [Compare("Password", ErrorMessage = "Password and confirmation password not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Required, StringLength(5), Display(Name = "Store Invitation Code")]
-        public string InviteCode { get; set; }
+        [StringLength(7)]
+        public string Color { get; set; } = "#000000";
+
+        [StringLength(5), Display(Name = "Store Invitation Code")]
+        public string InviteCode { get; set; } = "12345";
     }
 }

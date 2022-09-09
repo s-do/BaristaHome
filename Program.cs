@@ -15,7 +15,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 
 // Registering the database context from part 4: Add a model
-builder.Services.AddDbContext<RegisterContext>(options =>
+builder.Services.AddDbContext<BaristaHomeContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
