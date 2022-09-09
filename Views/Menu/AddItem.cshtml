@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Menu";
+    ViewData["Title"] = "Add Item";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -18,11 +18,11 @@
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Logout</a>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
             <div class="center">
-                <h1 class="title">Menu</h1>
+                <h1 class="title">Add new drink</h1>
             </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="Menu" asp-action="AddItem">Add Item</a>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="" asp-action="">Add</a>
         </nav>
     </header>
 

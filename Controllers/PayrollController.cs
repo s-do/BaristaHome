@@ -1,26 +1,17 @@
 ﻿using BaristaHome.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BaristaHome.Controllers
 {
-    [Authorize]
-    public class HomeController : Controller
+    public class PayrollController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ILogger<PayrollController> _logger;
+        public PayrollController(ILogger<PayrollController> logger)
         {
             _logger = logger;
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
+        public IActionResult Payroll()
         {
             return View();
         }
@@ -30,6 +21,5 @@ namespace BaristaHome.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
     }
 }
