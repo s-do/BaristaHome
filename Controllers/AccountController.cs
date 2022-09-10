@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using WebMatrix.WebData;
 
+
 namespace BaristaHome.Controllers
 {
     public class AccountController : Controller
@@ -28,12 +29,23 @@ namespace BaristaHome.Controllers
         {
             _context = context;
         }
-
         
 
+        [HttpGet]
         // GET: Account/Register
+        // Displays the Register user view
         public IActionResult Register()
         {
+            return View();
+        }
+
+        // Displays the Register store view
+        public IActionResult RegisterStore()
+        {
+            Random RNG = new Random();
+            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var code = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+            ViewBag.InviteCode = new string(code.ToArray());
             return View();
         }
 
