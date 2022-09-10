@@ -29,6 +29,7 @@ namespace BaristaHome.Models
 
         [StringLength(7)]
         public string? Color { get; set; }
+
         [StringLength(5), Display(Name = "Store Invitation Code")]
         public string? InviteCode { get; set; }
 
@@ -36,6 +37,11 @@ namespace BaristaHome.Models
         public int? RoleId { get; set; }
         public virtual Role? Role { get; set; }
 
-        public virtual ICollection<UserShiftStatus> UserShiftStatuses { get; set; }
+        public int? StoreId { get; set; }
+        public virtual Store? Store { get; set; }
+
+        public ICollection<Feedback>? Feedbacks { get; set; }
+        public virtual ICollection<Payroll>? Payrolls { get; set; }
+        public virtual ICollection<UserShiftStatus>? UserShiftStatuses { get; set; }
     }
 }

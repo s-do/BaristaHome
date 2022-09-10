@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220910135722_AddChecklistTables")]
+    partial class AddChecklistTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,34 +124,6 @@ namespace BaristaHome.Migrations
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PricePerUnit")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<int?>("SaleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemId", "StoreId");
-
-                    b.HasIndex("SaleId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("InventoryItem");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
-                    b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -160,14 +134,27 @@ namespace BaristaHome.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+                    b.Property<decimal>("PricePerUnit")
+                        .HasPrecision(16, 2)
+                        .HasColumnType("decimal(16,2)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(16, 2)
+                        .HasColumnType("decimal(16,2)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UnitId")
                         .HasColumnType("int");
 
                     b.HasKey("ItemId");
 
+                    b.HasIndex("StoreId");
+
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Item");
+                    b.ToTable("InventoryItem");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Payroll", b =>
@@ -215,38 +202,6 @@ namespace BaristaHome.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Sale", b =>
-                {
-                    b.Property<int>("SaleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"), 1L, 1);
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    b.Property<decimal>("Profit")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    b.Property<DateTime>("TimeSold")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("UnitsSold")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("SaleId");
-
-                    b.ToTable("Sale");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -482,36 +437,19 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
                 {
-                    b.HasOne("BaristaHome.Models.Item", "Item")
-                        .WithMany("InventoryItems")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaristaHome.Models.Sale", "Sale")
-                        .WithMany("InventoryItems")
-                        .HasForeignKey("SaleId");
-
                     b.HasOne("BaristaHome.Models.Store", "Store")
                         .WithMany("InventoryItems")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
-                    b.Navigation("Sale");
-
-                    b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
                     b.HasOne("BaristaHome.Models.Unit", "Unit")
-                        .WithMany("Item")
+                        .WithMany("InventoryItems")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Store");
 
                     b.Navigation("Unit");
                 });
@@ -577,19 +515,9 @@ namespace BaristaHome.Migrations
                     b.Navigation("CategoryTasks");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
-                    b.Navigation("InventoryItems");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Sale", b =>
-                {
-                    b.Navigation("InventoryItems");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -617,7 +545,7 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.Unit", b =>
                 {
-                    b.Navigation("Item");
+                    b.Navigation("InventoryItems");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>

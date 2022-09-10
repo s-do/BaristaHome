@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220910131705_AddFeedbackTable")]
+    partial class AddFeedbackTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,70 +23,6 @@ namespace BaristaHome.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("BaristaHome.Models.Category", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"), 1L, 1);
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryId");
-
-                    b.HasIndex("ChecklistId");
-
-                    b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.CategoryTask", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoreTaskId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("bit");
-
-                    b.HasKey("CategoryId", "StoreTaskId");
-
-                    b.HasIndex("StoreTaskId");
-
-                    b.ToTable("CategoryTask");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Checklist", b =>
-                {
-                    b.Property<int>("ChecklistId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChecklistId"), 1L, 1);
-
-                    b.Property<string>("ChecklistTitle")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChecklistId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("Checklists");
-                });
 
             modelBuilder.Entity("BaristaHome.Models.Feedback", b =>
                 {
@@ -122,34 +60,6 @@ namespace BaristaHome.Migrations
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PricePerUnit")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<int?>("SaleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemId", "StoreId");
-
-                    b.HasIndex("SaleId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("InventoryItem");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
-                    b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -160,14 +70,27 @@ namespace BaristaHome.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+                    b.Property<decimal>("PricePerUnit")
+                        .HasPrecision(16, 2)
+                        .HasColumnType("decimal(16,2)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(16, 2)
+                        .HasColumnType("decimal(16,2)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UnitId")
                         .HasColumnType("int");
 
                     b.HasKey("ItemId");
 
+                    b.HasIndex("StoreId");
+
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Item");
+                    b.ToTable("InventoryItem");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Payroll", b =>
@@ -217,38 +140,6 @@ namespace BaristaHome.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Sale", b =>
-                {
-                    b.Property<int>("SaleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"), 1L, 1);
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    b.Property<decimal>("Profit")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    b.Property<DateTime>("TimeSold")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("UnitsSold")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("SaleId");
-
-                    b.ToTable("Sale");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
                 {
                     b.Property<int>("ShiftStatusId")
@@ -288,50 +179,6 @@ namespace BaristaHome.Migrations
                     b.HasKey("StoreId");
 
                     b.ToTable("Store");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.StoreTask", b =>
-                {
-                    b.Property<int>("StoreTaskId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreTaskId"), 1L, 1);
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.HasKey("StoreTaskId");
-
-                    b.ToTable("StoreTask");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.StoreTimer", b =>
-                {
-                    b.Property<int>("StoreTimerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreTimerId"), 1L, 1);
-
-                    b.Property<int>("DurationMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TimerName")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.HasKey("StoreTimerId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("StoreTimer");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Unit", b =>
@@ -420,47 +267,6 @@ namespace BaristaHome.Migrations
                     b.ToTable("UserShiftStatus");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Category", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Checklist", "Checklist")
-                        .WithMany()
-                        .HasForeignKey("ChecklistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Checklist");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.CategoryTask", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Category", "Category")
-                        .WithMany("CategoryTasks")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaristaHome.Models.StoreTask", "StoreTask")
-                        .WithMany("CategoryTasks")
-                        .HasForeignKey("StoreTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("StoreTask");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Checklist", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("Checklists")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.Feedback", b =>
                 {
                     b.HasOne("BaristaHome.Models.Store", "Store")
@@ -482,36 +288,19 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
                 {
-                    b.HasOne("BaristaHome.Models.Item", "Item")
-                        .WithMany("InventoryItems")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaristaHome.Models.Sale", "Sale")
-                        .WithMany("InventoryItems")
-                        .HasForeignKey("SaleId");
-
                     b.HasOne("BaristaHome.Models.Store", "Store")
                         .WithMany("InventoryItems")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
-                    b.Navigation("Sale");
-
-                    b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
                     b.HasOne("BaristaHome.Models.Unit", "Unit")
-                        .WithMany("Item")
+                        .WithMany("InventoryItems")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Store");
 
                     b.Navigation("Unit");
                 });
@@ -525,17 +314,6 @@ namespace BaristaHome.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.StoreTimer", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("StoreTimers")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>
@@ -572,24 +350,9 @@ namespace BaristaHome.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Category", b =>
-                {
-                    b.Navigation("CategoryTasks");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Item", b =>
-                {
-                    b.Navigation("InventoryItems");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Sale", b =>
-                {
-                    b.Navigation("InventoryItems");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -599,25 +362,16 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.Store", b =>
                 {
-                    b.Navigation("Checklists");
-
                     b.Navigation("Feedbacks");
 
                     b.Navigation("InventoryItems");
 
-                    b.Navigation("StoreTimers");
-
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.StoreTask", b =>
-                {
-                    b.Navigation("CategoryTasks");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Unit", b =>
                 {
-                    b.Navigation("Item");
+                    b.Navigation("InventoryItems");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>
