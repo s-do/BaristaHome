@@ -1,4 +1,4 @@
-﻿@model BaristaHome.Models.RegisterViewModel
+﻿@model BaristaHome.Models.User
 
 @{
     ViewData["Title"] = "Delete";
@@ -38,7 +38,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

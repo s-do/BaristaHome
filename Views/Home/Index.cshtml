@@ -18,24 +18,11 @@
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Account" asp-action="Login">Barista Home</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Logout</a>
+            <div class="center">
+                <h1 class="title">Home Page</h1>
             </div>
-                <a class="nav-link pink-button" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
         </nav>
     </header>
 
@@ -43,21 +30,79 @@
         <main role="main" class="pb-3">
             <!--Store Title-->
             <div class="text-center">
-                <h2>Generic Store Name</h2>
+                <h2 class="store-name">Generic Store Name</h2>
             </div>
             <!--First row of containers-->
             <div class = "box-row">
-                <a class="nav-link black" asp-area="" asp-controller="Menu" asp-action="Menu">Menu</a>
-                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Shared Calendar</a>
-                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Clocking</a>
-                <a class="nav-link black" asp-area="" asp-controller="Home" asp-action="Index">Payroll</a>
+   
+                <a class="nav-link feature" asp-area="" asp-controller="menu" asp-action="Menu">
+                    <div class="top">
+                        <img class="contain" src = "../images/menu.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Menu</p>
+                    </div>
+                </a>
+  
+                <a class="nav-link feature" asp-area="" asp-controller="calendar" asp-action="calendar">
+                    <div class="top">
+                        <img class="contain" src = "../images/calendar.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Shared Calendar</p>
+                    </div>
+                </a>
+                <a class="nav-link feature" asp-area="" asp-controller="clocking" asp-action="clocking">
+                    <div class="top">
+                        <img class="contain" src = "../images/clock.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Clocking</p>
+                    </div>
+                </a>
+                <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="payroll">
+                    <div class="top">
+                        <img class="contain" src = "../images/payroll.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Payroll</p>
+                    </div>
+                </a>
             </div>
             <!--Second row of containers-->
             <div class = "box-row">
-                <a class="nav-link black" asp-area="" asp-controller="inventory" asp-action="inventory">Inventory</a>
-                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Feedback</a>
-                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Timers</a>
-                <a class="nav-link black" asp-area="" asp-controller="home" asp-action="index">Checklist</a>
+                <a class="nav-link feature" asp-area="" asp-controller="inventory" asp-action="inventory">
+                    <div class="top">
+                        <img class="contain" src = "../images/inventory.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Inventory</p>
+                    </div>
+                </a>
+                <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="feedback">
+                    <div class="top">
+                        <img class="contain" src = "../images/feedback.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Feedback</p>
+                    </div>
+                </a>
+                <a class="nav-link feature" asp-area="" asp-controller="timers" asp-action="timers">
+                    <div class="top">
+                        <img class="contain" src = "../images/timer.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Timers</p>
+                    </div>
+                </a>
+                <a class="nav-link feature" asp-area="" asp-controller="checklist" asp-action="checklist">
+                    <div class="top">
+                        <img class="contain" src = "../images/todo.png">
+                    </div>
+                    <div class="bottom">
+                        <p>Checklist</p>
+                    </div>
+                </a>
             </div>
         </main>
     </div>

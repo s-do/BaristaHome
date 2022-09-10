@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaristaHome.Migrations
 {
-    [DbContext(typeof(RegisterContext))]
+    [DbContext(typeof(BaristaHomeContext))]
     [Migration("20220505030259_RegisterV2")]
     partial class RegisterV2
     {

@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaristaHome.Models
 {
-    public class RegisterViewModel
+    public class User
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         [Required, StringLength(32), Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -25,5 +26,16 @@ namespace BaristaHome.Models
         [NotMapped, DataType(DataType.Password), Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and confirmation password not match.")]
         public string ConfirmPassword { get; set; }
+
+        [StringLength(7)]
+        public string? Color { get; set; }
+        [StringLength(5), Display(Name = "Store Invitation Code")]
+        public string? InviteCode { get; set; }
+
+        // Relationships
+        public int? RoleId { get; set; }
+        public virtual Role? Role { get; set; }
+
+        public virtual ICollection<UserShiftStatus> UserShiftStatuses { get; set; }
     }
 }

@@ -12,21 +12,40 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Helpers;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using WebMatrix.WebData;
+
 
 namespace BaristaHome.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly RegisterContext _context;
+        private readonly BaristaHomeContext _context;
 
-        public AccountController(RegisterContext context)
+        public AccountController(BaristaHomeContext context)
         {
             _context = context;
         }
+        
 
+        [HttpGet]
         // GET: Account/Register
+        // Displays the Register user view
         public IActionResult Register()
         {
+            return View();
+        }
+
+        // Displays the Register store view
+        public IActionResult RegisterStore()
+        {
+            Random RNG = new Random();
+            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var code = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+            ViewBag.StoreInviteCode = new string(code.ToArray());
             return View();
         }
 
@@ -35,11 +54,14 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel register)
+        public async Task<IActionResult> Register([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User register)
         {
+            // IF SOMEONE COULD TELL ME A BETTER WAY TO SET DEFAULTS THAN DOING THIS PLEASE LET ME KNOW!!! DOING IT IN THE MODELS FOLDER DOESN'T FUCKING WORK
+            register.Color = "#000000";
+            register.RoleId = 1;
             if (ModelState.IsValid)
             {
-                var existingEmail = (from u in _context.Register
+                var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
 
@@ -55,6 +77,7 @@ namespace BaristaHome.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login", "Account");
             }
+            ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
             return View(register);
         }
 
@@ -67,19 +90,61 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel user)
+        public async Task<IActionResult> Login(LoginViewModel user, string ReturnUrl)
         {
             if (ModelState.IsValid)
             {
                 // checking existing email
-                var validUser = (from u in _context.Register
+                var validUser = (from u in _context.User
                                  where u.Email.Equals(user.Email)
                                  select u).FirstOrDefault();
 
                 // validating password with email's hashed password with input password
                 if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
-                    return RedirectToAction("Index", "Account");
+                    //A claim is a statement about a subject by an issuer and    
+                    //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
+                    var claims = new List<Claim>() {
+                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.UserId)),
+                        new Claim(ClaimTypes.Email, validUser.Email),
+                        };
+
+                    //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
+                    var principal = new ClaimsPrincipal(identity);
+
+                    // AUTHENTICATION PROPERTIES
+                    // AllowRefresh = <bool>,
+                    // Refreshing the authentication session should be allowed.
+
+                    //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    // The time at which the authentication ticket expires. A 
+                    // value set here overrides the ExpireTimeSpan option of 
+                    // CookieAuthenticationOptions set with AddCookie.
+
+                    //IsPersistent = true,
+                    // Whether the authentication session is persisted across 
+                    // multiple requests. When used with cookies, controls
+                    // whether the cookie's lifetime is absolute (matching the
+                    // lifetime of the authentication ticket) or session-based.
+
+                    //IssuedUtc = <DateTimeOffset>,
+                    // The time at which the authentication ticket was issued.
+
+                            
+                    // The full path or absolute URI to be used as an http 
+                    // redirect response value.
+
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
+                    new AuthenticationProperties()
+                    {
+                        IsPersistent = user.RememberMe,
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
+                    });
+                    return Redirect(ReturnUrl == null ? "/Account/Index" : ReturnUrl);
+                    //return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
             }
@@ -93,9 +158,10 @@ namespace BaristaHome.Controllers
          */
 
         // GET: Account
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Register.ToListAsync());
+            return View(await _context.User.ToListAsync());
         }
 
         // GET: Account/Details/5
@@ -106,8 +172,8 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var registerViewModel = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -124,7 +190,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register.FindAsync(id);
+            var registerViewModel = await _context.User.FindAsync(id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -137,20 +203,20 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Password,ConfirmPassword")] RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode")] User registerViewModel)
         {
-            if (id != registerViewModel.Id)
+            if (id != registerViewModel.UserId)
             {
                 return NotFound();
             }
 
-            var existingEmail = (from u in _context.Register
-                                 where u.Email.Equals(registerViewModel.Email)
+            var existingEmail = (from u in _context.User
+                                 where u.Email.Equals(registerViewModel.Email) && !u.UserId.Equals(registerViewModel.UserId)
                                  select u).FirstOrDefault();
 
             if (existingEmail != null)
             {
-                ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
                 return View(registerViewModel);
             }
 
@@ -164,7 +230,7 @@ namespace BaristaHome.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegisterViewModelExists(registerViewModel.Id))
+                    if (!RegisterViewModelExists(registerViewModel.UserId))
                     {
                         return NotFound();
                     }
@@ -186,8 +252,8 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.Register
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var registerViewModel = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (registerViewModel == null)
             {
                 return NotFound();
@@ -201,15 +267,15 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var registerViewModel = await _context.Register.FindAsync(id);
-            _context.Register.Remove(registerViewModel);
+            var registerViewModel = await _context.User.FindAsync(id);
+            _context.User.Remove(registerViewModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RegisterViewModelExists(int id)
         {
-            return _context.Register.Any(e => e.Id == id);
+            return _context.User.Any(e => e.UserId == id);
         }
     }
 }

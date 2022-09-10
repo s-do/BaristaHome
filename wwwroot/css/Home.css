@@ -5,8 +5,7 @@
     height: 300px;
 }
 
-
-.black {
+.feature {
     background-color: #ffdcf4;
     position: relative;
     margin-top: 2%;
@@ -18,17 +17,43 @@
     height: 250px;
     display: flex;
     padding: 10px;
-    align-items: center;
     color: black;
     text-align: center;
     font-size: 40px;
     font-family: 'Inter';
     box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
-    align-items: center;
     justify-content: center;
+    align-items:center;
+    position:relative;
 }
 
-.pink-button {
+.contain {
+    width: inherit;
+    height: inherit;
+    object-fit: contain;
+}
+
+.top {
+    width: 200px;
+    height: 200px;
+    /*outline: 5px dotted red;*/
+    align-self: flex-start;
+    position:absolute;
+
+}
+
+.bottom {
+    /*outline: 5px dotted green;*/
+    margin-top: 210px;
+    font-size: 20px;
+}
+
+.center{
+    width:75%;
+    text-align: center;
+}
+
+.pink-button-right {
     background-color: #DFB3D3;
     color: black;
     font-family: 'Inter';
@@ -41,16 +66,29 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    object-fit:contain;
 }
 
-.testing {
-    background-color: #feb6fc;
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
     width: 200px;
     height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    float: right;
-    margin-right: 50px;
 }
+
+.store-name{
+    margin-top:50px;
+    font-size: 50px
+}
+
 
 .footer {
     position: absolute;
