@@ -12,5 +12,7 @@ namespace BaristaHome.Data
 
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
+
+        public DbSet<Store> Store { get; set; }
     }
 }

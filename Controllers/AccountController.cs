@@ -45,7 +45,7 @@ namespace BaristaHome.Controllers
             Random RNG = new Random();
             const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
             var code = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-            ViewBag.InviteCode = new string(code.ToArray());
+            ViewBag.StoreInviteCode = new string(code.ToArray());
             return View();
         }
 
