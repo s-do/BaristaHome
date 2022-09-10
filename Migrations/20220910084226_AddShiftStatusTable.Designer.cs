@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220910084226_AddShiftStatusTable")]
+    partial class AddShiftStatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,22 +105,19 @@ namespace BaristaHome.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.UserShiftStatus", b =>
+            modelBuilder.Entity("ShiftStatusUser", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("ShiftStatusesShiftStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftStatusId")
+                    b.Property<int>("UsersUserId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                    b.HasKey("ShiftStatusesShiftStatusId", "UsersUserId");
 
-                    b.HasKey("UserId", "ShiftStatusId", "Time");
+                    b.HasIndex("UsersUserId");
 
-                    b.HasIndex("ShiftStatusId");
-
-                    b.ToTable("UserShiftStatus");
+                    b.ToTable("ShiftStatusUser");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>
@@ -130,38 +129,24 @@ namespace BaristaHome.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.UserShiftStatus", b =>
+            modelBuilder.Entity("ShiftStatusUser", b =>
                 {
-                    b.HasOne("BaristaHome.Models.ShiftStatus", "ShiftStatus")
-                        .WithMany("UserShiftStatuses")
-                        .HasForeignKey("ShiftStatusId")
+                    b.HasOne("BaristaHome.Models.ShiftStatus", null)
+                        .WithMany()
+                        .HasForeignKey("ShiftStatusesShiftStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BaristaHome.Models.User", "User")
-                        .WithMany("UserShiftStatuses")
-                        .HasForeignKey("UserId")
+                    b.HasOne("BaristaHome.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ShiftStatus");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
-                {
-                    b.Navigation("UserShiftStatuses");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.User", b =>
-                {
-                    b.Navigation("UserShiftStatuses");
                 });
 #pragma warning restore 612, 618
         }

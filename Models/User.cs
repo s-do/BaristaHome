@@ -34,9 +34,8 @@ namespace BaristaHome.Models
 
         // Relationships
         public int? RoleId { get; set; }
-        public Role? Role { get; set; }
+        public virtual Role? Role { get; set; }
 
-        public int? StoreId { get; set; }
-        public Store? Store { get; set; }
+        public virtual ICollection<UserShiftStatus> UserShiftStatuses { get; set; }
     }
 }
