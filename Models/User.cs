@@ -33,6 +33,12 @@ namespace BaristaHome.Models
         [StringLength(5), Display(Name = "Store Invitation Code")]
         public string? InviteCode { get; set; }
 
+        [StringLength(64)]
+        public string? UserImage { get; set; }
+
+        public byte[]? UserImageData { get; set; }
+
+
         // Relationships
         public int? RoleId { get; set; }
         public virtual Role? Role { get; set; }

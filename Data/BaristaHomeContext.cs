@@ -15,11 +15,23 @@ namespace BaristaHome.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Creating candidate key for models (multiple columns for pk)
+            // Creating candidate key for models (multiple columns for pk); This is basically a must for many-to-many relationships
             builder.Entity<CategoryTask>().HasKey(table => new
             {
                 table.CategoryId,
                 table.StoreTaskId
+            });
+
+            builder.Entity<DrinkIngredient>().HasKey(table => new
+            {
+                table.DrinkId,
+                table.IngredientId
+            });
+
+            builder.Entity<DrinkTag>().HasKey(table => new
+            {
+                table.DrinkId,
+                table.TagId
             });
 
             builder.Entity<InventoryItem>().HasKey(table => new
@@ -49,17 +61,22 @@ namespace BaristaHome.Data
         // Data models to represent the database for querying/data manipulation
         public DbSet<Category> Category { get; set; }
         public DbSet<CategoryTask> CategoryTask { get; set; }
-        public DbSet<Checklist> Checklists { get; set; }
+        public DbSet<Checklist> Checklist { get; set; }
+        public DbSet<Drink> Drink { get; set; }
+        public DbSet<DrinkIngredient> DrinkIngredient { get; set; }
+        public DbSet<DrinkTag> DrinkTag { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
-        public DbSet<Item> Item { get; set; }
+        public DbSet<Ingredient> Ingredient { get; set; }
         public DbSet<InventoryItem> InventoryItem { get; set; }
+        public DbSet<Item> Item { get; set; }
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Sale> Sale { get; set; }
         public DbSet<ShiftStatus> ShiftStatus { get; set; }
         public DbSet<Store> Store { get; set; }
-        public DbSet<StoreTimer> StoreTimer { get; set; }
         public DbSet<StoreTask> StoreTask { get; set; }
+        public DbSet<StoreTimer> StoreTimer { get; set; }
+        public DbSet<Tag> Tag { get; set; }
         public DbSet<Unit> Unit { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserShiftStatus> UserShiftStatus { get; set; }
