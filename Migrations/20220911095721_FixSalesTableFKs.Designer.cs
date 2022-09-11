@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220911095721_FixSalesTableFKs")]
+    partial class FixSalesTableFKs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("ChecklistId");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.CategoryTask", b =>
@@ -60,7 +62,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreTaskId");
 
-                    b.ToTable("CategoryTask", (string)null);
+                    b.ToTable("CategoryTask");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Checklist", b =>
@@ -83,7 +85,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Checklists", (string)null);
+                    b.ToTable("Checklists");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Feedback", b =>
@@ -116,7 +118,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedback", (string)null);
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
@@ -139,7 +141,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("InventoryItem", (string)null);
+                    b.ToTable("InventoryItem");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Item", b =>
@@ -162,7 +164,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Item", (string)null);
+                    b.ToTable("Item");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Payroll", b =>
@@ -191,7 +193,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Payroll", (string)null);
+                    b.ToTable("Payroll");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Role", b =>
@@ -209,7 +211,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Sale", b =>
@@ -226,9 +228,15 @@ namespace BaristaHome.Migrations
                     b.Property<int>("InventoryItemStoreId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Profit")
                         .HasPrecision(16, 2)
                         .HasColumnType("decimal(16,2)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeSold")
                         .HasColumnType("datetime2");
@@ -241,7 +249,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("InventoryItemItemId", "InventoryItemStoreId");
 
-                    b.ToTable("Sale", (string)null);
+                    b.ToTable("Sale");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -259,7 +267,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("ShiftStatusId");
 
-                    b.ToTable("ShiftStatus", (string)null);
+                    b.ToTable("ShiftStatus");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Store", b =>
@@ -282,7 +290,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("StoreId");
 
-                    b.ToTable("Store", (string)null);
+                    b.ToTable("Store");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.StoreTask", b =>
@@ -300,7 +308,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("StoreTaskId");
 
-                    b.ToTable("StoreTask", (string)null);
+                    b.ToTable("StoreTask");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.StoreTimer", b =>
@@ -326,7 +334,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreTimer", (string)null);
+                    b.ToTable("StoreTimer");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Unit", b =>
@@ -344,7 +352,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("UnitId");
 
-                    b.ToTable("Unit", (string)null);
+                    b.ToTable("Unit");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>
@@ -394,7 +402,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.UserShiftStatus", b =>
@@ -412,7 +420,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("ShiftStatusId");
 
-                    b.ToTable("UserShiftStatus", (string)null);
+                    b.ToTable("UserShiftStatus");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Category", b =>
