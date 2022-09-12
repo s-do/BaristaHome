@@ -151,6 +151,13 @@ namespace BaristaHome.Controllers
             return View(user);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Account");
+        }
+
         /*
          * literally a shit ton of code from creating a new scaffolding
          * this just helps you setup a lot of the crud operations for your model

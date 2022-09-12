@@ -17,7 +17,6 @@ namespace BaristaHome.Models
         public virtual ICollection<Checklist>? Checklists{ get; set; }
         public virtual ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<InventoryItem>? InventoryItems { get; set; }
-/*        public virtual ICollection<Sale>? Sales { get; set; }*/
         public virtual ICollection<StoreTimer>? StoreTimers { get; set; }
         public virtual ICollection<User>? Users { get; set; }
 
