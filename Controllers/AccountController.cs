@@ -143,7 +143,7 @@ namespace BaristaHome.Controllers
                         IsPersistent = user.RememberMe,
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                     });
-                    return Redirect(ReturnUrl == null ? "/Account/Index" : ReturnUrl);
+                    return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
                     //return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
@@ -185,18 +185,6 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
-            byte[] array = Convert.FromBase64String(registerViewModel.Password);
-            if (array.Length != 49 || array[0] != 0)
-            {
-                Console.WriteLine("i guess the if statement passed");
-                return View();
-            }
-
-            byte[] array2 = new byte[16];
-            Buffer.BlockCopy(array, 1, array2, 0, 16);
-            byte[] array3 = new byte[32];
-            Buffer.BlockCopy(array, 17, array3, 0, 32);
-            Console.WriteLine(System.Text.Encoding.Default.GetString(array3));
 
             return View(registerViewModel);
         }
