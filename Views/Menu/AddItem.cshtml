@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BaristaHome.Models.Drink
+@{
     ViewData["Title"] = "Add Item";
     Layout = null;
 }
@@ -26,6 +27,92 @@
         </nav>
     </header>
 
+    <div class = "add-drink-top">
+        <script>
+            var loadFile = function(event) {
+                var output = document.getElementById('output');
+                output.src = URL.createObjectURL(event.target.files[0]);
+                output.onload = function() {
+                    URL.revokeObjectURL(output.src) // free memory
+                }
+            };
+        </script>
+
+        <div class = "add-top-left">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="DrinkImage">Image</label>
+                    <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
+                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
+                </div>
+            </form>
+            <img id="output"/>
+            <script>
+                var loadFile = function(event) {
+                    var output = document.getElementById('output');
+                    output.src = URL.createObjectURL(event.target.files[0]);
+                    output.onload = function() {
+                        URL.revokeObjectURL(output.src) // free memory
+                    }
+                };
+            </script>
+        </div>
+
+        <div class = "add-top-right">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="DrinkName"></label>
+                    <input asp-for="DrinkName" class="form-control" />
+                    <span asp-validation-for="DrinkName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Instructions"></label>
+                    <textarea class="form-control" aria-label="Instructions" rows = 10></textarea>
+                    <span asp-validation-for="Instructions" class="text-danger"></span>
+                  
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class = "add-drink-bottom">
+        <div class = "add-bottom-left">
+
+        </div>
+        <div class = "add-bottom-right">
+
+        </div>
+    </div>
+
+
+    <!--
+    <div class="col-md-12">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="DrinkName"></label>
+            <input asp-for="DrinkName" class="form-control" />
+            <span asp-validation-for="DrinkName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Instructions"></label>
+            <input asp-for="Instructions" class="form-control" />
+            <span asp-validation-for="Instructions" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DrinkImage">Image</label>
+            <input asp-for="DrinkImage" class="form-control" />
+            <span asp-validation-for="DrinkImage" class="text-danger"></span>
+        </div>
+    </form>
+    </div>
+    -->
 
     <footer class="border-top footer text-muted">
         <div class="container">

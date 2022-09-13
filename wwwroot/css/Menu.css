@@ -34,11 +34,6 @@
     text-align: center;
 }
 
-.store-name {
-    margin-top: 50px;
-    font-size: 50px
-}
-
 
 .footer {
     position: absolute;
@@ -46,4 +41,82 @@
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
+}
+
+.add-drink-top {
+    outline: 5px dotted green;
+    height: 500px;
+    width: 100%;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.add-top-left {
+    outline: 5px dotted red;
+    float: left;
+    height:inherit;
+    width: 30%;
+    padding: inherit;
+}
+
+.add-top-right {
+    outline: 5px dotted blue;
+    float: left;
+    height: inherit;
+    width: 70%;
+    padding: inherit;
+}
+
+.add-drink-bottom {
+    outline: 5px dotted red;
+    height: 700px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.add-bottom-left {
+    outline: 5px dotted green;
+    float: left;
+    height: inherit;
+    width: 50%;
+    padding: inherit;
+}
+
+.add-bottom-right {
+    outline: 5px dotted blue;
+    float: left;
+    height: inherit;
+    width: 50%;
+    padding: inherit;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.file-upload {
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #FFFFFF;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom, #2590EB 50%, #FFFFFF 50%);
+    background-size: 100% 200%;
+    transition: all 1s;
+    color: #FFFFFF;
+    font-size: 100px;
+    input [type='file'] height: 200px;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
 }
