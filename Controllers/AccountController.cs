@@ -51,6 +51,7 @@ namespace BaristaHome.Controllers
             register.RoleId = 1;
             if (ModelState.IsValid)
             {
+                //checks if entered in email already exists or not
                 var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
@@ -60,6 +61,24 @@ namespace BaristaHome.Controllers
                     ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
                     return View(register);
                 }
+
+                //checks if entered in invite code exists
+                var existingInvite = (from u in _context.Store
+                         where u.StoreInviteCode.Equals(register.InviteCode)
+                         select u).FirstOrDefault();
+                if (existingInvite == null)
+                {
+                    ModelState.AddModelError(string.Empty, "No store is associated with this invite code. Please use an existing one.");
+                    return View(register);
+                }
+                else
+                {
+                    var existingStore = (from u in _context.Store
+                                         where u.StoreInviteCode.Equals(register.InviteCode)
+                                         select u.StoreId).FirstOrDefault();
+                    register.StoreId = existingStore;
+                }
+
 
                 // hashing password (salt is also applied)
                 register.Password = Crypto.HashPassword(register.Password);
@@ -140,92 +159,19 @@ namespace BaristaHome.Controllers
             }
             return View(user);
         }
-
-        /*public IActionResult RegisterStore()
-        {
-            return View();
-        }*/
-
-
-        /// <summary>
-        /// //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// </summary>
-        /// <returns></returns>
-        /*[HttpGet]
-        // Displays the Register store view
-        public IActionResult RegisterStore()
-        {
-            Random RNG = new Random();
-            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-            string code = new string(randomCode.ToArray());
-
-            //Makes sure the code does not already exist in the database
-            var existingStoreInviteCode = (from u in _context.Store
-                                           where u.StoreInviteCode.Equals(code)
-                                           select u).FirstOrDefault();
-
-            while (existingStoreInviteCode != null)
-            {
-                RNG = new Random();
-                randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-                code = new string(randomCode.ToArray());
-                existingStoreInviteCode = (from u in _context.Store
-                                           where u.StoreInviteCode.Equals(code)
-                                           select u).FirstOrDefault();
-            }
-            TempData["StoreInviteCode"] = code;
-
-            return View();
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> RegisterStore([Bind("StoreId, StoreName, StoreInviteCode")] Store store)
-        {
-            store.StoreInviteCode = TempData["StoreInviteCode"].ToString();
-            TempData["StoreName"] = store.StoreName;
-            
-            *//*store.StoreInviteCode = code;*/
-            /*ViewBag.StoreInviteCode = code;
-            TempData["StoreInviteCode"] = code;*//*
-
-            _context.Add(store);
-            _context.SaveChanges();
-            return RedirectToAction("AdminRegister", "Account");
-            *//*return View(store);*//*
-        }*/
+          
+        
 
         [HttpGet]
+        // Displays the Register Store View
         public IActionResult AdminRegister()
         {
-            /*Random RNG = new Random();
-            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-            string code = new string(randomCode.ToArray());
-
-            //Makes sure the code does not already exist in the database
-            var existingStoreInviteCode = (from u in _context.Store
-                                           where u.StoreInviteCode.Equals(code)
-                                           select u).FirstOrDefault();
-
-            while (existingStoreInviteCode != null)
-            {
-                RNG = new Random();
-                randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-                code = new string(randomCode.ToArray());
-                existingStoreInviteCode = (from u in _context.Store
-                                           where u.StoreInviteCode.Equals(code)
-                                           select u).FirstOrDefault();
-            }
-            TempData["StoreInviteCode"] = code;*/
-
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> AdminRegister([Bind("StoreId, StoreName, StoreInviteCode")] Store store, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User admin)
         {
-            /*string code = TempData["StoreInviteCode"].ToString();*/
             Random RNG = new Random();
             const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
             var randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
@@ -249,39 +195,9 @@ namespace BaristaHome.Controllers
             store.StoreInviteCode = code;
             admin.InviteCode = code;
 
-            /* var s = (from u in _context.Store
-                      where u.StoreInviteCode.Equals(code)
-                      select u.StoreId).FirstOrDefault();*/
-
             admin.Color = "#000000";
             admin.RoleId = 1;
-
-            /*if(store.StoreName != null)
-            {
-                ModelState.AddModelError(string.Empty, "store null");
-            }
-            if (store.StoreInviteCode != null)
-            {
-                ModelState.AddModelError(string.Empty, "storeInvite null");
-            }
-            if (admin.InviteCode != null)
-            {
-                ModelState.AddModelError(string.Empty, "admin null");
-            }*/
-
-
-
-
-            /*_context.Add(admin);
-            _context.Add(store);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Login", "Account");*/
-
-
-
-
-
-
+            
             if (ModelState.IsValid)
             {
                 var existingEmail = (from u in _context.User
@@ -303,7 +219,6 @@ namespace BaristaHome.Controllers
             }
             ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
             return View();
-
         }
 
 
