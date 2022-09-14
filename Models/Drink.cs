@@ -12,6 +12,9 @@ namespace BaristaHome.Models
         [StringLength(1024), Display(Name = "Enter your instructions here")]
         public string Instructions { get; set; }
 
+        [StringLength(512), Display(Name = "Description")]
+        public string Description { get; set; }
+
         public string DrinkImage { get; set; }
 
         // Look into storing images with EF here: http://www.binaryintellect.net/articles/2f55345c-1fcb-4262-89f4-c4319f95c5bd.aspx
