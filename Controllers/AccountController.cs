@@ -105,9 +105,9 @@ namespace BaristaHome.Controllers
                     //A claim is a statement about a subject by an issuer and    
                     //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
                     var claims = new List<Claim>() {
-                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.UserId)),
-                        new Claim(ClaimTypes.Email, validUser.Email),
-                        };
+                        new Claim("UserId", Convert.ToString(validUser.UserId)),
+                        new Claim("Email", validUser.Email),
+                        new Claim("RoleId",  Convert.ToString(validUser.RoleId))}; // have to represent ints as strings i guess
 
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -143,15 +143,14 @@ namespace BaristaHome.Controllers
                         IsPersistent = user.RememberMe,
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                     });
-                    return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
-                    //return RedirectToAction("Index", "Account");
+                    // return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
+                    return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
             }
             return View(user);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -189,7 +188,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // GET: Account/Edit/5
+        // GET: Account/Edit/UserId
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -205,7 +204,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // POST: Account/Edit/5
+        // POST: Account/Edit/UserId (overload method)
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]

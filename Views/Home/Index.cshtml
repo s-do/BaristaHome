@@ -18,16 +18,23 @@
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <form method="post">
-                <a class="nav-link pink-button-left" asp-area="" asp-controller="Account" asp-action="">Logout</a>
-            </form>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
             <div class="center">
                 <h1 class="title">Home Page</h1>
             </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
+            <!--Using Claims to display different views based on user's role-->
+            @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+            {
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Account" asp-action="Index">Account</a>     
+            }
+            else 
+            {
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
+            }
+                
         </nav>
     </header>
-
+   
     <div class="container">
         <main role="main" class="pb-3">
             <!--Store Title-->
