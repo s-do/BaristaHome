@@ -143,7 +143,7 @@ namespace BaristaHome.Controllers
                         IsPersistent = user.RememberMe,
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                     });
-                    return Redirect(ReturnUrl == null ? "/Account/Index" : ReturnUrl);
+                    return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
                     //return RedirectToAction("Index", "Account");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
