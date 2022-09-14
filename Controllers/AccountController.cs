@@ -85,6 +85,8 @@ namespace BaristaHome.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated) 
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -133,16 +135,11 @@ namespace BaristaHome.Controllers
                     // The time at which the authentication ticket was issued.
 
                             
-                    // The full path or absolute URI to be used as an http 
+                    // To do these add a new AuthenticationProperties() { PropertyName = Value }, you can add this as an argument in SignInAsync()
                     // redirect response value.
 
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
-                    new AuthenticationProperties()
-                    {
-                        IsPersistent = user.RememberMe,
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
-                    });
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                     // return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
                     return RedirectToAction("Index", "Home");
                 }

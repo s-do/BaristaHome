@@ -48,6 +48,7 @@ namespace BaristaHome.Models
 
         public ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<Payroll>? Payrolls { get; set; }
+        public virtual ICollection<Shift>? Shifts { get; set; }
         public virtual ICollection<UserShiftStatus>? UserShiftStatuses { get; set; }
     }
 }

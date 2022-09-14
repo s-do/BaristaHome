@@ -72,6 +72,7 @@ namespace BaristaHome.Data
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Sale> Sale { get; set; }
+        public DbSet<Shift> Shift { get; set; }
         public DbSet<ShiftStatus> ShiftStatus { get; set; }
         public DbSet<Store> Store { get; set; }
         public DbSet<StoreTask> StoreTask { get; set; }
