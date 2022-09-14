@@ -136,8 +136,6 @@ namespace BaristaHome.Controllers
 
                             
                     // To do these add a new AuthenticationProperties() { PropertyName = Value }, you can add this as an argument in SignInAsync()
-                    // redirect response value.
-
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                     // return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
