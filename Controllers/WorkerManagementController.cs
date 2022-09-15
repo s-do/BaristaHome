@@ -1,11 +1,14 @@
 ﻿using BaristaHome.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BaristaHome.Controllers
 {
+    [Authorize]
     public class WorkerManagementController : Controller
     {
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult WorkerManagement()
         {
             return View();

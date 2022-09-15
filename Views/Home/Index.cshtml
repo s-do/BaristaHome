@@ -18,11 +18,20 @@
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Logout</a>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
             <div class="center">
                 <h1 class="title">Home Page</h1>
             </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="Users" asp-action="Index">Workers</a>
+            <!--Using Claims to display different views based on user's role-->
+            @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+            {
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Account" asp-action="Index">Account</a>
+            }
+            else
+            {
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="WorkerManagement" asp-action="WorkerManagement">Workers</a>
+            }
+
         </nav>
     </header>
 
@@ -33,20 +42,20 @@
                 <h2 class="store-name">Generic Store Name</h2>
             </div>
             <!--First row of containers-->
-            <div class = "box-row">
-   
+            <div class="box-row">
+
                 <a class="nav-link feature" asp-area="" asp-controller="menu" asp-action="Menu">
                     <div class="top">
-                        <img class="contain" src = "../images/menu.png">
+                        <img class="contain" src="../images/menu.png">
                     </div>
                     <div class="bottom">
                         <p>Menu</p>
                     </div>
                 </a>
-  
+
                 <a class="nav-link feature" asp-area="" asp-controller="calendar" asp-action="calendar">
                     <div class="top">
-                        <img class="contain" src = "../images/calendar.png">
+                        <img class="contain" src="../images/calendar.png">
                     </div>
                     <div class="bottom">
                         <p>Shared Calendar</p>
@@ -54,7 +63,7 @@
                 </a>
                 <a class="nav-link feature" asp-area="" asp-controller="clocking" asp-action="clocking">
                     <div class="top">
-                        <img class="contain" src = "../images/clock.png">
+                        <img class="contain" src="../images/clock.png">
                     </div>
                     <div class="bottom">
                         <p>Clocking</p>
@@ -62,7 +71,7 @@
                 </a>
                 <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="payroll">
                     <div class="top">
-                        <img class="contain" src = "../images/payroll.png">
+                        <img class="contain" src="../images/payroll.png">
                     </div>
                     <div class="bottom">
                         <p>Payroll</p>
@@ -70,10 +79,10 @@
                 </a>
             </div>
             <!--Second row of containers-->
-            <div class = "box-row">
+            <div class="box-row">
                 <a class="nav-link feature" asp-area="" asp-controller="inventory" asp-action="inventory">
                     <div class="top">
-                        <img class="contain" src = "../images/inventory.png">
+                        <img class="contain" src="../images/inventory.png">
                     </div>
                     <div class="bottom">
                         <p>Inventory</p>
@@ -81,7 +90,7 @@
                 </a>
                 <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="feedback">
                     <div class="top">
-                        <img class="contain" src = "../images/feedback.png">
+                        <img class="contain" src="../images/feedback.png">
                     </div>
                     <div class="bottom">
                         <p>Feedback</p>
@@ -89,7 +98,7 @@
                 </a>
                 <a class="nav-link feature" asp-area="" asp-controller="timers" asp-action="timers">
                     <div class="top">
-                        <img class="contain" src = "../images/timer.png">
+                        <img class="contain" src="../images/timer.png">
                     </div>
                     <div class="bottom">
                         <p>Timers</p>
@@ -97,7 +106,7 @@
                 </a>
                 <a class="nav-link feature" asp-area="" asp-controller="checklist" asp-action="checklist">
                     <div class="top">
-                        <img class="contain" src = "../images/todo.png">
+                        <img class="contain" src="../images/todo.png">
                     </div>
                     <div class="bottom">
                         <p>Checklist</p>

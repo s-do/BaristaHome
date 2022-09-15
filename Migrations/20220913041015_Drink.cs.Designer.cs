@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220913041015_Drink.cs")]
+    partial class Drinkcs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -326,38 +328,6 @@ namespace BaristaHome.Migrations
                     b.HasIndex("InventoryItemItemId", "InventoryItemStoreId");
 
                     b.ToTable("Sale");
-                });
-
-            modelBuilder.Entity("BaristaHome.Models.Shift", b =>
-                {
-                    b.Property<int>("ShiftId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShiftId"), 1L, 1);
-
-                    b.Property<TimeSpan>("EndShift")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("ShiftDate")
-                        .HasColumnType("Date");
-
-                    b.Property<TimeSpan>("StartShift")
-                        .HasColumnType("time");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ShiftId");
-
-                    b.HasIndex("StoreId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Shift");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -706,25 +676,6 @@ namespace BaristaHome.Migrations
                     b.Navigation("InventoryItem");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Shift", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("Shifts")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaristaHome.Models.User", "User")
-                        .WithMany("Shifts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.StoreTimer", b =>
                 {
                     b.HasOne("BaristaHome.Models.Store", "Store")
@@ -815,8 +766,6 @@ namespace BaristaHome.Migrations
 
                     b.Navigation("InventoryItems");
 
-                    b.Navigation("Shifts");
-
                     b.Navigation("StoreTimers");
 
                     b.Navigation("Users");
@@ -842,8 +791,6 @@ namespace BaristaHome.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("Payrolls");
-
-                    b.Navigation("Shifts");
 
                     b.Navigation("UserShiftStatuses");
                 });

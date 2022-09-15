@@ -10,6 +10,6 @@ namespace BaristaHome.Models
         public string ShiftStatusName { get; set; }
 
         // Relationships
-        public virtual ICollection<UserShiftStatus> UserShiftStatuses { get; set; }
+        public virtual ICollection<UserShiftStatus>? UserShiftStatuses { get; set; }
     }
 }

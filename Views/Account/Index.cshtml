@@ -49,6 +49,7 @@
     </tbody>
 </table>
 
+<!-- Using this as a way to get info on the user that's logged in-->
 <h2>Confidential Data</h2>
 
 @if (User.Identity.IsAuthenticated)
@@ -58,5 +59,6 @@
             <tr><td>@claim.Type</td><td>@claim.Value</td></tr>
         }
     </table>
+
 }
 

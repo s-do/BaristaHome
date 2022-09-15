@@ -1,9 +1,11 @@
 ﻿using BaristaHome.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BaristaHome.Controllers
 {
+    [Authorize]
     public class PayrollController : Controller
     {
         private readonly ILogger<PayrollController> _logger;
