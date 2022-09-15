@@ -188,8 +188,10 @@ namespace BaristaHome.Controllers
             }
 
             store.StoreInviteCode = code;
-            admin.InviteCode = code;
+            _context.Add(store);
+            await _context.SaveChangesAsync();
 
+            admin.InviteCode = code;
             admin.Color = "#000000";
             admin.RoleId = 2;
             
@@ -205,9 +207,13 @@ namespace BaristaHome.Controllers
                     return View(admin);
                 }
 
+                var existingStoreId = (from u in _context.Store
+                                       where u.StoreInviteCode.Equals(code)
+                                       select u.StoreId).FirstOrDefault();
+                admin.StoreId = existingStoreId;
+
                 // hashing password (salt is also applied)
                 admin.Password = Crypto.HashPassword(admin.Password);
-                _context.Add(store);
                 _context.Add(admin);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login", "Account");
