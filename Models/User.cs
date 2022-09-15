@@ -31,7 +31,7 @@ namespace BaristaHome.Models
         public string? Color { get; set; }
 
         [StringLength(5), Display(Name = "Store Invitation Code")]
-        public string? InviteCode { get; set; }
+        public string InviteCode { get; set; }
 
         [StringLength(64)]
         public string? UserImage { get; set; }

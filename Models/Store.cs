@@ -11,7 +11,7 @@ namespace BaristaHome.Models
         public string StoreName { get; set; }
 
         [StringLength(5), Display(Name = "Store Invitation Code")]
-        public string StoreInviteCode { get; set; }
+        public string? StoreInviteCode { get; set; }
 
         // Relationships
         public virtual ICollection<Checklist>? Checklists{ get; set; }

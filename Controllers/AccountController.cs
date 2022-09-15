@@ -39,16 +39,6 @@ namespace BaristaHome.Controllers
             return View();
         }
 
-        // Displays the Register store view
-        public IActionResult RegisterStore()
-        {
-            Random RNG = new Random();
-            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var code = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-            ViewBag.StoreInviteCode = new string(code.ToArray());
-            return View();
-        }
-
         // POST: Account/Register
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -61,6 +51,7 @@ namespace BaristaHome.Controllers
             register.RoleId = 1;
             if (ModelState.IsValid)
             {
+                //checks if entered in email already exists or not
                 var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
@@ -70,6 +61,24 @@ namespace BaristaHome.Controllers
                     ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
                     return View(register);
                 }
+
+                //checks if entered in invite code exists
+                var existingInvite = (from u in _context.Store
+                         where u.StoreInviteCode.Equals(register.InviteCode)
+                         select u).FirstOrDefault();
+                if (existingInvite == null)
+                {
+                    ModelState.AddModelError(string.Empty, "No store is associated with this invite code. Please use an existing one.");
+                    return View(register);
+                }
+                else
+                {
+                    var existingStore = (from u in _context.Store
+                                         where u.StoreInviteCode.Equals(register.InviteCode)
+                                         select u.StoreId).FirstOrDefault();
+                    register.StoreId = existingStore;
+                }
+
 
                 // hashing password (salt is also applied)
                 register.Password = Crypto.HashPassword(register.Password);
@@ -145,6 +154,68 @@ namespace BaristaHome.Controllers
             }
             return View(user);
         }
+          
+        
+
+        [HttpGet]
+        // Displays the Register Store View
+        public IActionResult AdminRegister()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AdminRegister([Bind("StoreId, StoreName, StoreInviteCode")] Store store, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User admin)
+        {
+            Random RNG = new Random();
+            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+            string code = new string(randomCode.ToArray());
+
+            //Makes sure the code does not already exist in the database
+            var existingStoreInviteCode = (from u in _context.Store
+                                           where u.StoreInviteCode.Equals(code)
+                                           select u).FirstOrDefault();
+
+            while (existingStoreInviteCode != null)
+            {
+                RNG = new Random();
+                randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+                code = new string(randomCode.ToArray());
+                existingStoreInviteCode = (from u in _context.Store
+                                           where u.StoreInviteCode.Equals(code)
+                                           select u).FirstOrDefault();
+            }
+
+            store.StoreInviteCode = code;
+            admin.InviteCode = code;
+
+            admin.Color = "#000000";
+            admin.RoleId = 2;
+            
+            if (ModelState.IsValid)
+            {
+                var existingEmail = (from u in _context.User
+                                     where u.Email.Equals(admin.Email)
+                                     select u).FirstOrDefault();
+
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                    return View(admin);
+                }
+
+                // hashing password (salt is also applied)
+                admin.Password = Crypto.HashPassword(admin.Password);
+                _context.Add(store);
+                _context.Add(admin);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Login", "Account");
+            }
+            ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
+            return View();
+        }
+
 
         public async Task<IActionResult> Logout()
         {

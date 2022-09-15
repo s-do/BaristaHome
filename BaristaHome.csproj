@@ -33,7 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\NewFolder1\" />
+    <Folder Include="wwwroot\images\.vs\images\v17\" />
+
   </ItemGroup>
 
 </Project>
