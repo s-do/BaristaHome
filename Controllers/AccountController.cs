@@ -205,11 +205,6 @@ namespace BaristaHome.Controllers
                     return View(admin);
                 }
 
-                var existingStoreId = (from u in _context.Store
-                                     where u.StoreInviteCode.Equals(code)
-                                     select u.StoreId).FirstOrDefault();
-                store.StoreId = existingStoreId;
-
                 // hashing password (salt is also applied)
                 admin.Password = Crypto.HashPassword(admin.Password);
                 _context.Add(store);
