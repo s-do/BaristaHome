@@ -5,6 +5,7 @@ namespace BaristaHome.Models
 {
     public class InventoryItem
     {
+        [Display(Name ="Item Name")]
         public int ItemId { get; set; }
         public int StoreId { get; set; }
         public decimal Quantity { get; set; }

@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Inventory List</h1>
+
+<p>
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal">New Item</a>
+</p>
+<table class="table table-bordered">
+    <tr class="btn-success"></tr>
+    <thead>
+        <tr>
+            <th>
+                Item Name
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                PricePerPoint
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in ViewBag.Inventories) {
+        <tr>
+            <td>
+                @item.Item.ItemId
+            </td>
+            <td>
+                @item.Quantity
+            </td>
+            <td>
+                @item.PricePerUnit
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
