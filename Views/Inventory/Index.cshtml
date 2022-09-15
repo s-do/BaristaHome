@@ -1,4 +1,6 @@
-﻿@{
+﻿@model BaristaHome.Models.InventoryItem
+
+@{
     ViewData["Title"] = "Index";
 }
 
@@ -7,6 +9,42 @@
 <p>
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal">New Item</a>
 </p>
+
+@* Import bootstrap for modal (Need more research on why these ones are used)*@
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+@* Code for the modal pop up *@
+<div class="modal fade" id="inventoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Item</h2>
+            </div>
+            <div class="modal-body">
+                <form id="inventoryForm">
+                    <label>Item ID</label>
+                    @Html.TextBoxFor(m=>m.ItemId , new{@class="form-control"})
+                    <label>Quantity</label>
+                    @Html.TextBoxFor(m=>m.Quantity, new{@class="form-control"})
+                    <label>Price Per Unit</label>
+                    @Html.TextBoxFor(m=>m.PricePerUnit, new{@class="form-control"})
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSave" class="btn btn-primary m-1">Save</a>
+                    <a href="#" id="btnCancel" class="btn btn-danger m-1">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <table class="table table-bordered">
     <tr class="btn-success"></tr>
     <thead>
