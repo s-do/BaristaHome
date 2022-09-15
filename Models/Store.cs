@@ -7,7 +7,7 @@ namespace BaristaHome.Models
     {
         public int StoreId { get; set; }
 
-        [StringLength(64), Display(Name = "Store Name")]
+        [StringLength(32), Display(Name = "Store Name")]
         public string StoreName { get; set; }
 
         [StringLength(5), Display(Name = "Store Invitation Code")]

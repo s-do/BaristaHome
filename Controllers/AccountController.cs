@@ -118,7 +118,8 @@ namespace BaristaHome.Controllers
                     var claims = new List<Claim>() {
                         new Claim("UserId", Convert.ToString(validUser.UserId)),
                         new Claim("Email", validUser.Email),
-                        new Claim("RoleId",  Convert.ToString(validUser.RoleId))}; // have to represent ints as strings i guess
+                        new Claim("RoleId",  Convert.ToString(validUser.RoleId)),
+                        new Claim("StoreId", Convert.ToString(validUser.StoreId))}; // have to represent ints as strings i guess
 
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -154,10 +155,10 @@ namespace BaristaHome.Controllers
             }
             return View(user);
         }
-          
-        
+     
 
         [HttpGet]
+        [AllowAnonymous]
         // Displays the Register Store View
         public IActionResult AdminRegister()
         {
@@ -165,6 +166,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminRegister([Bind("StoreId, StoreName, StoreInviteCode")] Store store, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User admin)
         {
             Random RNG = new Random();
@@ -322,7 +324,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // GET: Account/Delete/5
+        // GET: Account/Delete/UserId
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -340,7 +342,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // POST: Account/Delete/5
+        // POST: Account/Delete/UserId
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
