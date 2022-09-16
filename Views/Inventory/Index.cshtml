@@ -1,19 +1,21 @@
 ﻿@model BaristaHome.Models.InventoryItem
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Inventory Item";
 }
 
 <h1>Inventory List</h1>
-
-<p>
-    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal">New Item</a>
-</p>
 
 @* Import bootstrap for modal (Need more research on why these ones are used)*@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<p>
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal">New Item</a>
+</p>
 
 @* Code for the modal pop up *@
 <div class="modal fade" id="inventoryModal">
@@ -23,24 +25,86 @@
                 <h2 class="modal-title">Add Item</h2>
             </div>
             <div class="modal-body">
-                <form id="inventoryForm">
-                    <label>Item ID</label>
+                <form method="post">
+                    @*<label>Item ID</label>
                     @Html.TextBoxFor(m=>m.ItemId , new{@class="form-control"})
                     <label>Quantity</label>
                     @Html.TextBoxFor(m=>m.Quantity, new{@class="form-control"})
                     <label>Price Per Unit</label>
-                    @Html.TextBoxFor(m=>m.PricePerUnit, new{@class="form-control"})
+                    @Html.TextBoxFor(m=>m.PricePerUnit, new{@class="form-control"})*@
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input asp-for="Item.ItemName" class="form-control" />
+                        <span asp-validation-for="Item.ItemName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Quantity"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PricePerUnit"></label>
+                        <input asp-for="PricePerUnit" class="form-control" />
+                        <span asp-validation-for="PricePerUnit" class="text-danger"></span>
+                    </div>
+                    <!-- TODO: FIGURE OUT A WAY TO DISPLAY DROPDOWN LIST OF UNITS -->
+@*                    <div class="form-group">
+                        @Html.DropDownList("Unit",ViewBag.Units as SelectList)
+                    </div>*@
+
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" value="Save" class="btn btn-primary m-1" />
+                            <a class="btn btn-danger m-1" asp-area="" asp-controller="Inventory" asp-action="Index">Cancel</a>
+                        </div>
+                    </div>
+
                 </form>
             </div>
-            <div class="modal-footer">
+@*            <div class="modal-footer">
                 <div class="btn-group">
                     <a href="#" id="btnSave" class="btn btn-primary m-1">Save</a>
                     <a href="#" id="btnCancel" class="btn btn-danger m-1">Cancel</a>
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </div>
+@*
+
+<script>
+    $(document).ready(function(){
+        $("btnSave").click(function() {
+            var inventoryFormData =$("#inventoryForm").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/InventoryItem/SaveInventory",
+                data: inventoryFromData,
+                success: function () {
+                    window.location.href = "/Inventory/Index";
+                }
+            })
+
+        })
+    })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -62,7 +126,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in ViewBag.Inventories) {
+@foreach (var item in ViewBag.InventoryItem) {
         <tr>
             <td>
                 @item.Item.ItemId
@@ -81,3 +145,4 @@
 }
     </tbody>
 </table>
+*@

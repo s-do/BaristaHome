@@ -42,7 +42,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("ChecklistId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.CategoryTask", b =>
@@ -60,7 +60,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreTaskId");
 
-                    b.ToTable("CategoryTask");
+                    b.ToTable("CategoryTask", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Checklist", b =>
@@ -83,7 +83,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Checklist");
+                    b.ToTable("Checklist", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Drink", b =>
@@ -93,11 +93,6 @@ namespace BaristaHome.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DrinkId"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("DrinkImage")
                         .IsRequired()
@@ -119,7 +114,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("DrinkId");
 
-                    b.ToTable("Drink");
+                    b.ToTable("Drink", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.DrinkIngredient", b =>
@@ -134,7 +129,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("IngredientId");
 
-                    b.ToTable("DrinkIngredient");
+                    b.ToTable("DrinkIngredient", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.DrinkTag", b =>
@@ -149,7 +144,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("DrinkTag");
+                    b.ToTable("DrinkTag", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Feedback", b =>
@@ -182,7 +177,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedback");
+                    b.ToTable("Feedback", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Ingredient", b =>
@@ -200,7 +195,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("IngredientId");
 
-                    b.ToTable("Ingredient");
+                    b.ToTable("Ingredient", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
@@ -223,7 +218,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("InventoryItem");
+                    b.ToTable("InventoryItem", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Item", b =>
@@ -246,7 +241,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Item");
+                    b.ToTable("Item", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Payroll", b =>
@@ -275,7 +270,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Payroll");
+                    b.ToTable("Payroll", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Role", b =>
@@ -293,7 +288,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Sale", b =>
@@ -325,7 +320,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("InventoryItemItemId", "InventoryItemStoreId");
 
-                    b.ToTable("Sale");
+                    b.ToTable("Sale", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Shift", b =>
@@ -357,7 +352,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Shift");
+                    b.ToTable("Shift", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.ShiftStatus", b =>
@@ -375,7 +370,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("ShiftStatusId");
 
-                    b.ToTable("ShiftStatus");
+                    b.ToTable("ShiftStatus", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Store", b =>
@@ -398,7 +393,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("StoreId");
 
-                    b.ToTable("Store");
+                    b.ToTable("Store", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.StoreTask", b =>
@@ -416,7 +411,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("StoreTaskId");
 
-                    b.ToTable("StoreTask");
+                    b.ToTable("StoreTask", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.StoreTimer", b =>
@@ -442,7 +437,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreTimer");
+                    b.ToTable("StoreTimer", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Tag", b =>
@@ -460,7 +455,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Unit", b =>
@@ -478,7 +473,7 @@ namespace BaristaHome.Migrations
 
                     b.HasKey("UnitId");
 
-                    b.ToTable("Unit");
+                    b.ToTable("Unit", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.User", b =>
@@ -535,7 +530,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.UserShiftStatus", b =>
@@ -553,7 +548,7 @@ namespace BaristaHome.Migrations
 
                     b.HasIndex("ShiftStatusId");
 
-                    b.ToTable("UserShiftStatus");
+                    b.ToTable("UserShiftStatus", (string)null);
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Category", b =>
