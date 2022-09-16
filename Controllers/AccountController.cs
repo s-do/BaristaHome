@@ -118,7 +118,8 @@ namespace BaristaHome.Controllers
                     var claims = new List<Claim>() {
                         new Claim("UserId", Convert.ToString(validUser.UserId)),
                         new Claim("Email", validUser.Email),
-                        new Claim("RoleId",  Convert.ToString(validUser.RoleId))}; // have to represent ints as strings i guess
+                        new Claim("RoleId", Convert.ToString(validUser.RoleId)),
+                        new Claim("StoreId", Convert.ToString(validUser.StoreId)) }; // have to represent ints as strings i guess
 
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
