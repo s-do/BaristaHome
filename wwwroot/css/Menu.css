@@ -44,23 +44,24 @@
 }
 
 .add-drink-top {
-    outline: 5px dotted green;
+    /*outline: 5px dotted green;*/
     height: 500px;
     width: 100%;
     padding-left: 50px;
     padding-right: 50px;
 }
 
-.add-top-left {
-    outline: 5px dotted red;
+.drink-image {
+    /*outline: 5px dotted red;*/
     float: left;
-    height:inherit;
+    height: inherit;
     width: 30%;
     padding: inherit;
+    object-fit: contain;
 }
 
-.add-top-right {
-    outline: 5px dotted blue;
+.drink-details {
+    /*outline: 5px dotted blue;*/
     float: left;
     height: inherit;
     width: 70%;
@@ -68,22 +69,22 @@
 }
 
 .add-drink-bottom {
-    outline: 5px dotted red;
+    /*outline: 5px dotted red;*/
     height: 700px;
     padding-left: 50px;
     padding-right: 50px;
 }
 
-.add-bottom-left {
-    outline: 5px dotted green;
+.drink-instructions {
+    /*outline: 5px dotted green;*/
     float: left;
     height: inherit;
     width: 50%;
     padding: inherit;
 }
 
-.add-bottom-right {
-    outline: 5px dotted blue;
+.drink-ingredients {
+    /*outline: 5px dotted blue;*/
     float: left;
     height: inherit;
     width: 50%;
@@ -119,4 +120,16 @@
     left: 0;
     opacity: 0;
     cursor: pointer;
+}
+
+.img-container {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-height: inherit;
+    vertical-align: middle;
+    width: 100%;
+    height: 400px;
+    outline: 5px dotted red;
+    object-fit:contain;
 }

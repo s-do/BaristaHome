@@ -15,53 +15,42 @@
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
 </head>
+
 <body>
-    <!--Nav bar area-->
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
-            <div class="center">
-                <h1 class="title">Add new drink</h1>
-            </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="" asp-action="">Add</a>
-        </nav>
-    </header>
-
-    <div class = "add-drink-top">
-        <script>
-            var loadFile = function(event) {
-                var output = document.getElementById('output');
-                output.src = URL.createObjectURL(event.target.files[0]);
-                output.onload = function() {
-                    URL.revokeObjectURL(output.src) // free memory
-                }
-            };
-        </script>
-
-        <div class = "add-top-left">
-            <form method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
+                <div class="center">
+                    <h1 class="title">Add new drink</h1>
+                </div>
                 <div class="form-group">
-                    <label asp-for="DrinkImage">Image</label>
+                    <input type="submit" value="Save" class="pink-button-right" />
+                </div>
+            </nav>
+        </header>
+
+        <div class = "add-drink-top">
+
+            <div class = "drink-image">
+                <div class="form-group">
                     <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
                     <span asp-validation-for="DrinkImage" class="text-danger"></span>
                 </div>
-            </form>
-            <img id="output"/>
-            <script>
-                var loadFile = function(event) {
-                    var output = document.getElementById('output');
-                    output.src = URL.createObjectURL(event.target.files[0]);
-                    output.onload = function() {
-                        URL.revokeObjectURL(output.src) // free memory
-                    }
-                };
-            </script>
-        </div>
+                <img class="img-container" id="output"/>
+                <script>
+                    var loadFile = function(event) {
+                        var output = document.getElementById('output');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function() {
+                            URL.revokeObjectURL(output.src)
+                        }
+                    };
+                </script>
+            </div>
 
-        <div class = "add-top-right">
-            <form method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class = "drink-details">
                 <div class="form-group">
                     <label asp-for="DrinkName"></label>
                     <input asp-for="DrinkName" class="form-control" />
@@ -69,58 +58,45 @@
                 </div>
 
                 <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                  
+                </div>
+            </div>
+        </div>
+
+
+        <div class = "add-drink-bottom">
+            <div class = "drink-instructions">
+                <div class="form-group">
                     <label asp-for="Instructions"></label>
-                    <textarea class="form-control" aria-label="Instructions" rows = 10></textarea>
+                    <input asp-for="Instructions" class="form-control" />
                     <span asp-validation-for="Instructions" class="text-danger"></span>
                   
                 </div>
-            </form>
-        </div>
-    </div>
 
+            </div>
 
-    <div class = "add-drink-bottom">
-        <div class = "add-bottom-left">
+        @* <div class = "drink-ingredients">
+                <a>Ingredients</a>
+                <div class="form-group">
+                    <input asp-for="DrinkIngredients" class="form-control" />
+                    <span asp-validation-for="DrinkIngredients" class="text-danger"></span>
+                </div>
 
-        </div>
-        <div class = "add-bottom-right">
-
-        </div>
-    </div>
-
-
-    <!--
-    <div class="col-md-12">
-    <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="DrinkName"></label>
-            <input asp-for="DrinkName" class="form-control" />
-            <span asp-validation-for="DrinkName" class="text-danger"></span>
+            </div>*@
         </div>
 
-        <div class="form-group">
-            <label asp-for="Instructions"></label>
-            <input asp-for="Instructions" class="form-control" />
-            <span asp-validation-for="Instructions" class="text-danger"></span>
-        </div>
 
-        <div class="form-group">
-            <label asp-for="DrinkImage">Image</label>
-            <input asp-for="DrinkImage" class="form-control" />
-            <span asp-validation-for="DrinkImage" class="text-danger"></span>
-        </div>
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
     </form>
-    </div>
-    -->
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>
