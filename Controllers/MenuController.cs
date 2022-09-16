@@ -34,8 +34,8 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
         {
-            byte[] bytes = System.IO.File.ReadAllBytes(home.DrinkImage);
-            home.DrinkImageData = bytes;
+            //byte[] bytes = System.IO.File.ReadAllBytes(home.DrinkImage);
+            //home.DrinkImageData = bytes;
 
             if (ModelState.IsValid)
             {
@@ -46,20 +46,19 @@ namespace BaristaHome.Controllers
             ModelState.AddModelError(string.Empty, home.DrinkName);
             return View(home);
         }
-        public class Image
-        {
-            public int Id { get; set; }
-            public string ImageTitle { get; set; }
-            public byte[] ImageData { get; set; }
-        }
-        public class AppDbContext : DbContext
-        {
-            public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-            {
-            }
 
-            public DbSet<Image> Images { get; set; }
-        }
+/*        [HttpPost]
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home,HttpPostedFileBase file)
+        {
+            if (file.ContentLength > 0)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                var path = Path.Combine(Server.MapPath("~/App_Data/uploads"), fileName);
+                file.SaveAs(path);
+            }
+            return RedirectToAction("Menu");
+
+        }*/
 
 
     }
