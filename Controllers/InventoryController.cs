@@ -12,7 +12,7 @@ namespace BaristaHome.Controllers
     public class InventoryController : Controller
     {
 
-        private Data.BaristaHomeContext _context;
+        private readonly BaristaHomeContext _context;
 
         public InventoryController(BaristaHomeContext context)
         {
