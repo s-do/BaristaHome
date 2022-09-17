@@ -1,17 +1,21 @@
 ﻿@model BaristaHome.Models.User
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Index";
 }
+<p> 
+    <a asp-controller="Home" asp-action="Index">Return to Home</a>
+</p>
+<h1>Edit worker</h1>
+<p> name is:  @Model.FirstName @Model.LastName </p>
+<p>user Id is: @Model.UserId</p>
+<p>role Id is: @Model.RoleId</p>
 
-<h1>Create</h1>
-
-<h4>User</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserId" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -22,40 +26,35 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <span class="label"><label for="Photo">Photo: </label></span>
+                <asp:FileUpload ID="PhotoUpload" runat="server" />
             </div>
             <div class="form-group">
-                <label asp-for="InviteCode" class="control-label"></label>
-                <input asp-for="InviteCode" class="form-control" />
-                <span asp-validation-for="InviteCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{

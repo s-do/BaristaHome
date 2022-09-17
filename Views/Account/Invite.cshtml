@@ -1,0 +1,48 @@
+﻿
+@model BaristaHome.Models.User
+
+@{
+    ViewData["Title"] = "Invite An Employee";
+}
+
+<div>
+    <a asp-action="Index">Back to Workers</a>
+</div>
+
+<style>
+
+    .title{
+        font-size:30px;
+        font-weight: 500;
+        text-align:center;
+    }
+
+    .instructions {
+        text-align:center;
+    }
+
+    .invite-code {
+        text-align: center;
+        font-weight: 500;
+        font-size: 40px;
+    }
+
+</style>
+
+<body>
+    <p class= "title">Invite An Employee</p>
+    <p class= "instructions">When a user registers an account, they need to use the invite code below to be added to your store.</P>
+    <p class="invite-code"> @Model.InviteCode </p>
+
+   
+</body>
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

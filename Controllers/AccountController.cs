@@ -84,6 +84,8 @@ namespace BaristaHome.Controllers
                 register.Password = Crypto.HashPassword(register.Password);
                 _context.Add(register);
                 await _context.SaveChangesAsync();
+
+
                 return RedirectToAction("Login", "Account");
             }
             ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
@@ -110,16 +112,29 @@ namespace BaristaHome.Controllers
                                  where u.Email.Equals(user.Email)
                                  select u).FirstOrDefault();
 
+                
+
                 // validating password with email's hashed password with input password
                 if (validUser != null && Crypto.VerifyHashedPassword(validUser.Password, user.Password))
                 {
+
                     //A claim is a statement about a subject by an issuer and    
                     //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
                     var claims = new List<Claim>() {
                         new Claim("UserId", Convert.ToString(validUser.UserId)),
+                        new Claim("FirstName", Convert.ToString(validUser.FirstName)),
+                        new Claim("LastName", Convert.ToString(validUser.LastName)),
+                        new Claim("Password", Convert.ToString(validUser.Password)),
                         new Claim("Email", validUser.Email),
-                        new Claim("RoleId",  Convert.ToString(validUser.RoleId))}; // have to represent ints as strings i guess
+                        new Claim("RoleId",  Convert.ToString(validUser.RoleId)),
+                        new Claim("InviteCode", validUser.InviteCode),
+                        new Claim("StoreId", Convert.ToString(validUser.StoreId)),
+                        }; // have to represent ints as strings i guess
 
+                    if (validUser.UserImageData != null) { claims.Add(new Claim("UserImageData", Convert.ToString(validUser.UserImageData))); };
+                    if (validUser.UserImage != null) { claims.Add(new Claim("UserImage", Convert.ToString(validUser.UserImage))); };
+                    if (validUser.Color != null) { claims.Add(new Claim("Color", Convert.ToString(validUser.Color))); };
+                    
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
@@ -239,7 +254,38 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            //Get the list of all users
+            List<User>? list_of_users = await _context.User.ToListAsync();
+
+            //Create a new list to store users that belong to the current store
+            List<User> list_of_store_users = new List<User>();
+
+            //Get the current user (which should be the owner/admin)
+            var current_user = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            
+            //Get their invite code
+            string store_invite_code = current_user.InviteCode;
+
+            //Go through the list of all users
+            foreach (var u in list_of_users)
+            {
+                //And if their invite code is the same, add them to the new list
+                if(store_invite_code != null && u.InviteCode != null)
+                {
+                    if (u.InviteCode.Equals(store_invite_code))
+                    {
+                        list_of_store_users.Add(u);
+                    }
+                }
+
+            }
+            //Pass the list of store users to the view
+            return View(list_of_store_users);
+        }
+
+        public async Task<IActionResult> AccountProfile()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
         // GET: Account/Details/5
@@ -281,9 +327,9 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode")] User registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode,RoleId")] User registerViewModel)
         {
-            if (id != registerViewModel.UserId)
+            if (id.ToString().Equals(registerViewModel.UserId.ToString()))
             {
                 return NotFound();
             }
@@ -303,6 +349,21 @@ namespace BaristaHome.Controllers
                 try
                 {
                     registerViewModel.Password = Crypto.HashPassword(registerViewModel.Password);
+
+                    //Workers only allowed to edit certain attributes
+                    //Set the other attributes to the claim values, so that when we update the database, it doesn't become null
+                    registerViewModel.RoleId = Convert.ToInt32(User.FindFirstValue("RoleId"));
+                    registerViewModel.InviteCode = User.FindFirstValue("InviteCode");
+                    registerViewModel.StoreId = Convert.ToInt32(User.FindFirstValue("StoreId"));
+                    if(User.FindFirstValue("UserImage") != null)
+                    {
+                        registerViewModel.UserImage = User.FindFirstValue("UserImage");
+                    }
+                    if (User.FindFirstValue("UserImageData") != null) {
+                        registerViewModel.UserImageData = Encoding.ASCII.GetBytes(User.FindFirstValue("UserImageData"));
+                    }
+                    registerViewModel.Color = User.FindFirstValue("Color");
+
                     _context.Update(registerViewModel);
                     await _context.SaveChangesAsync();
                 }
@@ -317,7 +378,66 @@ namespace BaristaHome.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(registerViewModel);
+/*                return RedirectToAction(nameof(Index));*/
+            }
+            return View(registerViewModel);
+        }
+
+        public async Task<IActionResult> OwnerEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registerViewModel = await _context.User.FindAsync(id);
+            if (registerViewModel == null)
+            {
+                return NotFound();
+            }
+            return View(registerViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OwnerEdit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage")] User registerViewModel)
+        {
+            if (!id.ToString().Equals(registerViewModel.UserId.ToString()))
+            {
+                return NotFound();
+            }
+            
+            var existingEmail = (from u in _context.User
+                                 where u.Email.Equals(registerViewModel.Email) && !u.UserId.Equals(registerViewModel.UserId)
+                                 select u).FirstOrDefault();
+
+            if (existingEmail != null)
+            {
+                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
+                return View(registerViewModel);
+            }
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(registerViewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RegisterViewModelExists(registerViewModel.UserId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return View(registerViewModel);
+                /*                return RedirectToAction(nameof(Index));*/
             }
             return View(registerViewModel);
         }
@@ -355,5 +475,11 @@ namespace BaristaHome.Controllers
         {
             return _context.User.Any(e => e.UserId == id);
         }
+
+        public async Task<IActionResult> Invite()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
     }
 }
