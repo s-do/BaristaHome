@@ -241,7 +241,11 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
+            var userList = (IEnumerable<User>)from u in _context.User
+                                              orderby u.UserId descending
+                                              select u;
+            return View(userList);
         }
 
         // GET: Account/Details/5
@@ -283,7 +287,8 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode")] User registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color," +
+            "InviteCode,RoleId,StoreId,UserImageData,UserImage")] User registerViewModel)
         {
             if (id != registerViewModel.UserId)
             {
