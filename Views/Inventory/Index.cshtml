@@ -51,9 +51,9 @@
                         <span asp-validation-for="PricePerUnit" class="text-danger"></span>
                     </div>
                     <!-- TODO: FIGURE OUT A WAY TO DISPLAY DROPDOWN LIST OF UNITS -->
-@*                    <div class="form-group">
-                        @Html.DropDownList("Unit",ViewBag.Units as SelectList)
-                    </div>*@
+                   <div class="form-group">
+                        @Html.DropDownList("UnitList",(IEnumerable<SelectListItem>)ViewBag.UnitList,"Select Unit")
+                    </div>
 
                     <div class="modal-footer">
                         <div class="btn-group">

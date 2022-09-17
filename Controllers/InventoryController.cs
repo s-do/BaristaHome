@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Diagnostics;
+
+using System.Collections;
 
 namespace BaristaHome.Controllers
 {
@@ -23,20 +26,35 @@ namespace BaristaHome.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Units = new SelectList(_context.Unit.ToList(), "UnitName");
+            /*  ViewBag.Units = new SelectList(_context.Unit.ToList(), "UnitName");*/
 
+            List<Unit> uni = new List<Unit>();
+            uni = _context.Unit.ToList();
+
+            List<SelectListItem> Units = new List<SelectListItem>();
+            
+                /*new SelectListItem(){Text="Fluid Ounces",Value ="fl"}*/
+            foreach( var u in uni)
+            {
+                Units.Add(new SelectListItem
+                    {
+                        Text = u.UnitName,
+                        Value = u.UnitId.ToString()
+                    });
+            }
+
+            ViewBag.UnitList = Units;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Index([Bind("ItemName")] Item item, [Bind("Quantity,PricePerUnit")] InventoryItem inventory)
         {
-            
 
-            
 
 
             // TODO: POST THAT USER SELECTION AND PUT IT IN HERE
+         
             var unitId = (from u in _context.Unit
                           where u.UnitName.Equals("UsersSelectedUnitInput")
                           select u.UnitId).FirstOrDefault();
