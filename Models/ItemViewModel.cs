@@ -16,5 +16,7 @@ namespace BaristaHome.Models
 
         public string UnitName { get; set; }
 
+        public int? ItemId { get; set; }
+
     }
 }

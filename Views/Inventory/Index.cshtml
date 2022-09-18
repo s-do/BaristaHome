@@ -42,6 +42,12 @@
                         <td>
                             @item.PricePerUnit
                         </td>
+                        <td>
+                            @item.UnitName
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
+                        </td>
                     </tr>
                 }
             }
