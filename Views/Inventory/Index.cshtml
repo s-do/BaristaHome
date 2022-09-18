@@ -1,10 +1,53 @@
-﻿@model BaristaHome.Models.InventoryItem
+﻿@model BaristaHome.Models.ItemViewModel
 
 @{
     ViewData["Title"] = "Inventory Item";
 }
 
 <h1>Inventory List</h1>
+<!-- My scuffed attempt to display items of a store I DON'T KNOW HOW TO FORMAT THINGS TO BE C  OO  L AND  CL  E A N-->
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePerUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            // https://stackoverflow.com/questions/57727635/how-to-pass-selected-query-list-using-viewbag i used this link to display list of store's items
+            var inventoryList = ViewBag.Inventory == null ? new List<ItemViewModel>() : (List<ItemViewModel>)ViewBag.Inventory;
+            if (inventoryList.Any())
+            {
+                foreach (var item in inventoryList)
+                {
+                    <tr>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.Quantity
+                        </td>
+                        <td>
+                            @item.PricePerUnit
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
 
 @* Import bootstrap for modal (Need more research on why these ones are used)*@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -35,8 +78,8 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label>Item Name</label>
-                        <input asp-for="Item.ItemName" class="form-control" />
-                        <span asp-validation-for="Item.ItemName" class="text-danger"></span>
+                        <input asp-for="Name" class="form-control" style="text-transform:lowercase" /> 
+                        <span asp-validation-for="Name" class="text-danger" ></span>
                     </div>
 
                     <div class="form-group">
@@ -51,9 +94,18 @@
                         <span asp-validation-for="PricePerUnit" class="text-danger"></span>
                     </div>
                     <!-- TODO: FIGURE OUT A WAY TO DISPLAY DROPDOWN LIST OF UNITS -->
-                   <div class="form-group">
+                   @*<div class="form-group">
                         @Html.DropDownList("UnitList",(IEnumerable<SelectListItem>)ViewBag.UnitList,"Select Unit")
-                    </div>
+                    </div>*@
+
+                    <label>Unit</label>
+                    <!-- Hardcoded list of units, I can't think of how to do dropdown lists of dynamic data (Items with infinitely 
+                        many items you can add in) as opposed to static ones like unit where we set only 3-->
+                    <select asp-for="UnitName" class="form-control">
+                        <option value="oz">oz</option>
+                        <option value="fl oz">fl oz</option>
+                        <option value="count">count</option>
+                    </select>
 
                     <div class="modal-footer">
                         <div class="btn-group">
