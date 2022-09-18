@@ -64,8 +64,20 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(ItemViewModel item)
+        public async Task<IActionResult> Index(ItemViewModel itemViewModel)
         {
+            List<ItemViewModel> itemQuery = (from store in _context.Store
+                                             join inventory in _context.InventoryItem on store.StoreId equals inventory.StoreId // link store and inventoryitem by storeid
+                                             join item in _context.Item on inventory.ItemId equals item.ItemId                  // link inventoryitem and item by itemid
+                                             where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))       // filter items by user's store
+                                             select new ItemViewModel
+                                             {
+                                                 Name = item.ItemName,                  // now we can send a 
+                                                 Quantity = inventory.Quantity,         // ItemViewModel object
+                                                 PricePerUnit = inventory.PricePerUnit  // to the view
+                                             }).ToList();
+            ViewBag.Inventory = itemQuery;
+
             // Look at our properties for ItemViewModel.cs under the Models folder, you can see how I use ViewModels to generate a view to input
             // those fields so I can validate it existing in the actual database tables in the controller here
 
@@ -73,12 +85,12 @@ namespace BaristaHome.Controllers
             {
                 // Get the id of the unit name         
                 var unitId = (from u in _context.Unit
-                              where u.UnitName.Equals(item.UnitName)
+                              where u.UnitName.Equals(itemViewModel.UnitName)
                               select u.UnitId).FirstOrDefault();
 
                 // Now check if the item name exists in the database
                 var existingItem = (from i in _context.Item
-                                    where i.ItemName.Equals(item.Name)
+                                    where i.ItemName.Equals(itemViewModel.Name)
                                     select i).FirstOrDefault();
 
                 if (existingItem != null)
@@ -91,7 +103,7 @@ namespace BaristaHome.Controllers
                     if (existingInventoryItem != null)
                     {
                         ModelState.AddModelError(string.Empty, "You already have this item in your inventory! Use Edit to change the quantity instead.");
-                        return View(item); // We can sort of fix this later, the error above pops up when you reopen the modal (i don't know how to send the view back with it still open)
+                        return View(itemViewModel); // We can sort of fix this later, the error above pops up when you reopen the modal (i don't know how to send the view back with it still open)
                     }
 
                     // Alright so if the item exists in Item but it isn't inside InventoryItem yet, instantiate a new InventoryItem with the inputted fields and Add()
@@ -99,8 +111,8 @@ namespace BaristaHome.Controllers
                     {
                         ItemId = existingItem.ItemId,
                         StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value),
-                        Quantity = item.Quantity,
-                        PricePerUnit = item.PricePerUnit
+                        Quantity = itemViewModel.Quantity,
+                        PricePerUnit = itemViewModel.PricePerUnit
                     };
                     _context.Add(inventoryItem);
                     await _context.SaveChangesAsync();
@@ -111,7 +123,7 @@ namespace BaristaHome.Controllers
                     // existingItem is null, so we add it into the Item table
                     var newItem = new Item()
                     {
-                        ItemName = item.Name,
+                        ItemName = itemViewModel.Name,
                         UnitId = unitId
                     };
                     _context.Add(newItem);
@@ -122,8 +134,8 @@ namespace BaristaHome.Controllers
                     {
                         ItemId = newItem.ItemId, // The new item id we just added into the database
                         StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value),
-                        Quantity = item.Quantity,
-                        PricePerUnit = item.PricePerUnit
+                        Quantity = itemViewModel.Quantity,
+                        PricePerUnit = itemViewModel.PricePerUnit
                     };
                     _context.Add(inventoryItem);
                     await _context.SaveChangesAsync();
