@@ -56,6 +56,8 @@ namespace BaristaHome.Data
 
             builder.Entity<Sale>().Property(table => table.UnitsSold).HasPrecision(16, 2);
             builder.Entity<Sale>().Property(table => table.Profit).HasPrecision(16, 2);
+
+            builder.Entity<User>().Property(table => table.Wage).HasPrecision(16, 2);
         }
 
         // Data models to represent the database for querying/data manipulation

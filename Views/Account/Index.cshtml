@@ -23,9 +23,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -42,11 +39,7 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @if (item.RoleId == (1)) { <p>Worker</p>}
-                 else { <p>Owner</p>}
-            </td>
-            <td>
-                <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a> |
+                <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
             </td>

@@ -13,7 +13,16 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Must input ALL columns for any Model table or else when posting, these unchanged columns (that have data in them) turn NULL-->
             <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Color" />
+            <input type="hidden" asp-for="InviteCode" />
+            <input type="hidden" asp-for="RoleId" />
+            <input type="hidden" asp-for="StoreId" />
+            <input type="hidden" asp-for="UserImageData" />
+            <input type="hidden" asp-for="UserImage" />
+            <input type="hidden" asp-for="Wage" />
+            <input type="hidden" asp-for="UserDescription" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />

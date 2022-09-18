@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220915115852_ChangeStoreNameLength")]
+    partial class ChangeStoreNameLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -521,20 +523,12 @@ namespace BaristaHome.Migrations
                     b.Property<int?>("StoreId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserDescription")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.Property<string>("UserImage")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
                     b.Property<byte[]>("UserImageData")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<decimal?>("Wage")
-                        .HasPrecision(16, 2)
-                        .HasColumnType("decimal(16,2)");
 
                     b.HasKey("UserId");
 

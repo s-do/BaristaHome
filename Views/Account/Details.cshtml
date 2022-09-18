@@ -28,25 +28,6 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Role)
-        </dt>
-        <dd class = "col-sm-10">
-            @if (Model.RoleId == (1))
-            {
-                <p>Worker</p>
-            }
-            else
-            {
-                <p>Owner</p>
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Color)
-        </dd>
     </dl>
 </div>
 <div>

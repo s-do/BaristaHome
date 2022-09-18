@@ -169,10 +169,10 @@ namespace BaristaHome.Controllers
             }
             return View(user);
         }
-          
-        
+     
 
         [HttpGet]
+        [AllowAnonymous]
         // Displays the Register Store View
         public IActionResult AdminRegister()
         {
@@ -180,6 +180,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminRegister([Bind("StoreId, StoreName, StoreInviteCode")] Store store, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User admin)
         {
             Random RNG = new Random();
@@ -254,38 +255,11 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            //Get the list of all users
-            List<User>? list_of_users = await _context.User.ToListAsync();
-
-            //Create a new list to store users that belong to the current store
-            List<User> list_of_store_users = new List<User>();
-
-            //Get the current user (which should be the owner/admin)
-            var current_user = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
-            
-            //Get their invite code
-            string store_invite_code = current_user.InviteCode;
-
-            //Go through the list of all users
-            foreach (var u in list_of_users)
-            {
-                //And if their invite code is the same, add them to the new list
-                if(store_invite_code != null && u.InviteCode != null)
-                {
-                    if (u.InviteCode.Equals(store_invite_code))
-                    {
-                        list_of_store_users.Add(u);
-                    }
-                }
-
-            }
-            //Pass the list of store users to the view
-            return View(list_of_store_users);
-        }
-
-        public async Task<IActionResult> AccountProfile()
-        {
-            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+            // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
+            var userList = (IEnumerable<User>)from u in _context.User
+                                              orderby u.UserId descending
+                                              select u;
+            return View(userList);
         }
 
         // GET: Account/Details/5
@@ -327,7 +301,8 @@ namespace BaristaHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode,RoleId")] User registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color," +
+            "InviteCode,RoleId,StoreId,UserImageData,UserImage")] User registerViewModel)
         {
             if (id.ToString().Equals(registerViewModel.UserId.ToString()))
             {
@@ -384,84 +359,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        public async Task<IActionResult> OwnerEdit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registerViewModel = await _context.User.FindAsync(id);
-            if (registerViewModel == null)
-            {
-                return NotFound();
-            }
-            return View(registerViewModel);
-        }
-
-        /* I don't know if you were planning to keep your code in this controller and view, or move it to your own. If it was the latter, then I don't know why you didn't
-         * do that in the first place so you don't CONFLICT my code in the main branch. So, here's an explanation of why it's important to organize where 
-         * our controllers and views go. When you click the button Workers, what does the link on top of the address say? It should say something like 
-         * https://localhost:6969/Account/Index right? And when we edit a worker, it says something like https://localhost:7187/Account/OwnerEdit/35, so we can see how
-         * our controllers and views have their names in the links. However, do these address links logically reflect the task that we're doing here? 
-         * We're trying to edit certain things of our workers right, (Wage, Description, Role), so our naming convention for our controller should reflect that. 
-         * It's why Alex initially setup all those different controllers and view for us, so we can keep our code organized. So when we edit workers, we should see an
-         * address link look like https://localhost:6969/WorkerManagment/Index and we can achieve this by keeping our code under the WorkerManagement controller
-         * (probably rename it to Worker instead so the link looks more like https://localhost:6969/Worker/Index). You can see how the syntax of the links is like this:
-         * https://localhost:6969/ControllerName/ActionMethodName and in your view folder it's the same name as your action method (as return Ciew() tries to look for 
-         * the corresponding method's view based on the name). And obviously, you can see how keeping code with the same methods in the same controller can cause problems.
-         * You inevitably conflict with my code in the main branch. Whose Edit() function is going to be used under the Account folder? Yours or mine? This is why we 
-         * separate into different controllers, for different actions. Sure the methodology is the same, but your Edit() function edits a User's Wage, Description, and RoleId.
-         * My Edit() function is supposed to edit FirstName, LastName, Email, and Password. So yeah, you need to move your stuff to your own controller, and basically fix
-           our AccountController.cs (just copy the code from the main branch) because merging your work here will cause some bad conflicts when merging. */
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerEdit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage")] User worker)
-        {
-            // let's also keep the variable naming convention consistent (use camel case), as well as update it to something meaningful reflecting the action method
-            if (!id.ToString().Equals(worker.UserId.ToString())) 
-            {
-                return NotFound();
-            }
-
-            // don't need this query, this is dealing with changing an email of a user (owners don't do that, users do)
-            /*var existingEmail = (from u in _context.User
-                                 where u.Email.Equals(registerViewModel.Email) && !u.UserId.Equals(registerViewModel.UserId)
-                                 select u).FirstOrDefault();
-
-            if (existingEmail != null)
-            {
-                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
-                return View(registerViewModel);
-            }*/
-            
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(worker);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RegisterViewModelExists(worker.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                //return View(worker); <-- this is basically saying "hey i want to return the view with the inputted values i already put in
-                return RedirectToAction(nameof(Index)); // what you want to do instead is go back a page after successfully editing a worker, so that's why i kept this
-            }
-            ModelState.AddModelError(string.Empty, "There was an error editing this worker.");
-            return View(worker); // if it fails, you can add a model error like so above and return the view with the changed input still there because we passed in worker
-        }
-
-        // GET: Account/Delete/5
+        // GET: Account/Delete/UserId
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -479,7 +377,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // POST: Account/Delete/5
+        // POST: Account/Delete/UserId
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

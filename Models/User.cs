@@ -38,6 +38,10 @@ namespace BaristaHome.Models
 
         public byte[]? UserImageData { get; set; }
 
+        public decimal? Wage { get; set; }
+
+        [StringLength(256)]
+        public string? UserDescription { get; set; }
 
         // Relationships
         public int? RoleId { get; set; }
