@@ -1,0 +1,86 @@
+﻿@model IEnumerable<BaristaHome.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@*index page for worker controller*@
+<h1>Workers</h1>
+
+<p>
+    <a asp-controller="Worker" asp-action="Invite">Invite</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @if (item.RoleId == (1))
+                    {
+                        <p>Worker</p>
+                    }
+                    else
+                    {
+                        <p>Owner</p>
+                    }
+                </td>
+                <td>
+                    @if (item.RoleId == (1))
+                    {
+                        <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
+                    }
+                    else
+                    {
+                        <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
+                    }
+                     |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Using this as a way to get info on the user that's logged in-->
+@*<h2>Confidential Data</h2>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <table class="table table-bordered">
+        @foreach (var claim in User.Claims)
+        {
+            <tr><td>@claim.Type</td><td>@claim.Value</td></tr>
+        }
+    </table>
+
+}
+*@

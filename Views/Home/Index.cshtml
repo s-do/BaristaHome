@@ -25,11 +25,11 @@
             <!--Using Claims to display different views based on user's role-->
             @if (User.FindFirst("RoleId").Value.Equals("1")) // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
             {
-                <a class="nav-link pink-button-right" asp-area="" asp-controller="Account" asp-action="AccountProfile" >Account</a>
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Worker" asp-action="WorkerEdit" >Account</a>
             }
             else
             {
-                <a class="nav-link pink-button-right" asp-area="" asp-controller="Account" asp-action="Index">Workers</a>
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Worker" asp-action="Index">Workers</a>
             }
 
         </nav>

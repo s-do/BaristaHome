@@ -4,11 +4,10 @@
 @{
     ViewData["Title"] = "Invite An Employee";
 }
-
+@*Invite page, worker controller
+*@
 <div>
-    <a asp-action="Index">Back to Workers</a>
-    <p> </p>
-
+    <a asp-controller = "Worker" asp-action="Index">Back to Workers</a>
 </div>
 
 <style>
@@ -32,10 +31,9 @@
 </style>
 
 <body>
-    <p> THE WRONG INVITE PAGE FROM ACCOUNTCONTROLLER</p>
     <p class= "title">Invite An Employee</p>
-    <p class= "instructions">When a user registers an account, they can use the invite code below to be added to your store.</P>
-
+    <p class= "instructions">When a user registers an account, they need to use the invite code below to be added to your store.</P>
+    <p class="invite-code"> @Model.InviteCode </p>
 
    
 </body>
