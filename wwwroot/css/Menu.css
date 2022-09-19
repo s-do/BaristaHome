@@ -133,3 +133,8 @@
     outline: 5px dotted red;
     object-fit:contain;
 }
+
+input[type=text] {
+    border: 2px solid red;
+    border-radius: 4px;
+}

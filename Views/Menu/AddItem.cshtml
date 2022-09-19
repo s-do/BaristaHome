@@ -35,8 +35,8 @@
 
             <div class = "drink-image">
                 <div class="form-group">
-                    <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImageData" class="form-control" />
-                    <span asp-validation-for="DrinkImageData" class="text-danger"></span>
+                    <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
+                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
                 </div>
                 <img class="img-container" id="output"/>
                 <script>
@@ -59,7 +59,7 @@
 
                 <div class="form-group">
                     <label asp-for="Description"></label>
-                    <input asp-for="Description" class="form-control" />
+                    <input type="textarea" asp-for="Description" class="form-control" />
                     <span asp-validation-for="Description" class="text-danger"></span>
                   
                 </div>

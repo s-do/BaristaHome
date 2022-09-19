@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using BaristaHome.Data;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace BaristaHome.Controllers
 {
@@ -31,11 +33,40 @@ namespace BaristaHome.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        /*        [HttpPost]
+                public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
+                {
+                    //byte[] bytes = System.IO.File.ReadAllBytes(home.DrinkImage);
+                    //home.DrinkImageData = bytes;
+
+                    if (ModelState.IsValid)
+                    {
+                        _context.Add(home);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Menu", "Menu");
+                    }
+                    ModelState.AddModelError(string.Empty, home.DrinkName);
+                    return View(home);
+                }*/
+
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
+        public async Task<IActionResult> AddItem(List<IFormFile> files, [Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
         {
-            //byte[] bytes = System.IO.File.ReadAllBytes(home.DrinkImage);
-            //home.DrinkImageData = bytes;
+            files.Count();
+            foreach (IFormFile file in files)
+            {
+                if (file.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        home.DrinkImageData = fileBytes;
+                        string s = Convert.ToBase64String(fileBytes);
+                        home.DrinkImage = s;
+                    }
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -45,20 +76,8 @@ namespace BaristaHome.Controllers
             }
             ModelState.AddModelError(string.Empty, home.DrinkName);
             return View(home);
+
         }
-
-/*        [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home,HttpPostedFileBase file)
-        {
-            if (file.ContentLength > 0)
-            {
-                var fileName = Path.GetFileName(file.FileName);
-                var path = Path.Combine(Server.MapPath("~/App_Data/uploads"), fileName);
-                file.SaveAs(path);
-            }
-            return RedirectToAction("Menu");
-
-        }*/
 
 
     }
