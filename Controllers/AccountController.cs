@@ -39,16 +39,6 @@ namespace BaristaHome.Controllers
             return View();
         }
 
-        // Displays the Register store view
-        public IActionResult RegisterStore()
-        {
-            Random RNG = new Random();
-            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var code = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
-            ViewBag.StoreInviteCode = new string(code.ToArray());
-            return View();
-        }
-
         // POST: Account/Register
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -61,6 +51,7 @@ namespace BaristaHome.Controllers
             register.RoleId = 1;
             if (ModelState.IsValid)
             {
+                //checks if entered in email already exists or not
                 var existingEmail = (from u in _context.User
                                      where u.Email.Equals(register.Email)
                                      select u).FirstOrDefault();
@@ -70,6 +61,24 @@ namespace BaristaHome.Controllers
                     ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
                     return View(register);
                 }
+
+                //checks if entered in invite code exists
+                var existingInvite = (from u in _context.Store
+                         where u.StoreInviteCode.Equals(register.InviteCode)
+                         select u).FirstOrDefault();
+                if (existingInvite == null)
+                {
+                    ModelState.AddModelError(string.Empty, "No store is associated with this invite code. Please use an existing one.");
+                    return View(register);
+                }
+                else
+                {
+                    var existingStore = (from u in _context.Store
+                                         where u.StoreInviteCode.Equals(register.InviteCode)
+                                         select u.StoreId).FirstOrDefault();
+                    register.StoreId = existingStore;
+                }
+
 
                 // hashing password (salt is also applied)
                 register.Password = Crypto.HashPassword(register.Password);
@@ -85,6 +94,8 @@ namespace BaristaHome.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated) 
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -105,9 +116,10 @@ namespace BaristaHome.Controllers
                     //A claim is a statement about a subject by an issuer and    
                     //represent attributes of the subject that are useful in the context of authentication and authorization operations.    
                     var claims = new List<Claim>() {
-                    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(validUser.UserId)),
-                        new Claim(ClaimTypes.Email, validUser.Email),
-                        };
+                        new Claim("UserId", Convert.ToString(validUser.UserId)),
+                        new Claim("Email", validUser.Email),
+                        new Claim("RoleId",  Convert.ToString(validUser.RoleId)),
+                        new Claim("StoreId", Convert.ToString(validUser.StoreId))}; // have to represent ints as strings i guess
 
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -133,22 +145,90 @@ namespace BaristaHome.Controllers
                     // The time at which the authentication ticket was issued.
 
                             
-                    // The full path or absolute URI to be used as an http 
-                    // redirect response value.
+                    // To do these add a new AuthenticationProperties() { PropertyName = Value }, you can add this as an argument in SignInAsync()
 
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, 
-                    new AuthenticationProperties()
-                    {
-                        IsPersistent = user.RememberMe,
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
-                    });
-                    return Redirect(ReturnUrl == null ? "/Account/Index" : ReturnUrl);
-                    //return RedirectToAction("Index", "Account");
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    // return Redirect(ReturnUrl == null ? "/Home/Index" : ReturnUrl);
+                    return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Email or Password is Incorrect");
             }
             return View(user);
+        }
+     
+
+        [HttpGet]
+        [AllowAnonymous]
+        // Displays the Register Store View
+        public IActionResult AdminRegister()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminRegister([Bind("StoreId, StoreName, StoreInviteCode")] Store store, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId")] User admin)
+        {
+            Random RNG = new Random();
+            const string range = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+            string code = new string(randomCode.ToArray());
+
+            //Makes sure the code does not already exist in the database
+            var existingStoreInviteCode = (from u in _context.Store
+                                           where u.StoreInviteCode.Equals(code)
+                                           select u).FirstOrDefault();
+
+            while (existingStoreInviteCode != null)
+            {
+                RNG = new Random();
+                randomCode = Enumerable.Range(0, 5).Select(x => range[RNG.Next(0, range.Length)]);
+                code = new string(randomCode.ToArray());
+                existingStoreInviteCode = (from u in _context.Store
+                                           where u.StoreInviteCode.Equals(code)
+                                           select u).FirstOrDefault();
+            }
+
+            store.StoreInviteCode = code;
+            _context.Add(store);
+            await _context.SaveChangesAsync();
+
+            admin.InviteCode = code;
+            admin.Color = "#000000";
+            admin.RoleId = 2;
+            
+            if (ModelState.IsValid)
+            {
+                var existingEmail = (from u in _context.User
+                                     where u.Email.Equals(admin.Email)
+                                     select u).FirstOrDefault();
+
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account already exists under this email! Please use a different one.");
+                    return View(admin);
+                }
+
+                var existingStoreId = (from u in _context.Store
+                                       where u.StoreInviteCode.Equals(code)
+                                       select u.StoreId).FirstOrDefault();
+                admin.StoreId = existingStoreId;
+
+                // hashing password (salt is also applied)
+                admin.Password = Crypto.HashPassword(admin.Password);
+                _context.Add(admin);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Login", "Account");
+            }
+            ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
+            return View();
+        }
+
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Account");
         }
 
         /*
@@ -161,7 +241,11 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
+            var userList = (IEnumerable<User>)from u in _context.User
+                                              orderby u.UserId descending
+                                              select u;
+            return View(userList);
         }
 
         // GET: Account/Details/5
@@ -178,23 +262,11 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
-            byte[] array = Convert.FromBase64String(registerViewModel.Password);
-            if (array.Length != 49 || array[0] != 0)
-            {
-                Console.WriteLine("i guess the if statement passed");
-                return View();
-            }
-
-            byte[] array2 = new byte[16];
-            Buffer.BlockCopy(array, 1, array2, 0, 16);
-            byte[] array3 = new byte[32];
-            Buffer.BlockCopy(array, 17, array3, 0, 32);
-            Console.WriteLine(System.Text.Encoding.Default.GetString(array3));
 
             return View(registerViewModel);
         }
 
-        // GET: Account/Edit/5
+        // GET: Account/Edit/UserId
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -210,12 +282,13 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // POST: Account/Edit/5
+        // POST: Account/Edit/UserId (overload method)
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,InviteCode")] User registerViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color," +
+            "InviteCode,RoleId,StoreId,UserImageData,UserImage")] User registerViewModel)
         {
             if (id != registerViewModel.UserId)
             {
@@ -256,7 +329,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // GET: Account/Delete/5
+        // GET: Account/Delete/UserId
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -274,7 +347,7 @@ namespace BaristaHome.Controllers
             return View(registerViewModel);
         }
 
-        // POST: Account/Delete/5
+        // POST: Account/Delete/UserId
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

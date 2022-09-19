@@ -3,15 +3,24 @@ using BaristaHome.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Cookie authentication to allow logged in users to use the app
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/Login";
+});
+
+// Claim-based authorization to allow certain roles to access certain features
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+                      policy.RequireClaim("RoleId", "2", "3")); // Requiring RoleId claim of value 2 (Owner) or 3 (Manager)
 });
 
 // Registering the database context from part 4: Add a model

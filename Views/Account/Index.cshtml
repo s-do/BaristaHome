@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -37,9 +34,6 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
@@ -49,6 +43,7 @@
     </tbody>
 </table>
 
+<!-- Using this as a way to get info on the user that's logged in-->
 <h2>Confidential Data</h2>
 
 @if (User.Identity.IsAuthenticated)
@@ -58,5 +53,6 @@
             <tr><td>@claim.Type</td><td>@claim.Value</td></tr>
         }
     </table>
+
 }
 

@@ -7,18 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\.vs\**" />
     <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\images\.vs\**" />
     <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\images\.vs\**" />
     <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\images\.vs\**" />
     <None Remove="wwwroot\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\images\.vs\VSWorkspaceState.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.18.0" />
     <PackageReference Include="Microsoft.AspNet.WebHelpers" Version="3.2.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -35,11 +34,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\.vs\images\v17\" />
-    <Folder Include="wwwroot\NewFolder1\" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\images\.vs\slnx.sqlite" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using BaristaHome.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BaristaHome.Controllers
 {
+    [Authorize]
     public class MenuController : Controller
     {
         private readonly BaristaHomeContext _context;

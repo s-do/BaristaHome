@@ -1,6 +1,6 @@
 ﻿@model BaristaHome.Models.User
 @{
-    ViewData["Title"] = "User Registration";
+    ViewData["Title"] = "Admin Registration";
     
 }
 <link rel="stylesheet" href="~/css/register.css">
@@ -9,13 +9,20 @@
 <div class="border">
     <div class="center">
         <h1>Welcome to BaristaHome!</h1>
-        <h3>Create your account by filling the information below.</h3>
+        <h3>Create your admin account by filling the information below.</h3>
     </div>
 
     <div class="row">
         <div class="col-md-12">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="form-group">
+                    <label asp-for="Store.StoreName"></label>
+                    <input asp-for="Store.StoreName" class="form-control" />
+                    <span asp-validation-for="Store.StoreName" class="text-danger"></span>
+                </div>
+
                 <div class="form-group">
                     <label asp-for="FirstName"></label>
                     <input asp-for="FirstName" class="form-control" />
@@ -44,12 +51,6 @@
                     <label asp-for="ConfirmPassword"></label>
                     <input asp-for="ConfirmPassword" class="form-control" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="InviteCode"></label>
-                    <input asp-for="InviteCode" class="form-control" style="text-transform:lowercase" />
-                    <span asp-validation-for="InviteCode" class="text-danger"></span>
                 </div>
 
                 <div class="btn-float-right">

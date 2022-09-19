@@ -56,6 +56,8 @@ namespace BaristaHome.Data
 
             builder.Entity<Sale>().Property(table => table.UnitsSold).HasPrecision(16, 2);
             builder.Entity<Sale>().Property(table => table.Profit).HasPrecision(16, 2);
+
+            builder.Entity<User>().Property(table => table.Wage).HasPrecision(16, 2);
         }
 
         // Data models to represent the database for querying/data manipulation
@@ -72,6 +74,7 @@ namespace BaristaHome.Data
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Sale> Sale { get; set; }
+        public DbSet<Shift> Shift { get; set; }
         public DbSet<ShiftStatus> ShiftStatus { get; set; }
         public DbSet<Store> Store { get; set; }
         public DbSet<StoreTask> StoreTask { get; set; }
