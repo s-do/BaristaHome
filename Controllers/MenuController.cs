@@ -52,9 +52,13 @@ namespace BaristaHome.Controllers
                 }*/
 
         [HttpPost]
-        public async Task<IActionResult> AddItem(List<IFormFile> files, [Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage")] Drink home)
         {
-            files.Count();
+            if (home.DrinkImage != null || home.DrinkImageData != null)
+            {
+                Console.WriteLine();
+            }
+/*            files.Count();
             foreach (IFormFile file in files)
             {
                 if (file.Length > 0)
@@ -68,7 +72,7 @@ namespace BaristaHome.Controllers
                         home.DrinkImage = s;
                     }
                 }
-            }
+            }*/
 
             if (ModelState.IsValid)
             {

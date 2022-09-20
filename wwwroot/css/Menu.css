@@ -142,11 +142,11 @@
     object-fit:contain;
 }
 
-input[type=textarea] {
+/*input[type=textarea] {
     height: 150px;
 }
 
 #Instructions {
     height: 300px;
-}
+}*/
 

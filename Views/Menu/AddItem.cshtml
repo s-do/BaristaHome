@@ -36,13 +36,15 @@
             <div class = "drink-image">
                 @*Dynamic Image*@
                 <label class="img-container" for="file-input">
-                    <img class="img-container" for="file-input" src="../images/plus.png" id="output">
+                    <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output">
                 </label>
                 @*Image file input*@
                 <div class="form-group">
+                    <label asp-for="DrinkImage"></label>
                     <input type="file" id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
                     <span asp-validation-for="DrinkImage" class="text-danger"></span>
                 </div>
+
                 @*Script for the dynamic image*@
                 <script>
                     var loadFile = function(event) {
@@ -56,15 +58,15 @@
             </div>
             @*Drink name and description*@
             <div class = "drink-details">
+
                 <div class="form-group">
                     <label asp-for="DrinkName"></label>
                     <input asp-for="DrinkName" class="form-control" />
                     <span asp-validation-for="DrinkName" class="text-danger"></span>
                 </div>
-
                 <div class="form-group">
                     <label asp-for="Description"></label>
-                    <input type="textarea" asp-for="Description" class="form-control" />
+                    <textarea type="input" rows="5" asp-for="Description" class="form-control"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                   
                 </div>
@@ -81,7 +83,7 @@
             <div class = "drink-instructions">
                 <div class="form-group">
                     <label asp-for="Instructions"></label>
-                    <input type="textarea" asp-for="Instructions" class="form-control" />
+                    <textarea type="input" row="5" asp-for="Instructions" class="form-control"></textarea>
                     <span asp-validation-for="Instructions" class="text-danger"></span>
                   
                 </div>
