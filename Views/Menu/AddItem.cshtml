@@ -34,11 +34,16 @@
         <div class = "add-drink-top">
 
             <div class = "drink-image">
+                @*Dynamic Image*@
+                <label class="img-container" for="file-input">
+                    <img class="img-container" for="file-input" src="../images/plus.png" id="output">
+                </label>
+                @*Image file input*@
                 <div class="form-group">
-                    <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
+                    <input type="file" id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
                     <span asp-validation-for="DrinkImage" class="text-danger"></span>
                 </div>
-                <img class="img-container" id="output"/>
+                @*Script for the dynamic image*@
                 <script>
                     var loadFile = function(event) {
                         var output = document.getElementById('output');
@@ -49,7 +54,7 @@
                     };
                 </script>
             </div>
-
+            @*Drink name and description*@
             <div class = "drink-details">
                 <div class="form-group">
                     <label asp-for="DrinkName"></label>
@@ -63,15 +68,20 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                   
                 </div>
+                @*Drink tags*@
+                <a>Tags</a>
+                <div class = "drink-tags">
+
+                </div>
             </div>
         </div>
 
-
+        @*Drink instrunctions and ingredients*@
         <div class = "add-drink-bottom">
             <div class = "drink-instructions">
                 <div class="form-group">
                     <label asp-for="Instructions"></label>
-                    <input asp-for="Instructions" class="form-control" />
+                    <input type="textarea" asp-for="Instructions" class="form-control" />
                     <span asp-validation-for="Instructions" class="text-danger"></span>
                   
                 </div>

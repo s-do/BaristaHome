@@ -68,6 +68,14 @@
     padding: inherit;
 }
 
+.drink-tags {
+    outline: 5px dotted blue;
+    float: left;
+    height: 40%;
+    width: 100%;
+    padding: inherit;
+}
+
 .add-drink-bottom {
     /*outline: 5px dotted red;*/
     height: 700px;
@@ -130,11 +138,15 @@
     vertical-align: middle;
     width: 100%;
     height: 400px;
-    outline: 5px dotted red;
+    /*outline: 5px dotted red;*/
     object-fit:contain;
 }
 
-input[type=text] {
-    border: 2px solid red;
-    border-radius: 4px;
+input[type=textarea] {
+    height: 150px;
 }
+
+#Instructions {
+    height: 300px;
+}
+
