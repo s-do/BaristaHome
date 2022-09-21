@@ -36,7 +36,7 @@ namespace BaristaHome.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            //Get the list of all users
+            /*//Get the list of all users
             List<User>? listOfUsers = await _context.User.ToListAsync();
 
             //Create a new list to store users that belong to the current store
@@ -62,7 +62,23 @@ namespace BaristaHome.Controllers
 
             }
             //Pass the list of store users to the view
-            return View(listOfStoreUsers);
+            return View(listOfStoreUsers);*/
+
+            // you could simply use a LINQ query to display all workers inside a specific store using the storeid claim instead of using the invite code
+            var workerList = (from u in _context.User
+                              where u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value) // Selecting very user with that storeid
+                              orderby u.RoleId descending, u.FirstName // Order by the roles in alphabetical order
+                              select u) as IEnumerable<User>;
+
+            // A cool way to do a LINQ query asynchronously instead! I still don't understand when to use 
+            // asynchronous and synchronous queries, best thing people said was it helps with a more responsive UI
+            var workers = await _context.User
+                            .Where(u => u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value))
+                            .OrderByDescending(u => u.RoleId)
+                            .ThenBy(u => u.FirstName)
+                            .ToListAsync();
+
+            return View(workers);
         }
 
         public async Task<IActionResult> WorkerEdit()
@@ -153,18 +169,8 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerEdit( [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
+        public async Task<IActionResult> OwnerEdit(User worker)
         {
-            
-            var existingEmail = (from u in _context.User
-                                 where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
-                                 select u).FirstOrDefault();
-
-            if (existingEmail != null)
-            {
-                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
-                return View(worker);
-            }
             
             if (ModelState.IsValid)
             {
@@ -177,7 +183,7 @@ namespace BaristaHome.Controllers
                 {
                     throw;
                 }
-                return View(worker);
+                return RedirectToAction(nameof(Index));
             }
             return View(worker);
         }

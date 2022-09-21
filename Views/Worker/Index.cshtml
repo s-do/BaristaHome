@@ -43,9 +43,13 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @if (item.RoleId == (1))
+                    @if (item.RoleId == 1)
                     {
                         <p>Worker</p>
+                    }
+                    else if (item.RoleId == 2)
+                    {
+                        <p>Manager</p>
                     }
                     else
                     {
@@ -53,13 +57,13 @@
                     }
                 </td>
                 <td>
-                    @if (item.RoleId == (1))
+                    @if (item.RoleId == 3)
                     {
-                        <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
+                        <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
                     }
                     else
                     {
-                        <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
+                        <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
                     }
                      |
                     <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |

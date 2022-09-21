@@ -62,12 +62,20 @@
                 <span asp-validation-for="UserDescription" class="text-danger"></span>
             </div>
             
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="RoleId" class="control-label"></label>
                 <input asp-for="RoleId" class="form-control">
                 <span asp-validation-for="RoleId" class="text-danger"></span>
             </div>
-            <p>To change the role, enter "1" for Worker. Enter any other positive integer for Owner level access.</p>
+            <p>To change the role, enter "1" for Worker. Enter any other positive integer for Owner level access.</p>*@
+
+            <div class="form-group">
+                <label class="control-label">Role</label>
+                <select asp-for="RoleId" class="form-control">
+                    <option value="1">Worker</option>
+                    <option value="2">Manager</option>
+                </select>
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

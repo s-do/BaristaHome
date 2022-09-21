@@ -21,7 +21,6 @@
             <input type="hidden" asp-for="LastName" />
             <input type="hidden" asp-for="Email" />
             <input type="hidden" asp-for="Password" />
-            <input type="hidden" asp-for="RoleId" />
             <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
             <div class="form-group">
                 <label asp-for="Color" class="control-label"></label>
@@ -30,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Wage" class="control-label"></label>
-                <input asp-for="Wage" class="form-control" />
+                <input asp-for="Wage" type="number" min="0" max="999" step=".01" class="form-control" />
                 <span asp-validation-for="Wage" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,11 +39,12 @@
             </div>
             
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <input asp-for="RoleId" class="form-control">
-                <span asp-validation-for="RoleId" class="text-danger"></span>
+                <label class="control-label">Role</label>
+                <select asp-for="RoleId" class="form-control">
+                    <option value="1">Worker</option>
+                    <option value="2">Manager</option>
+                </select>
             </div>
-            <p>To change the role, enter "1" for Worker. Enter any other positive integer for Owner level access.</p>
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
