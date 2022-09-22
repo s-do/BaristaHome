@@ -28,18 +28,23 @@
     </header>
 
     <div align="center">
+        @*For search bar and filters button*@
         <div class="search">
 
         </div>
 
+        @*Display Drinks*@
         <div class="drinks">
             @foreach (var item in Model) {
                 <div class="drink-item">
+                    @*Drink Name*@
                     <div class="drink-name">
                         @Html.DisplayFor(modelItem => item.DrinkName)
                     </div>
+                    @*Drink image*@
                     <div class="drink-icon">
                         @Html.DisplayFor(modelItem => item.DrinkImageData)
+                        @*Display default icon if drink has no image*@
                         @if(item.DrinkImageData ==null)
                         {
                             <img class="contain" src="../images/calendar.png">
@@ -47,6 +52,7 @@
                     </div>
                 </div>
             }
+            @*Add Drink Button*@
             <a class="nav-link drink-item" asp-area="" asp-controller="menu" asp-action="AddItem">
                 <img src="../images/plus.png" style="width: 50px;height: 50px;object-fit: contain;">
             </a>
