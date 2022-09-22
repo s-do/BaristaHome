@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<BaristaHome.Models.Drink>
+@{
     ViewData["Title"] = "Menu";
     Layout = null;
 }
@@ -25,6 +26,32 @@
             <a class="nav-link pink-button-right" asp-area="" asp-controller="Menu" asp-action="AddItem">Add Item</a>
         </nav>
     </header>
+
+    <div align="center">
+        <div class="search">
+
+        </div>
+
+        <div class="drinks">
+            @foreach (var item in Model) {
+                <div class="drink-item">
+                    <div class="drink-name">
+                        @Html.DisplayFor(modelItem => item.DrinkName)
+                    </div>
+                    <div class="drink-icon">
+                        @Html.DisplayFor(modelItem => item.DrinkImageData)
+                        @if(item.DrinkImageData ==null)
+                        {
+                            <img class="contain" src="../images/calendar.png">
+                        }
+                    </div>
+                </div>
+            }
+            <a class="nav-link drink-item" asp-area="" asp-controller="menu" asp-action="AddItem">
+                <img src="../images/plus.png" style="width: 50px;height: 50px;object-fit: contain;">
+            </a>
+        </div>
+    </div>
 
 
     <footer class="border-top footer text-muted">

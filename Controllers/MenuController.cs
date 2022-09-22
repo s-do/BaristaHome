@@ -19,10 +19,10 @@ namespace BaristaHome.Controllers
         {
             _context = context;
         }
-        public IActionResult Menu()
+/*        public IActionResult Menu()
         {
             return View();
-        }
+        }*/
 
         public IActionResult Additem()
         {
@@ -48,6 +48,18 @@ namespace BaristaHome.Controllers
             ModelState.AddModelError(string.Empty, home.DrinkName);
             return View(home);
 
+        }
+
+        // GET: Drink
+        [HttpGet]
+        public async Task<IActionResult> Menu()
+        {
+            // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
+            var drinkList = (IEnumerable<Drink>)from d in _context.Drink
+                                              orderby d.DrinkId descending
+                                              select d;
+
+            return View(drinkList);
         }
 
 

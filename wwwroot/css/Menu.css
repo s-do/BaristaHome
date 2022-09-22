@@ -106,29 +106,6 @@
     align-items: center;
     justify-content: center;
 }
-.file-upload {
-    height: 200px;
-    width: 200px;
-    border-radius: 100px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 4px solid #FFFFFF;
-    overflow: hidden;
-    background-image: linear-gradient(to bottom, #2590EB 50%, #FFFFFF 50%);
-    background-size: 100% 200%;
-    transition: all 1s;
-    color: #FFFFFF;
-    font-size: 100px;
-    input [type='file'] height: 200px;
-    width: 200px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    cursor: pointer;
-}
 
 .img-container {
     justify-content: center;
@@ -144,5 +121,61 @@
 
 #Instructions, #DrinkName, #Description, #DrinkIngredients {
     border: 3px solid #DFB3D3;
+}
+
+.search {
+    outline: 5px dotted blue;
+    height: 200px;
+    width: 75%;
+    align-self:center;
+    margin-bottom:50px;
+}
+
+.drinks {
+    outline: 5px dotted red;
+    width: 75%;
+    min-height: auto;
+    overflow:auto;
+}
+
+.drink-item {
+    background-color: white;
+    border: 5px solid #ffdcf4;
+    position: relative;
+    margin-top: 2%;
+    margin-bottom: 2%;
+/*    margin-right: 2%;*/
+    margin-left: 4%;
+    float: left;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    padding: 6px;
+    color: black;
+    text-align: center;
+    font-size: 40px;
+    font-family: 'Inter';
+    box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.contain {
+    width: inherit;
+    height: inherit;
+    object-fit: contain;
+}
+
+.drink-icon {
+    width: 170px;
+    height: 170px;
+    align-self: flex-start;
+    position: absolute;
+}
+
+.drink-name {
+    margin-top: 160px;
+    font-size: 15px;
 }
 
