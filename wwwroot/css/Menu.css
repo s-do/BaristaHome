@@ -71,7 +71,7 @@
 .drink-tags {
     outline: 5px dotted blue;
     float: left;
-    height: 40%;
+    height: 30%;
     width: 100%;
     padding: inherit;
 }
@@ -92,7 +92,7 @@
 }
 
 .drink-ingredients {
-    /*outline: 5px dotted blue;*/
+   /* outline: 5px dotted blue;*/
     float: left;
     height: inherit;
     width: 50%;
@@ -142,11 +142,7 @@
     object-fit:contain;
 }
 
-/*input[type=textarea] {
-    height: 150px;
+#Instructions, #DrinkName, #Description, #DrinkIngredients {
+    border: 3px solid #DFB3D3;
 }
-
-#Instructions {
-    height: 300px;
-}*/
 

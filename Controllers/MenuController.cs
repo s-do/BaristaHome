@@ -35,45 +35,10 @@ namespace BaristaHome.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        /*        [HttpPost]
-                public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImage")] Drink home)
-                {
-                    //byte[] bytes = System.IO.File.ReadAllBytes(home.DrinkImage);
-                    //home.DrinkImageData = bytes;
-
-                    if (ModelState.IsValid)
-                    {
-                        _context.Add(home);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction("Menu", "Menu");
-                    }
-                    ModelState.AddModelError(string.Empty, home.DrinkName);
-                    return View(home);
-                }*/
 
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage")] Drink home)
         {
-            if (home.DrinkImage != null || home.DrinkImageData != null)
-            {
-                Console.WriteLine();
-            }
-/*            files.Count();
-            foreach (IFormFile file in files)
-            {
-                if (file.Length > 0)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        home.DrinkImageData = fileBytes;
-                        string s = Convert.ToBase64String(fileBytes);
-                        home.DrinkImage = s;
-                    }
-                }
-            }*/
-
             if (ModelState.IsValid)
             {
                 _context.Add(home);
