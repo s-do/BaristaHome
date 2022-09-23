@@ -36,7 +36,7 @@
         @*Display Drinks*@
         <div class="drinks">
             @foreach (var item in Model) {
-                <div class="drink-item">
+                <a asp-action="Drink" asp-route-id="@item.DrinkId" class="drink-item">
                     @*Drink Name*@
                     <div class="drink-name">
                         @Html.DisplayFor(modelItem => item.DrinkName)
@@ -50,7 +50,7 @@
                             <img class="contain" src="../images/calendar.png">
                         }
                     </div>
-                </div>
+                </a>
             }
             @*Add Drink Button*@
             <a class="nav-link drink-item" asp-area="" asp-controller="menu" asp-action="AddItem">
