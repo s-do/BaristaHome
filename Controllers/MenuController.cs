@@ -62,6 +62,24 @@ namespace BaristaHome.Controllers
             return View(drinkList);
         }
 
+        // GET: Drink Details
+        public async Task<IActionResult> Drink(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var drink = await _context.Drink
+                .FirstOrDefaultAsync(m => m.DrinkId == id);
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            return View(drink);
+        }
+
 
     }
 }
