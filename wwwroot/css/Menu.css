@@ -179,3 +179,10 @@
     font-size: 15px;
 }
 
+.text-display {
+    background-color: #F3CD95;
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+}
+

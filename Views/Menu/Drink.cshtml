@@ -1,5 +1,111 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model BaristaHome.Models.Drink
+
 @{
+    ViewData["Title"] = "Drink";
+    Layout = null;
 }
+
+@*<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DrinkName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DrinkName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Instructions)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Instructions)
+        </dd>
+</div>
+<div>
+    <a asp-action="Menu">Back to List</a>
+</div>*@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+
+<body>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
+                <div class="center">
+                    <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Edit" class="pink-button-right" />
+                </div>
+            </nav>
+        </header>
+
+        <div class = "add-drink-top">
+
+            <div class = "drink-image">
+               
+            </div>
+            @*Drink name and description*@
+            <div class = "drink-details">
+                @Html.DisplayNameFor(model => model.DrinkName)
+                <div class="text-display">
+
+                </div>
+                @Html.DisplayNameFor(model => model.Description)
+                <div class="text-display" style="height: 150px;"">
+
+                </div>
+                @*Drink tags*@
+                <a>Tags</a>
+                <div class = "drink-tags">
+
+                </div>
+            </div>
+        </div>
+
+        @*Drink instrunctions and ingredients*@
+        <div class = "add-drink-bottom">
+            <div class = "drink-instructions">
+                
+
+            </div>
+
+         <div class = "drink-ingredients">
+              
+
+            </div>
+        </div>
+
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </form>
+</body>
+</html>
+
+
