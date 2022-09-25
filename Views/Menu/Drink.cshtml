@@ -27,14 +27,14 @@
                 <div class="center">
                     <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
                 </div>
-                <a class="nav-link pink-button-right" asp-area="" asp-controller="menu" asp-action="EditItem">Edit</a>
+                <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
             </nav>
         </header>
 
         <div class = "add-drink-top">
 
             <div class = "drink-image">
-               
+                @Html.DisplayFor(model => model.DrinkImageData)
             </div>
             @*Drink name and description*@
             <div class = "drink-details">

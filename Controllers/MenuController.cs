@@ -102,9 +102,34 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
-        public IActionResult Edititem()
+        public async Task<IActionResult> EditItem(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var drink = await _context.Drink
+                .FirstOrDefaultAsync(m => m.DrinkId == id);
+            if (drink == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<Tag> drinkTagQuery = (from d in _context.Drink
+                                           join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                           join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                           where d.DrinkId == drink.DrinkId
+                                           /*join item in _context.Item on inventory.ItemId equals item.ItemId  */
+                                           select new Tag
+                                           {
+                                               TagName = tag.TagName
+                                           }).ToList();
+                ViewBag.DrinkTagList = drinkTagQuery;
+            }
+
+            return View(drink);
         }
 
 
