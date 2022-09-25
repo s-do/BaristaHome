@@ -123,7 +123,7 @@
     border: 3px solid #DFB3D3;
 }
 
-.search {
+.searchFilter {
     outline: 5px dotted blue;
     height: 200px;
     width: 75%;
@@ -188,5 +188,24 @@
     padding-top: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
+}
+
+
+/*Add tag button design*/
+.addTag {
+    border: 2px solid;
+    background-color: #FFD9F4;
+    /*color: black;*/
+    /*padding: 14px 28px;*/
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;
+}
+
+/*Add tag button hover*/
+.addTag:hover {
+    background-color: #DFB3D3;
+    color: black;
 }
 

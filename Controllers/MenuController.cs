@@ -54,10 +54,19 @@ namespace BaristaHome.Controllers
         [HttpGet]
         public async Task<IActionResult> Menu()
         {
+            // Used to get drink list
             // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
             var drinkList = (IEnumerable<Drink>)from d in _context.Drink
                                               orderby d.DrinkId descending
                                               select d;
+
+            // To get tags from database
+            List<Tag> tagQuery = (from tag in _context.Tag
+                                      select new Tag
+                                      { 
+                                          TagName = tag.TagName
+                                      }).ToList();
+            ViewBag.TagList = tagQuery;
 
             return View(drinkList);
         }
@@ -75,6 +84,19 @@ namespace BaristaHome.Controllers
             if (drink == null)
             {
                 return NotFound();
+            }
+            else
+            {
+                List<Tag> drinkTagQuery = (from d in _context.Drink
+                                      join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                      join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                      where d.DrinkId == drink.DrinkId
+                                      /*join item in _context.Item on inventory.ItemId equals item.ItemId  */
+                                      select new Tag
+                                      {
+                                          TagName = tag.TagName
+                                      }).ToList();
+                ViewBag.DrinkTagList = drinkTagQuery;
             }
 
             return View(drink);
