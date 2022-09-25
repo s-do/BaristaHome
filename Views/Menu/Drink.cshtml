@@ -53,9 +53,7 @@
                 <div class="center">
                     <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Edit" class="pink-button-right" />
-                </div>
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="menu" asp-action="EditItem">Edit</a>
             </nav>
         </header>
 
@@ -68,11 +66,11 @@
             <div class = "drink-details">
                 @Html.DisplayNameFor(model => model.DrinkName)
                 <div class="text-display">
-
+                    @Html.DisplayFor(model => model.DrinkName)
                 </div>
                 @Html.DisplayNameFor(model => model.Description)
-                <div class="text-display" style="height: 150px;"">
-
+                <div class="text-display" style="height: 150px;">
+                    @Html.DisplayFor(model => model.Description)
                 </div>
                 @*Drink tags*@
                 <a>Tags</a>
@@ -85,12 +83,18 @@
         @*Drink instrunctions and ingredients*@
         <div class = "add-drink-bottom">
             <div class = "drink-instructions">
-                
+                <a>Instructions</a>
+                <div class="text-display" style="height: 150px">
+                    @Html.DisplayFor(model => model.Instructions)
+                </div>
 
             </div>
 
          <div class = "drink-ingredients">
-              
+                <a>Ingredients</a>
+                <div class="text-display" style="height: 150px;">
+
+                </div>
 
             </div>
         </div>

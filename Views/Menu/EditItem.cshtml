@@ -1,0 +1,113 @@
+﻿@model BaristaHome.Models.Drink
+@{
+    ViewData["Title"] = "Edit Item";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+
+<body>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
+                <div class="center">
+                    <h1 class="title">Add new drink</h1>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="pink-button-right" />
+                </div>
+            </nav>
+        </header>
+
+        <div class = "add-drink-top">
+
+            <div class = "drink-image">
+                @*Image file input*@
+                <div class="form-group">
+                    <label asp-for="DrinkImage"></label>
+                    <input type="file" id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
+                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
+                </div>
+                @*Dynamic Image*@
+                <label class="img-container" for="file-input">
+                    <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                </label>
+                @*Script for the dynamic image*@
+                <script>
+                    var loadFile = function(event) {
+                        var output = document.getElementById('output');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function() {
+                            URL.revokeObjectURL(output.src)
+                        }
+                    };
+                </script>
+            </div>
+            @*Drink name and description*@
+            <div class = "drink-details">
+
+                <div class="form-group">
+                    <label asp-for="DrinkName"></label>
+                    <input asp-for="DrinkName" class="form-control" />
+                    <span asp-validation-for="DrinkName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <textarea type="input" rows="5" asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                  
+                </div>
+                @*Drink tags*@
+                <a>Tags</a>
+                <div class = "drink-tags">
+
+                </div>
+            </div>
+        </div>
+
+        @*Drink instrunctions and ingredients*@
+        <div class = "add-drink-bottom">
+            <div class = "drink-instructions">
+                <div class="form-group">
+                    <label asp-for="Instructions"></label>
+                    <textarea type="input" rows="10" asp-for="Instructions" class="form-control"></textarea>
+                    <span asp-validation-for="Instructions" class="text-danger"></span>
+                  
+                </div>
+
+            </div>
+
+         <div class = "drink-ingredients">
+                <div class="form-group">
+                    <label asp-for="DrinkIngredients">Ingredients</label>
+                    <textarea type="input" rows="10" asp-for="DrinkIngredients" class="form-control"></textarea>
+                    <span asp-validation-for="DrinkIngredients" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </form>
+</body>
+</html>

@@ -80,6 +80,11 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
+        public IActionResult Edititem()
+        {
+            return View();
+        }
+
 
     }
 }

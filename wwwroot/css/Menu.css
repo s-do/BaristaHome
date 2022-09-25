@@ -181,8 +181,12 @@
 
 .text-display {
     background-color: #F3CD95;
-    height: 50px;
+    height: 45px;
     width: 100%;
     border-radius: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
 }
 
