@@ -37,7 +37,7 @@
         <div class="searchFilter">
             <div class="filter">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                <button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModalCenter">
                   Filters
                 </button>
 
@@ -52,18 +52,19 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                          @foreach (var drink in Model) {
-                            <a asp-action="Tag" asp-route-id="@drink.DrinkTags">
-                                <div>
-                                    @Html.DisplayFor(modelItem => drink.DrinkTags)
-                                </div>
-                            </a>
-                          }                       
+                          @{
+                              var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
+
+                              if(myList.Any()) {
+                                 foreach(var t in myList) {
+                                     <button type="button" class="btn addTag">@t.TagName</button>
+                                 }
+                              }
+                            }                      
                                                  
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Select</button>
+                        <button type="button" class="btn addTag">Select</button>
                       </div>
                     </div>
                   </div>
