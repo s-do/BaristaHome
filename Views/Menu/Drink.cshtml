@@ -5,32 +5,6 @@
     Layout = null;
 }
 
-@*<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DrinkName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DrinkName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Instructions)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Instructions)
-        </dd>
-</div>
-<div>
-    <a asp-action="Menu">Back to List</a>
-</div>*@
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -75,15 +49,7 @@
                 @*Drink tags*@
                 <a>Tags</a>
                 <div class = "drink-tags">
-                    @{
-                        var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
 
-                        if(myList.Any()) {
-                            foreach(var t in myList) {
-                                <button type="button" class="btn addTag">@t.TagName</button>
-                            }
-                        }
-                    }
                 </div>
             </div>
         </div>
