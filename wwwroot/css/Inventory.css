@@ -46,6 +46,30 @@ body {
 }
 
 
-.table:nth-of-type(odd) {
+.table-inventory th {
+    background-color: #ffffff;
+}
+
+.table-inventory tr:nth-of-type(odd) {
     background-color: #f0ecec;
 }
+.table-inventory tr:nth-of-type(even) {
+    background-color: #ffffff;
+}
+.table-inventory{
+    width:96%;
+    margin-left:auto;
+}
+.table-inventory th{
+    padding:20px;
+}
+.table-inventory td{
+    padding:20px;
+}
+
+
+.table-inventory th:last-child,td:last-child{
+    background:#ffe4bc;
+    width:5%;
+}
+
