@@ -28,6 +28,10 @@
                     <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
                 </div>
                 <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
+                <input type="hidden" asp-for="@Model.DrinkId" />
+                <form asp-action="Delete">
+                    <input type="submit" value="Delete" class="pink-button-right" />
+                </form>
             </nav>
         </header>
 
