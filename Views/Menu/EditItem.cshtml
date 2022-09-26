@@ -19,13 +19,13 @@
 <body>
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <!-- Must input ALL columns for any Model table or else when posting, these unchanged columns (that have data in them) turn NULL-->
+        <!-- Binding Data-->
         <input type="hidden" asp-for="DrinkId" />
-        <input type="hidden" asp-for="DrinkName" />
+@*        <input type="hidden" asp-for="DrinkName" />
         <input type="hidden" asp-for="Description" />
         <input type="hidden" asp-for="Instructions" />
         <input type="hidden" asp-for="DrinkImageData" />
-        <input type="hidden" asp-for="DrinkImage" />
+        <input type="hidden" asp-for="DrinkImage" />*@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
@@ -35,6 +35,9 @@
                 <div class="form-group">
                     <input type="submit" value="Save" class="pink-button-right" />
                 </div>
+                <form asp-action="Delete">
+                    <input type="submit" value="Delete" class="pink-button-right" />
+                </form>
             </nav>
         </header>
 

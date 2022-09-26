@@ -102,6 +102,7 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
+        // GET: Drink Details
         public async Task<IActionResult> EditItem(int? id)
         {
             if (id == null)
@@ -130,6 +131,44 @@ namespace BaristaHome.Controllers
             }
 
             return View(drink);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage")] Drink drink)
+        {
+            var existingDrink = (from d in _context.Drink
+                                 where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
+                                 select d).FirstOrDefault();
+
+            if (existingDrink != null)
+            {
+                ModelState.AddModelError(string.Empty, "Drink name in use");
+                return View(drink);
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(drink);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction("Menu", "Menu");
+            }
+            return View(drink);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var registerViewModel = await _context.Drink.FindAsync(id);
+            _context.Drink.Remove(registerViewModel);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Menu", "Menu");
         }
 
 
