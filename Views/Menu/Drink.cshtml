@@ -53,7 +53,15 @@
                 @*Drink tags*@
                 <a>Tags</a>
                 <div class = "drink-tags">
+                    @{
+                        var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
 
+                        if(myList.Any()) {
+                            foreach(var t in myList) {
+                                <button type="button" class="btn addTag">@t.TagName</button>
+                            }
+                        }
+                    }
                 </div>
             </div>
         </div>
