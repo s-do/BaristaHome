@@ -21,6 +21,8 @@ namespace BaristaHome.Models
         public byte[] DrinkImageData { get; set; }
 
         // Relationships 
+        public int StoreId { get; set; }
+        public virtual Store? Store { get; set; }
         public virtual ICollection<DrinkIngredient>? DrinkIngredients { get; set; }
         public virtual ICollection<DrinkTag>? DrinkTags { get; set; }
 
