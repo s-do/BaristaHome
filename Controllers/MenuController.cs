@@ -165,11 +165,16 @@ namespace BaristaHome.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (id == 0)
+            {
+                return NotFound();
+            }
             var registerViewModel = await _context.Drink.FindAsync(id);
             _context.Drink.Remove(registerViewModel);
             await _context.SaveChangesAsync();
             return RedirectToAction("Menu", "Menu");
         }
+
 
 
     }

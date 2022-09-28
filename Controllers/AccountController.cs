@@ -337,8 +337,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var registerViewModel = await _context.User
-                .FirstOrDefaultAsync(m => m.UserId == id);
+            var registerViewModel = await _context.User.FirstOrDefaultAsync(m => m.UserId == id);
             if (registerViewModel == null)
             {
                 return NotFound();
