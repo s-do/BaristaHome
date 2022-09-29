@@ -37,16 +37,16 @@ namespace BaristaHome.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage")] Drink home)
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId")] Drink drink)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(home);
+                _context.Add(drink);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Menu", "Menu");
             }
-            ModelState.AddModelError(string.Empty, home.DrinkName);
-            return View(home);
+            ModelState.AddModelError(string.Empty, drink.DrinkName);
+            return View(drink);
 
         }
 
@@ -134,7 +134,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage")] Drink drink)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId")] Drink drink)
         {
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
