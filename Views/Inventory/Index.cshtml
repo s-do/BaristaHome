@@ -150,19 +150,22 @@
                         <input asp-for="PricePerUnit" class="form-control" />
                         <span asp-validation-for="PricePerUnit" class="text-danger"></span>
                     </div>
-                    <!-- TODO: FIGURE OUT A WAY TO DISPLAY DROPDOWN LIST OF UNITS -->
-                   @*<div class="form-group">
-                        @Html.DropDownList("UnitList",(IEnumerable<SelectListItem>)ViewBag.UnitList,"Select Unit")
-                    </div>*@
+                    
+                    <div class="form-control">
+                        <label class="control-label">Unit Name</label>
+                        <select asp-for="UnitName" class="form-control" asp-items="ViewBag.UnitName"></select>
+                    </div>
 
-                    <label>Unit</label>
+@*                    <label>Unit</label>*@
+
                     <!-- Hardcoded list of units, I can't think of how to do dropdown lists of dynamic data (Items with infinitely 
                         many items you can add in) as opposed to static ones like unit where we set only 3-->
-                    <select asp-for="UnitName" class="form-control">
+
+@*                    <select asp-for="UnitName" class="form-control">
                         <option value="oz">oz</option>
                         <option value="fl oz">fl oz</option>
                         <option value="count">count</option>
-                    </select>
+                    </select>*@
 
                     <div class="modal-footer">
                         <div class="btn-group">

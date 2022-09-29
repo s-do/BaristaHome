@@ -42,28 +42,9 @@ namespace BaristaHome.Controllers
                                                     ItemId = inventory.ItemId
                                              }).ToList();
             ViewBag.Inventory = itemQuery;
+            ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
             return View();
 
-
-            /*  ViewBag.Units = new SelectList(_context.Unit.ToList(), "UnitName");*//*
-
-            List<Unit> uni = new List<Unit>();
-            uni = _context.Unit.ToList();
-
-            List<SelectListItem> Units = new List<SelectListItem>();
-            
-                *//*new SelectListItem(){Text="Fluid Ounces",Value ="fl"}*//*
-            foreach( var u in uni)
-            {
-                Units.Add(new SelectListItem
-                    {
-                        Text = u.UnitName,
-                        Value = u.UnitId.ToString()
-                    });
-            }
-
-            ViewBag.UnitList = Units;
-            return View();*/
         }
 
         [HttpPost]
@@ -109,6 +90,7 @@ namespace BaristaHome.Controllers
 
                     if (existingInventoryItem != null)
                     {
+                        ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
                         ModelState.AddModelError(string.Empty, "You already have this item in your inventory! Use Edit to change the quantity instead.");
                         return View(itemViewModel); // We can sort of fix this later, the error above pops up when you reopen the modal (i don't know how to send the view back with it still open)
                     }
@@ -149,35 +131,10 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction("Index", "Inventory"); // new InventoryItem should be successfully added into the user's store
             }
+            ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
             ModelState.AddModelError(string.Empty, "There was an issue adding this item into your inventory.");
             return View();
 
-            // old code you can delete or save for reference ig
-
-            /*// First add the new item into the Item db
-            _context.Add(item);
-            // _context.SaveChanges();
-            await _context.SaveChangesAsync(); // use this to save changes to the db instead, so the method pauses until this task completes
-
-            if (ModelState.IsValid)
-            {
-                // Get the item id so we can save this InventoryItem to it's repsective store
-                var itemId = (from i in _context.Item
-                              where i.ItemName.Equals(item.ItemName)
-                              select i.ItemId).FirstOrDefault();
-
-                // Add the item id to the InventoryItem object
-                inventory.ItemId = itemId;
-                // Now the StoreId, you can find the StoreId of the current logged in user by using this line
-                inventory.StoreId = Convert.ToInt16(User.FindFirst("StoreId").Value);
-
-                // Now we add the InventoryItem to the database with the correct reference to the store it belongs to and the item it's named
-                _context.Add(inventory);
-                await _context.SaveChangesAsync();
-                // return RedirectToAction("Index"); <-- the syntax of this method is RedirectToAction("ActionName", "ControllerName");
-
-                return View();
-            }*/
 
         }
 
