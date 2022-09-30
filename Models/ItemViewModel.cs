@@ -18,5 +18,7 @@ namespace BaristaHome.Models
 
         public int? ItemId { get; set; }
 
+        public string? searchPhrase { get; set; }
+
     }
 }

@@ -32,6 +32,26 @@
         </nav>
     </header>
 
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="searchPhrase" class="mytext" />
+                    <span asp-validation-for="searchPhrase" class="text-danger"></span>
+                </div>
+
+                <div class="btn-float-right">
+                    <div class="form-group">
+                        <input type="submit" value="Register" class="btn btn-primary" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!--New Item Button, Button that activates the pop up Modal--> 
     <p>
         <div>
@@ -111,8 +131,8 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="center">
-                                                    <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
                                                     <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ItemId">Edit</a>
+                                                    <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
