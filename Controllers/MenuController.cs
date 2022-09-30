@@ -42,7 +42,6 @@ namespace BaristaHome.Controllers
         {
             /*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
                         drink.StoreId = storeId;*/
-            var z = drink.DrinkImageData;
             if (drink.Image != null)
             {
                 using (var ms = new MemoryStream())
@@ -153,7 +152,7 @@ namespace BaristaHome.Controllers
 
         //Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId")] Drink drink)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
         {
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
@@ -163,6 +162,16 @@ namespace BaristaHome.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Drink name in use");
                 return View(drink);
+            }
+
+            if (drink.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    drink.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    drink.DrinkImageData = fileBytes;
+                }
             }
 
             if (ModelState.IsValid)
