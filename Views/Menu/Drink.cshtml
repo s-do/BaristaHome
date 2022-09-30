@@ -36,9 +36,25 @@
     </header>
 
     <div class = "add-drink-top">
-
+        
+        @*Drink Image*@
+        <div>
+            <p>Drink Image</p>
+        </div>
         <div class = "drink-image">
-            @Html.DisplayFor(model => model.DrinkImageData)
+            @*<img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" style="background-color: white; border: 3px solid #DFB3D3"/>*@
+             @*Dynamic Image*@
+            <label class="img-container">
+                @if(Model.DrinkImageData == null)
+                {
+                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3">
+                }
+                else
+                {
+                    <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" style="background-color: white; border: 3px solid #DFB3D3"/>
+                }
+            </label>
+
         </div>
         @*Drink name and description*@
         <div class = "drink-details">
