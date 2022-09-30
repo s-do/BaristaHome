@@ -77,12 +77,11 @@
                     </div>
                   </div>
                 </div>*@
-
-                <form asp-action="Menu">
-                    <div>
-                    <label>Filter</label>
-                     @*displays all the tags in the database*@
-                    <select id="multipleSelect" name="tagList" class="form-control" asp-items="ViewBag.Tags" multiple></select>
+                <div>
+                    <form asp-action="Menu">
+                    @*<label>Filter</label>*@
+                    @*displays all the tags in the database*@
+                    <select id="multipleSelect" name="tagLine" class="form-control" asp-items="ViewBag.Tags" multiple required></select>
                     <div class="form-group">
                         <input type="submit" class="btn" value="Submit">
                     </div>
@@ -104,8 +103,9 @@
                     </select>*@
                     @*<input type="button" id="btnGetTags" value="Click me to Get Selected Skill(s)" /> *@
 
+                
+                    </form>
                 </div>
-                </form>
                 
 
             </div>

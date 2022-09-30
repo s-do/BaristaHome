@@ -71,6 +71,7 @@ namespace BaristaHome.Controllers
                               join d in _context.Drink on s.StoreId equals d.StoreId
                               join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
                               join t in _context.Tag on dt.TagId equals t.TagId
+                              where s.StoreId == storeId // forgot to filter by the user's store 
                               select t);
             ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
             /*List<Tag> tagQuery = (from tag in _context.Tag
@@ -80,17 +81,37 @@ namespace BaristaHome.Controllers
                                   }).ToList();
             ViewBag.TagList = tagQuery;*/
 
-            return View();
+            return View(drinkList);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Menu(IEnumerable<Tag> tagList)
+        public async Task<IActionResult> Menu(string tagLine)
         {
-            foreach(var tag in tagList)
-            {
-                Console.WriteLine(tag.ToString());
-            }
-            return View(tagList);
+            var watch = new Stopwatch();
+            watch.Start();
+
+            // Converting the x,y,z,... string to an int list
+            List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
+
+            // I took god knows how long to figure out this query :DDDDfdiodfgijoiodfjgdf 
+            var filteredDrinks = (from dt in _context.DrinkTag
+                             .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
+                             join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
+                             select d).Distinct();                                    // ensure distinct drinks to prevent multiple same objs
+
+            // Recreating viewbag to display store's filters/tags again
+            var tags = (IEnumerable<Tag>)(from s in _context.Store
+                                          join d in _context.Drink on s.StoreId equals d.StoreId
+                                          join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                          join t in _context.Tag on dt.TagId equals t.TagId
+                                          where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                          select t);
+            ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
+
+            watch.Stop();
+            Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms... woew that's fast :p");
+
+            return View(filteredDrinks);
             
         }
 
