@@ -32,7 +32,7 @@
         </nav>
     </header>
 
-    <!--New Item Button-->
+    <!--New Item Button, Button that activates the pop up Modal--> 
     <p>
         <div>
             <div class="btn-float-right" style="background-color:#ffdcf4">
@@ -83,23 +83,43 @@
             {
                 foreach (var item in inventoryList)
                 {
-                    <tr>
-                        <td>
-                            @item.Name
-                        </td>
-                        <td>
-                            @item.Quantity
-                        </td>
-                        <td>
-                            @item.PricePerUnit
-                        </td>
-                        <td>
-                            @item.UnitName
-                        </td>
-                        <td>
-                            <a asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                @item.Quantity
+                            </td>
+                            <td>
+                                @item.PricePerUnit
+                            </td>
+                            <td>
+                                @item.UnitName
+                            </td>
+                            <td>
+                                <a class="img-size" data-toggle="modal" data-target="#editModal" >
+                                    <img src="../images/editButton.png">
+                                </a>
+                                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="center">
+                                                    <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
+                                                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ItemId">Edit</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                 }
             }
         }
@@ -114,10 +134,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
 
-
-
-
-@* Code for the modal pop up *@
+@* Code for the modal pop up of New Item *@
 <div class="modal fade" id="inventoryModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -126,12 +143,6 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    @*<label>Item ID</label>
-                    @Html.TextBoxFor(m=>m.ItemId , new{@class="form-control"})
-                    <label>Quantity</label>
-                    @Html.TextBoxFor(m=>m.Quantity, new{@class="form-control"})
-                    <label>Price Per Unit</label>
-                    @Html.TextBoxFor(m=>m.PricePerUnit, new{@class="form-control"})*@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label>Item Name</label>
@@ -156,16 +167,6 @@
                         <select asp-for="UnitName" class="form-control" asp-items="ViewBag.UnitName"></select>
                     </div>
 
-@*                    <label>Unit</label>*@
-
-                    <!-- Hardcoded list of units, I can't think of how to do dropdown lists of dynamic data (Items with infinitely 
-                        many items you can add in) as opposed to static ones like unit where we set only 3-->
-
-@*                    <select asp-for="UnitName" class="form-control">
-                        <option value="oz">oz</option>
-                        <option value="fl oz">fl oz</option>
-                        <option value="count">count</option>
-                    </select>*@
 
                     <div class="modal-footer">
                         <div class="btn-group">
@@ -176,12 +177,6 @@
 
                 </form>
             </div>
-@*            <div class="modal-footer">
-                <div class="btn-group">
-                    <a href="#" id="btnSave" class="btn btn-primary m-1">Save</a>
-                    <a href="#" id="btnCancel" class="btn btn-danger m-1">Cancel</a>
-                </div>
-            </div>*@
         </div>
     </div>
 </div>
@@ -189,7 +184,27 @@
 
 
 
+@*Code for 2nd pop up, edit button *@
 
+@*<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="center">
+                    <<a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
+                    <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">User</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+*@
 
 
 
