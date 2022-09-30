@@ -14,7 +14,8 @@ namespace BaristaHome.Models
         public string? StoreInviteCode { get; set; }
 
         // Relationships
-        public virtual ICollection<Checklist>? Checklists{ get; set; }
+        public virtual ICollection<Checklist>? Checklists { get; set; }
+        public virtual ICollection<Drink>? Drinks { get; set; }
         public virtual ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<InventoryItem>? InventoryItems { get; set; }
         public virtual ICollection<Shift>? Shifts { get; set; }
