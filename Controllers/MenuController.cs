@@ -36,9 +36,13 @@ namespace BaristaHome.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId")] Drink drink)
         {
+/*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            drink.StoreId = storeId;*/
+
             if (ModelState.IsValid)
             {
                 _context.Add(drink);
