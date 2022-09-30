@@ -36,36 +36,41 @@ namespace BaristaHome.Controllers
         }
 
 
+
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage")] Drink home)
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId")] Drink drink)
         {
+/*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            drink.StoreId = storeId;*/
+
             if (ModelState.IsValid)
             {
-                _context.Add(home);
+                _context.Add(drink);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Menu", "Menu");
             }
-            ModelState.AddModelError(string.Empty, home.DrinkName);
-            return View(home);
+            ModelState.AddModelError(string.Empty, drink.DrinkName);
+            return View(drink);
 
         }
 
-        // GET: Drink
         [HttpGet]
         public async Task<IActionResult> Menu()
         {
             // Used to get drink list
             // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
+            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
             var drinkList = (IEnumerable<Drink>)from d in _context.Drink
-                                              orderby d.DrinkId descending
-                                              select d;
+                                                where d.StoreId == storeId
+                                                orderby d.DrinkId descending
+                                                select d;
 
             // To get tags from database
             List<Tag> tagQuery = (from tag in _context.Tag
-                                      select new Tag
-                                      { 
-                                          TagName = tag.TagName
-                                      }).ToList();
+                                  select new Tag
+                                  {
+                                      TagName = tag.TagName
+                                  }).ToList();
             ViewBag.TagList = tagQuery;
 
             return View(drinkList);
@@ -134,7 +139,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage")] Drink drink)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId")] Drink drink)
         {
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
@@ -165,11 +170,16 @@ namespace BaristaHome.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (id == 0)
+            {
+                return NotFound();
+            }
             var registerViewModel = await _context.Drink.FindAsync(id);
             _context.Drink.Remove(registerViewModel);
             await _context.SaveChangesAsync();
             return RedirectToAction("Menu", "Menu");
         }
+
 
 
     }

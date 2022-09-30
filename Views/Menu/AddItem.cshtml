@@ -35,7 +35,7 @@
                 </div>
             </nav>
         </header>
-
+        <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value"/>
         <div class = "add-drink-top">
 
             <div class = "drink-image">
@@ -72,7 +72,6 @@
                     <label asp-for="Description"></label>
                     <textarea type="input" rows="5" asp-for="Description" class="form-control"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
-                  
                 </div>
                 @*Drink tags*@
                 <a>Tags</a>
@@ -95,13 +94,10 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                              <form>
-                                  <div class="form-group">
-                                    <label for="formGroupExampleInput">Tag name</label>
-                                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="tag name">
-                                  </div>
-                               </form>
-                        
+                                <div class="form-group">
+                                <label for="formGroupExampleInput">Tag name</label>
+                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="tag name">
+                                </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -122,9 +118,7 @@
                     <label asp-for="Instructions"></label>
                     <textarea type="input" rows="10" asp-for="Instructions" class="form-control"></textarea>
                     <span asp-validation-for="Instructions" class="text-danger"></span>
-                  
                 </div>
-
             </div>
 
          <div class = "drink-ingredients">
