@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
 
+    <!--csscript imports for filter-->
+    <link rel="stylesheet" type="text/css" href="~/css/virtual-select.min.css" />
+
+
     <!--Bootstrap imports-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -37,7 +41,7 @@
         <div class="searchFilter">
             <div class="filter">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModalCenter">
+                @*<button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModalCenter">
                   Filters
                 </button>
 
@@ -52,23 +56,58 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                          @{
+                          @*displays all the tags in the database
+                          {
                               var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
 
                               if(myList.Any()) {
                                  foreach(var t in myList) {
-                                     <button type="button" class="btn addTag">@t.TagName</button>
+                                     <!--<button type="button" class="btn addTag">@t.TagName</button>-->
+                                     <div>
+                                         <input class="form-check-input" type="checkbox" value="@t.TagId" onclick="SaveTags()">
+                                         <label class="form-check-label" for="flexCheckDefault">@t.TagName</label>
+                                     </div>
                                  }
                               }
-                            }                      
-                                                 
+                            }
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn addTag">Select</button>
                       </div>
                     </div>
                   </div>
+                </div>*@
+
+                <form asp-action="Menu">
+                    <div>
+                    <label>Filter</label>
+                     @*displays all the tags in the database*@
+                    <select id="multipleSelect" name="tagList" class="form-control" asp-items="ViewBag.Tags" multiple></select>
+                    <div class="form-group">
+                        <input type="submit" class="btn" value="Submit">
+                    </div>
+                    
+                    @*<select id="multipleSelect" multiple name="native-select" placeholder="Select Filter" data-search="false" data-silent-initial-value-set="true">
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                       
+                        @{
+                            var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
+
+                            if(myList.Any()) {
+                                foreach(var t in myList) {
+                                    <option value="">@t.TagName</option>
+                                }
+                            }
+                        }
+                    </select>*@
+                    @*<input type="button" id="btnGetTags" value="Click me to Get Selected Skill(s)" /> *@
+
                 </div>
+                </form>
+                
+
             </div>
         </div>
 
@@ -107,5 +146,14 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @*csscript imports for filter*@
+    @*used this website cssscript.com/select-box-virtual-scroll/*@
+    <script type="text/javascript" src="~/js/virtual-select.min.js"></script>
+    <script type="text/javascript">
+        VirtualSelect.init({ 
+          ele: '#multipleSelect' 
+        });  
+    </script>
 </body>
 </html>

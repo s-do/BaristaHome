@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using BaristaHome.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BaristaHome.Controllers
 {
@@ -66,15 +67,33 @@ namespace BaristaHome.Controllers
                                                 select d;
 
             // To get tags from database
-            List<Tag> tagQuery = (from tag in _context.Tag
+            var tags = (IEnumerable<Tag>)(from s in _context.Store
+                              join d in _context.Drink on s.StoreId equals d.StoreId
+                              join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                              join t in _context.Tag on dt.TagId equals t.TagId
+                              select t);
+            ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
+            /*List<Tag> tagQuery = (from tag in _context.Tag
                                   select new Tag
                                   {
                                       TagName = tag.TagName
                                   }).ToList();
-            ViewBag.TagList = tagQuery;
+            ViewBag.TagList = tagQuery;*/
 
-            return View(drinkList);
+            return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Menu(IEnumerable<Tag> tagList)
+        {
+            foreach(var tag in tagList)
+            {
+                Console.WriteLine(tag.ToString());
+            }
+            return View(tagList);
+            
+        }
+
 
         // GET: Drink Details
         public async Task<IActionResult> Drink(int? id)
@@ -96,7 +115,6 @@ namespace BaristaHome.Controllers
                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
                                       where d.DrinkId == drink.DrinkId
-                                      /*join item in _context.Item on inventory.ItemId equals item.ItemId  */
                                       select new Tag
                                       {
                                           TagName = tag.TagName
@@ -179,6 +197,7 @@ namespace BaristaHome.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Menu", "Menu");
         }
+
 
 
 
