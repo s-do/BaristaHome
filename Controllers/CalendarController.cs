@@ -33,6 +33,11 @@ namespace BaristaHome.Controllers
             return View(await baristaHomeContext.ToListAsync());
         }
 
+        public IActionResult Index1()
+        {
+            return View();
+        }
+
         // GET: Calendar/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -58,6 +63,7 @@ namespace BaristaHome.Controllers
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName");
+            
             return View();
         }
 
@@ -71,10 +77,11 @@ namespace BaristaHome.Controllers
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine(shift.UserId);
                 if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0)
                 {
                     ModelState.AddModelError(string.Empty, "The shift times can't be the same dumbass.");
-                    // Since ViewDatas are temporary, you have to add it in again once it's ran
+                    // Since ViewDatas are temporary, you have to add it in again once it's ran before returning the view
                     ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
                     return View(shift);
                 }

@@ -1,7 +1,74 @@
-﻿@{
+﻿@model IEnumerable<BaristaHome.Models.User>
+
+@{
     ViewData["Title"] = "Clocking";
 }
 
 <div class="text-center">
     <h1 class="display-4">Clocking</h1>
+</div>
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="col-md-4">
+    <form asp-action="Clocking">
+        <div class="form-group">
+            <label>TඞGS</label>
+            @*<select name="workerList" multiple>
+                @{
+                    var wList = ViewBag.Workers == null? new List<User>() : (List<User>) ViewBag.Workers;
+                    if (wList.Any())
+                    {
+                        foreach(var w in wList)
+                        {
+                            <option value="@w.UserId">@w.FirstName</option>
+                        }
+                    }
+                }
+            </select>*@
+            <select name="tagList" class="form-control" asp-items="ViewBag.Tags" multiple></select>
+        </div>
+
+        <div class="form-group">
+            <input asp-action="Clocking" type="submit" value="ඞඞඞඞඞඞඞ" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
