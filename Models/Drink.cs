@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaristaHome.Models
 {
@@ -20,11 +21,15 @@ namespace BaristaHome.Models
         // Look into storing images with EF here: http://www.binaryintellect.net/articles/2f55345c-1fcb-4262-89f4-c4319f95c5bd.aspx
         public byte[]? DrinkImageData { get; set; }
 
+        [NotMapped]
+        public IFormFile? Image { get; set; }
+
         // Relationships 
         public int StoreId { get; set; }
         public virtual Store? Store { get; set; }
         public virtual ICollection<DrinkIngredient>? DrinkIngredients { get; set; }
         public virtual ICollection<DrinkTag>? DrinkTags { get; set; }
+
 
     }
 }

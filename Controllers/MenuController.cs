@@ -39,10 +39,20 @@ namespace BaristaHome.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId")] Drink drink)
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
         {
-/*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
-            drink.StoreId = storeId;*/
+            /*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+                        drink.StoreId = storeId;*/
+            if (drink.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    drink.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    drink.DrinkImageData = fileBytes;
+                }
+            }
+           
 
             if (ModelState.IsValid)
             {
@@ -141,6 +151,8 @@ namespace BaristaHome.Controllers
                                           TagName = tag.TagName
                                       }).ToList();
                 ViewBag.DrinkTagList = drinkTagQuery;
+
+
             }
 
             return View(drink);
@@ -177,8 +189,9 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
+        //Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId")] Drink drink)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
         {
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
@@ -188,6 +201,16 @@ namespace BaristaHome.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Drink name in use");
                 return View(drink);
+            }
+
+            if (drink.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    drink.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    drink.DrinkImageData = fileBytes;
+                }
             }
 
             if (ModelState.IsValid)
@@ -219,7 +242,27 @@ namespace BaristaHome.Controllers
             return RedirectToAction("Menu", "Menu");
         }
 
+        //Method for rendering images
+        public async Task<ActionResult> RenderImage(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var drink = await _context.Drink
+                .FirstOrDefaultAsync(m => m.DrinkId == id);
+            if (drink == null)
+            {
+                return NotFound();
+            }
+            var image = (from d in _context.Drink
+                         where d.DrinkId == drink.DrinkId
+                         select drink.DrinkImageData).First();
+
+
+            return File(image, "image/png");
+        }
 
 
     }

@@ -22,6 +22,7 @@
         <!-- Binding Data-->
         <input type="hidden" asp-for="DrinkId" />
         <input type="hidden" asp-for="StoreId" />
+        <input type="hidden" asp-for="DrinkImageData" />
 @*        <input type="hidden" asp-for="DrinkName" />
         <input type="hidden" asp-for="Description" />
         <input type="hidden" asp-for="Instructions" />
@@ -44,13 +45,20 @@
             <div class = "drink-image">
                 @*Image file input*@
                 <div class="form-group">
-                    <label asp-for="DrinkImage"></label>
-                    <input type="file" id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="DrinkImage" class="form-control" />
-                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
+                    <label asp-for="Image"></label>
+                    <input id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="Image" class="form-control" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
                 </div>
                 @*Dynamic Image*@
                 <label class="img-container" for="file-input">
-                    <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                        @if(Model.DrinkImageData == null)
+                        {
+                            <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                        }
+                        else
+                        {
+                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3"/>
+                        }
                 </label>
                 @*Script for the dynamic image*@
                 <script>
