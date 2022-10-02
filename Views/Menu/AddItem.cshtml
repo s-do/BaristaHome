@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
 
+    @*Delete button icon for tag in add drink*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
     @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">*@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -78,13 +81,14 @@
                 </div>
                 @*Drink tags*@
                 <a>Tags</a>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModal">
+                    +Tag
+                </button>
                 <div class = "drink-tags">
                     @*<a class="badge badge-primary" asp-area="" asp-controller="Menu" asp-action="AddTag">Add Tag</a>*@
 
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModal">
-                      +Tag
-                    </button>
+                    
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -98,18 +102,42 @@
                           </div>
                           <div class="modal-body">
                                 <div class="form-group">
-                                <label for="formGroupExampleInput">Tag name</label>
-                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="tag name">
+                                    <label asp-for="DrinkTags">Tag Name</label>
+                                    <input asp-for="DrinkTags" id="newTag" class="form-control" />
+                                    <span asp-validation-for="DrinkTags" class="text-danger"></span>
+                                    @*<input type="text" class="form-control" id="newTag" placeholder="tag name">*@
                                 </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn addTag">Save changes</button>
+                            <button id="btnAdd" type="button" class="btn addTag" data-dismiss="modal">Add Tag</button>
+                            
                           </div>
                         </div>
                       </div>
                     </div>
+                    <p id="fooBar"></p>
+                    <script>
+                        function add() {
+                            //Create a button dynamically
+                            var button = document.createElement("button");
+                            //Assign different attributes to the element. 
+                            button.className = 'btn newTag fa-solid fa-xmark'
+                            button.innerHTML = document.getElementById("newTag").value;
+                            button.onclick = function(event) { // Note this is a function
+                                //alert("blabla");
+                                //Removes button when you click on it 
+                                event.target.parentNode.removeChild(event.target);
+                            };
 
+                            var foo = document.getElementById("fooBar");
+                            //Append the element in page (in span).  
+                            foo.appendChild(button);
+                        }
+                        document.getElementById("btnAdd").onclick = function() {
+                            add();
+                        };
+                    </script>
                 </div>
             </div>
         </div>

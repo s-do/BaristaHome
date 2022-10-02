@@ -203,8 +203,6 @@
 .addTag {
     border: 2px solid;
     background-color: #FFD9F4;
-    /*color: black;*/
-    /*padding: 14px 28px;*/
     font-size: 16px;
     cursor: pointer;
     border-color: #FFD9F4;
@@ -217,3 +215,13 @@
     color: black;
 }
 
+/*New tag in add drink*/
+.newTag {
+    border: 2px solid;
+    background-color: #FFD9F4;
+    font-size: 16px;
+    font-family:Arial;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;
+}
