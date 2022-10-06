@@ -35,7 +35,39 @@ namespace BaristaHome.Controllers
 
         public IActionResult Shifts()
         {
+            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName");
+            ViewBag.openModal = false;
             return View();
+        }
+
+        // POST: Calendar/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Shifts([Bind("ShiftId,StartShift,EndShift,UserId,StoreId")] Shift shift)
+        {
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine(shift.UserId);
+                if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0)
+                {
+                    ModelState.AddModelError(string.Empty, "The shift times can't be the same.");
+                    ViewBag.openModal = true;
+                    // Since ViewDatas are temporary, you have to add it in again once it's ran before returning the view
+                    ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
+                    return View(shift);
+                }
+                ViewBag.openModal = false;
+                _context.Add(shift);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Shifts));
+            }
+            ModelState.AddModelError(string.Empty, "There was an error creating a new shift.");
+            ViewBag.openModal = true;
+            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
+            return View(shift);
         }
 
         [HttpGet]
@@ -52,7 +84,9 @@ namespace BaristaHome.Controllers
                                     EventId = Convert.ToInt32(s.ShiftId),
                                     Title = u.FirstName + " " + u.LastName,
                                     Start = Convert.ToString(s.StartShift),
-                                    End = Convert.ToString(s.EndShift)
+                                    End = Convert.ToString(s.EndShift),
+                                    Color = u.Color,
+                                    TextColor = u.Color
                                 }).ToListAsync();
             return Json(shifts);
         }
@@ -77,42 +111,14 @@ namespace BaristaHome.Controllers
             return View(shift);
         }
 
-        // GET: Calendar/Create
+/*        // GET: Calendar/Create
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName");
             
             return View();
-        }
-
-        // POST: Calendar/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Create([Bind("ShiftId,StartShift,EndShift,ShiftDate,UserId,StoreId")] Shift shift)
-        {
-            if (ModelState.IsValid)
-            {
-                Console.WriteLine(shift.UserId);
-                if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0)
-                {
-                    ModelState.AddModelError(string.Empty, "The shift times can't be the same dumbass.");
-                    // Since ViewDatas are temporary, you have to add it in again once it's ran before returning the view
-                    ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
-                    return View(shift);
-                }
-
-                _context.Add(shift);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ModelState.AddModelError(string.Empty, "There was an error creating a new shift.");
-            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
-            return View(shift);
-        }
+        }*/
 
         // GET: Calendar/Edit/5
         public async Task<IActionResult> Edit(int? id)
