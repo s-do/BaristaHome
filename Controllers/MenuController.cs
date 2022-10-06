@@ -121,6 +121,8 @@ namespace BaristaHome.Controllers
             watch.Stop();
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms... woew that's fast :p");
 
+            
+
             return View(filteredDrinks);
             
         }

@@ -124,11 +124,29 @@
 }
 
 .searchFilter {
+    /*outline: 5px dotted blue;*/
+    height: 200px;
+    width: 75%;
+    /*align-self: center;*/
+    margin-bottom: 50px;
+}
+
+.filter {
+    outline: 5px dotted blue;
+    height: 200px;
+    width: 25%;
+    /*align-self:center;*/
+    margin-bottom:50px;
+    float:left;
+}
+
+.search {
     outline: 5px dotted blue;
     height: 200px;
     width: 75%;
-    align-self:center;
-    margin-bottom:50px;
+    align-self: center;
+    margin-bottom: 50px;
+    float: right;
 }
 
 .drinks {
@@ -174,13 +192,13 @@
     position: absolute;
 }
 
-    .drink-icon .image {
-        width: calc(100% - 15px);
-        height: calc(100% - 15px);
-        object-fit: contain;
-        align-self: normal;
-        position: unset;
-    }
+.drink-icon .image {
+    width: calc(100% - 15px);
+    height: calc(100% - 15px);
+    object-fit: contain;
+    align-self: normal;
+    position: unset;
+}
 
 .drink-name {
     margin-top: 160px;
@@ -224,4 +242,27 @@
     cursor: pointer;
     border-color: #FFD9F4;
     color: black;
+}
+
+/*Gets rid of outside border and makes filter left align*/
+#multipleSelect {
+    background-color: transparent;
+    border: none;
+    max-width: 60%;
+    float: left;
+}
+
+/*Changes the color of the filter box*/
+.vscomp-wrapper.has-error .vscomp-toggle-button {
+    border: none;
+    background-color: #FFD9F4;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.375rem + 1.5vw);
+    text-decoration: none;
 }

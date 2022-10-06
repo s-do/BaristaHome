@@ -30,7 +30,8 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
             <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Logout</a>
             <div class="center">
-                <h1 class="title">Menu</h1>
+                @*<h1 class="title">Menu</h1>*@
+                <a class="text-black title" asp-area="" asp-controller="Menu" asp-action="Menu">Menu</a>
             </div>
             <a class="nav-link pink-button-right" asp-area="" asp-controller="" asp-action="">Stats</a>
         </nav>
@@ -40,73 +41,14 @@
         @*For search bar and filters button*@
         <div class="searchFilter">
             <div class="filter">
-                <!-- Button trigger modal -->
-                @*<button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModalCenter">
-                  Filters
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Select Tags to Filter From </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                          @*displays all the tags in the database
-                          {
-                              var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
-
-                              if(myList.Any()) {
-                                 foreach(var t in myList) {
-                                     <!--<button type="button" class="btn addTag">@t.TagName</button>-->
-                                     <div>
-                                         <input class="form-check-input" type="checkbox" value="@t.TagId" onclick="SaveTags()">
-                                         <label class="form-check-label" for="flexCheckDefault">@t.TagName</label>
-                                     </div>
-                                 }
-                              }
-                            }
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn addTag">Select</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>*@
-                <div>
-                    <form asp-action="Menu">
-                    @*<label>Filter</label>*@
-                    @*displays all the tags in the database*@
-                    <select id="multipleSelect" name="tagLine" class="form-control" asp-items="ViewBag.Tags" multiple required></select>
-                    <div class="form-group">
-                        <input type="submit" class="btn" value="Submit">
-                    </div>
-                    
-                    @*<select id="multipleSelect" multiple name="native-select" placeholder="Select Filter" data-search="false" data-silent-initial-value-set="true">
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                       
-                        @{
-                            var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
-
-                            if(myList.Any()) {
-                                foreach(var t in myList) {
-                                    <option value="">@t.TagName</option>
-                                }
-                            }
-                        }
-                    </select>*@
-                    @*<input type="button" id="btnGetTags" value="Click me to Get Selected Skill(s)" /> *@
-
+                <form asp-action="Menu">
+                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple required></select>
+                    <input type="submit" class="btn addTag" value="Filter">
+                </form>
                 
-                    </form>
-                </div>
-                
+            </div>
+
+            <div class="search">
 
             </div>
         </div>
