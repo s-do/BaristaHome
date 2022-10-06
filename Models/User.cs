@@ -36,6 +36,9 @@ namespace BaristaHome.Models
         [StringLength(64)]
         public string? UserImage { get; set; }
 
+        [NotMapped]
+        public IFormFile Image { get; set; }
+
         public byte[]? UserImageData { get; set; }
 
         public decimal? Wage { get; set; }

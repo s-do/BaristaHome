@@ -1,4 +1,5 @@
 ﻿using BaristaHome.Data;
+using BaristaHome.Migrations;
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -122,7 +123,7 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> WorkerEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription")] User worker)
+        public async Task<IActionResult> WorkerEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image")] User worker)
         {
 
             var existingEmail = (from u in _context.User
@@ -134,6 +135,18 @@ namespace BaristaHome.Controllers
                 ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
                 return View(worker);
             }
+
+
+            if (worker.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    worker.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    worker.UserImageData = fileBytes;
+                }
+            }
+
 
             if (ModelState.IsValid)
             {
@@ -269,6 +282,32 @@ namespace BaristaHome.Controllers
         public async Task<IActionResult> Invite()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+
+        public async Task<IActionResult> Profile()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+        public async Task<ActionResult> RenderImage(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var worker = await _context.User.FirstOrDefaultAsync(m => m.UserId == id);
+            if (worker == null)
+            {
+                return NotFound();
+            }
+            var image = (from w in _context.User
+                         where w.UserId == worker.UserId
+                         select worker.UserImageData).First();
+
+
+            return File(image, "image/png");
         }
     }
 }
