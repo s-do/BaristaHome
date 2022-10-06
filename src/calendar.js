@@ -15,110 +15,51 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
+        customButtons: {
+            addShift: {
+                text: 'add shift',
+                click: addShift
+            }
+        },
+        height: 1000,
+        allDaySlot: false,
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         dayMaxEvents: true, // allow "more" link when too many events
-        events: [
+        eventMaxStack: 3,
+        selectable: true,
+        select: updateShift, // owners & managers are only allowed this abiltiy
+        // parsing the shifts from the store and then updating it on the view
+        events: '/Calendar/GetShifts',
+        /*events: [
             {
-                title: 'All Day Event',
-                start: '2022-10-01',
+                title: 'Shift1',
+                start: '2022-10-12T06:30:00',
+                end: '2022-10-12T17:30:00'
             },
             {
-                title: 'Meeting',
-                start: '2022-10-12T10:30:00',
-                end: '2022-10-12T12:30:00'
+                title: 'Shift2',
+                start: '2022-10-12T07:30:00',
+                end: '2022-10-12T16:30:00'
             },
+            {
+                title: 'Shift3',
+                start: '2022-10-12T08:00:00',
+                end: '2022-10-12T18:30:00'
             {
                 title: 'Click for Google',
                 url: 'http://google.com/',
                 start: '2022-10-28'
-            },
-            {
-                title: 'Conference',
-                start: '2022-10-11',
-                end: '2022-10-13'
-            },
-            {
-                title: 'Long Event',
-                start: '2022-10-07T16:00:00',
-                end: '2022-10-10T12:00:00'
             }
-        ]
+        ]*/
     });
     calendar.render();
 });
 
+function addShift() {
+    alert('TODO: ADD A SHIFT');
+}
 
-/*document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-
-  var calendar = new Calendar(calendarEl, {
-    plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin ],
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-    },
-    navLinks: true, // can click day/week names to navigate views
-    editable: true,
-    dayMaxEvents: true, // allow "more" link when too many events
-    events: [
-      {
-        title: 'All Day Event',
-        start: '2022-10-01',
-      },
-      {
-        title: 'Long Event',
-        start: '2022-10-07',
-        end: '2022-10-10'
-      },
-      {
-        groupId: 999,
-        title: 'Repeating Event',
-        start: '2022-10-09T16:00:00'
-      },
-      {
-        groupId: 999,
-        title: 'Repeating Event',
-        start: '2022-10-16T16:00:00'
-      },
-      {
-        title: 'Conference',
-        start: '2022-10-11',
-        end: '2022-10-13'
-      },
-      {
-        title: 'Meeting',
-        start: '2022-10-12T10:30:00',
-        end: '2022-10-12T12:30:00'
-      },
-      {
-        title: 'Lunch',
-        start: '2022-10-12T12:00:00'
-      },
-      {
-        title: 'Meeting',
-        start: '2022-10-12T14:30:00'
-      },
-      {
-        title: 'Happy Hour',
-        start: '2022-10-12T17:30:00'
-      },
-      {
-        title: 'Dinner',
-        start: '2022-10-12T20:00:00'
-      },
-      {
-        title: 'Birthday Party',
-        start: '2022-10-13T07:00:00'
-      },
-      {
-        title: 'Click for Google',
-        url: 'http://google.com/',
-        start: '2022-10-28'
-      }
-    ]
-  });
-
-  calendar.render();
-});*/
+function updateShift() {
+    alert('TODO: UPDATE A SHIFT');
+}

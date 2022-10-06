@@ -33,9 +33,28 @@ namespace BaristaHome.Controllers
             return View(await baristaHomeContext.ToListAsync());
         }
 
-        public IActionResult Index1()
+        public IActionResult Shifts()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetShifts(DateTime start, DateTime end)
+        {
+            Console.WriteLine(Convert.ToInt32(User.FindFirst("StoreId").Value));
+            // Query the store's shifts
+            var shifts = await (from s in _context.Shift
+                                join u in _context.User on s.UserId equals u.UserId
+                                where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && (s.StartShift >= start && s.EndShift < end)
+                                // Then we need to feed the data as a json feed that abides to FullCalendar's property names
+                                select new ShiftViewModel()
+                                {
+                                    EventId = Convert.ToInt32(s.ShiftId),
+                                    Title = u.FirstName + " " + u.LastName,
+                                    Start = Convert.ToString(s.StartShift),
+                                    End = Convert.ToString(s.EndShift)
+                                }).ToListAsync();
+            return Json(shifts);
         }
 
         // GET: Calendar/Details/5
@@ -85,9 +104,6 @@ namespace BaristaHome.Controllers
                     ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
                     return View(shift);
                 }
-                // Adding the selected date to start/end times to keep dates consistent
-                shift.StartShift = shift.ShiftDate.Date + shift.StartShift.TimeOfDay;
-                shift.EndShift = shift.ShiftDate.Date + shift.EndShift.TimeOfDay;
 
                 _context.Add(shift);
                 await _context.SaveChangesAsync();
