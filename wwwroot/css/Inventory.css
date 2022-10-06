@@ -88,7 +88,15 @@ body {
 
 
 .mytext {
-    width: 300px;
+    width: 600px;
+    height:45px;
+}
+
+.form-control {
+    display: inline-block;
 }
 
 
+.row {
+    display: inline-block;
+}
