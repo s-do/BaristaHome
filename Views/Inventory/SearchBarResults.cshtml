@@ -36,32 +36,31 @@
 
 
     <!-- Attempt to align search box and button, will come back to once search works-->
-
-@*    <div class="container">
-        <h4>Option 1</h4>
-        <div class="form-inline">
-            <input class="myte">
-            <button class="btn btn-primary">enter</button>
-            <button class="btn btn-primary">New Item</button>
-
- 
-            <form method="post">
-                    <input asp-for="searchPhrase" class="mytext" />
-                    <span asp-validation-for="searchPhrase" class="text-danger"></span>
-                    <input type="submit" value="Register" class="btn btn-primary" />
-                    <a href="#" button type="button" class="btn-float-right" data-toggle="modal" data-target="#inventoryModal"> + New Item</a>
+    @*    <div class="container">
+    <h4>Option 1</h4>
+    <div class="form-inline">
+    <input class="myte">
+    <button class="btn btn-primary">enter</button>
+    <button class="btn btn-primary">New Item</button>
 
 
-            </form>
-        </div>
-   
+    <form method="post">
+    <input asp-for="searchPhrase" class="mytext" />
+    <span asp-validation-for="searchPhrase" class="text-danger"></span>
+    <input type="submit" value="Register" class="btn btn-primary" />
+    <a href="#" button type="button" class="btn-float-right" data-toggle="modal" data-target="#inventoryModal"> + New Item</a>
+
+
+    </form>
+    </div>
+
     </div>*@
 
 
 
     <!-- Trying to group the new Item button and search bar onto same line-->
 
-     <p>
+    <p>
         <div class="container">
             <div class="btn-float-right" style="background-color:#ffdcf4">
                 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal"> + New Item</a>
@@ -69,7 +68,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <form asp-action= "SearchBarResults">
+                    <form asp-action="SearchBarResults">
                         <div class="form-group">
                             <input asp-for="searchPhrase" class="mytext" />
                             <span asp-validation-for="searchPhrase" class="text-danger"></span>
@@ -85,32 +84,6 @@
             </div>
         </div>
     </p>
-
-
-
-
-
-@*
-    <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <input asp-for="searchPhrase" class="mytext" />
-            <span asp-validation-for="searchPhrase" class="text-danger"></span>
-        </div>
-
-        <div class="btn-float-right">
-            <div class="form-group">
-                <input type="submit" value="Search" class="btn btn-primary" />
-            </div>
-        </div>
-    </form>
-*@
-
-
-
-
-
-
 
 
 
@@ -156,43 +129,43 @@
             {
                 foreach (var item in inventoryList)
                 {
-                            <tr>
-                                <td>
-                                    @item.Name
-                                </td>
-                                <td>
-                                    @item.Quantity
-                                </td>
-                                <td>
-                                    @item.PricePerUnit
-                                </td>
-                                <td>
-                                    @item.UnitName
-                                </td>
-                                <td>
-                                    <a class="img-size" data-toggle="modal" data-target="#editModal" >
-                                        <img src="../images/editButton.png">
-                                    </a>
-                                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editModalLabel">Select Action</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="center">
-                                                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ItemId">Edit</a>
-                                                        <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
-                                                    </div>
-                                                </div>
+                    <tr>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.Quantity
+                        </td>
+                        <td>
+                            @item.PricePerUnit
+                        </td>
+                        <td>
+                            @item.UnitName
+                        </td>
+                        <td>
+                            <a class="img-size" data-toggle="modal" data-target="#editModal">
+                                <img src="../images/editButton.png">
+                            </a>
+                            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="center">
+                                                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ItemId">Edit</a>
+                                                <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
                                             </div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                 }
             }
         }
@@ -219,8 +192,8 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label>Item Name</label>
-                        <input asp-for="Name" class="form-control" style="text-transform:lowercase" /> 
-                        <span asp-validation-for="Name" class="text-danger" ></span>
+                        <input asp-for="Name" class="form-control" style="text-transform:lowercase" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
@@ -234,7 +207,7 @@
                         <input asp-for="PricePerUnit" class="form-control" />
                         <span asp-validation-for="PricePerUnit" class="text-danger"></span>
                     </div>
-                    
+
                     <div class="form-control">
                         <label class="control-label">Unit Name</label>
                         <select asp-for="UnitName" class="form-control" asp-items="ViewBag.UnitNames"></select>
@@ -279,100 +252,4 @@
         </div>
     </div>
 </div>
-*@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*
-
-<script>
-    $(document).ready(function(){
-        $("btnSave").click(function() {
-            var inventoryFormData =$("#inventoryForm").serialize();
-
-            $.ajax({
-                type: "POST",
-                url: "/InventoryItem/SaveInventory",
-                data: inventoryFromData,
-                success: function () {
-                    window.location.href = "/Inventory/Index";
-                }
-            })
-
-        })
-    })
-</script>
-
-
-
-
-
-
-<table class="table table-bordered">
-    <tr class="btn-success"></tr>
-    <thead>
-        <tr>
-            <th>
-                Item Name
-            </th>
-            <th>
-                Quantity
-            </th>
-            <th>
-                PricePerPoint
-            </th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in ViewBag.InventoryItem) {
-        <tr>
-            <td>
-                @item.Item.ItemId
-            </td>
-            <td>
-                @item.Quantity
-            </td>
-            <td>
-                @item.PricePerUnit
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
 *@

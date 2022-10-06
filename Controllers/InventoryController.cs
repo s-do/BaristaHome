@@ -42,7 +42,7 @@ namespace BaristaHome.Controllers
                                                     ItemId = inventory.ItemId
                                              }).ToList();
             ViewBag.Inventory = itemQuery;
-            ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
+            ViewData["UnitNames"] = new SelectList(_context.Unit, "UnitName", "UnitName");
             return View();
 
         }
@@ -90,7 +90,7 @@ namespace BaristaHome.Controllers
 
                     if (existingInventoryItem != null)
                     {
-                        ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
+                        ViewData["UnitNames"] = new SelectList(_context.Unit, "UnitName", "UnitName");
                         ModelState.AddModelError(string.Empty, "You already have this item in your inventory! Use Edit to change the quantity instead.");
                         return View(itemViewModel); // We can sort of fix this later, the error above pops up when you reopen the modal (i don't know how to send the view back with it still open)
                     }
@@ -131,7 +131,7 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction("Index", "Inventory"); // new InventoryItem should be successfully added into the user's store
             }
-            ViewData["UnitName"] = new SelectList(_context.Unit, "UnitName", "UnitName");
+            ViewData["UnitNames"] = new SelectList(_context.Unit, "UnitName", "UnitName");
             ModelState.AddModelError(string.Empty, "There was an issue adding this item into your inventory.");
             return View();
 
@@ -189,5 +189,35 @@ namespace BaristaHome.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+
+        // SEARCH BAR FEATURE
+        // Shows the page again after searching the item wanted
+        public async Task<IActionResult> SearchBarResults(String searchPhrase)
+        {
+            // dw, with the utilization of ItemViewModel we can display a store's inventory instead
+            // https://stackoverflow.com/questions/57727635/how-to-pass-selected-query-list-using-viewbag i used this link to display list of store's items
+            List<ItemViewModel> itemQuery = (from store in _context.Store
+                                             join inventory in _context.InventoryItem on store.StoreId equals inventory.StoreId // link store and inventoryitem by storeid
+                                             join item in _context.Item on inventory.ItemId equals item.ItemId                  // link inventoryitem and item by itemid
+                                             join unit in _context.Unit on item.UnitId equals unit.UnitId                       // link item and unit by unitid
+                                             where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))       // filter items by user's store
+                                             select new ItemViewModel
+                                             {
+                                                 Name = item.ItemName,                  // now we can send a 
+                                                 Quantity = inventory.Quantity,         // ItemViewModel object
+                                                 PricePerUnit = inventory.PricePerUnit, // to the view
+                                                 UnitName = unit.UnitName,
+                                                 ItemId = inventory.ItemId
+                                             }).Where(i => i.Name.Contains(searchPhrase)).ToList();
+            ViewBag.Inventory = itemQuery;
+            ViewData["UnitNames"] = new SelectList(_context.Unit, "UnitName", "UnitName");
+            return View();
+
+        }
+
+
+
     }
 }
