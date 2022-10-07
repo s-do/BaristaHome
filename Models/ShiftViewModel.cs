@@ -7,6 +7,5 @@
         public string Start { get; set; }
         public string End { get; set; }
         public string Color { get; set; }
-        public string TextColor { get; set; }
     }
 }

@@ -51,9 +51,9 @@ namespace BaristaHome.Controllers
             if (ModelState.IsValid)
             {
                 Console.WriteLine(shift.UserId);
-                if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0)
+                if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0 || DateTime.Compare(shift.StartShift, shift.EndShift) > 0)
                 {
-                    ModelState.AddModelError(string.Empty, "The shift times can't be the same.");
+                    ModelState.AddModelError(string.Empty, "Oops, you either chose shifts at the same times, or your start shift is bigger than the end shift!");
                     ViewBag.openModal = true;
                     // Since ViewDatas are temporary, you have to add it in again once it's ran before returning the view
                     ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
@@ -86,41 +86,11 @@ namespace BaristaHome.Controllers
                                     Start = Convert.ToString(s.StartShift),
                                     End = Convert.ToString(s.EndShift),
                                     Color = u.Color,
-                                    TextColor = u.Color
                                 }).ToListAsync();
             return Json(shifts);
         }
 
-        // GET: Calendar/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Shift == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shift
-                .Include(s => s.Store)
-                .Include(s => s.User)
-                .FirstOrDefaultAsync(m => m.ShiftId == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return View(shift);
-        }
-
-/*        // GET: Calendar/Create
-        [Authorize(Policy = "AdminOnly")]
-        public IActionResult Create()
-        {
-            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName");
-            
-            return View();
-        }*/
-
-        // GET: Calendar/Edit/5
+        /*// GET: Calendar/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Shift == null)
@@ -136,16 +106,16 @@ namespace BaristaHome.Controllers
             ViewData["StoreId"] = new SelectList(_context.Store, "StoreId", "StoreId", shift.StoreId);
             ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email", shift.UserId);
             return View(shift);
-        }
+        }*/
 
         // POST: Calendar/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ShiftId,StartShift,EndShift,ShiftDate,UserId,StoreId")] Shift shift)
+        public async Task<IActionResult> Edit([Bind("ShiftId,StartShift,EndShift,ShiftDate,UserId,StoreId")] Shift shift)
         {
-            if (id != shift.ShiftId)
+            if (shift.ShiftId == 0)
             {
                 return NotFound();
             }
@@ -168,11 +138,14 @@ namespace BaristaHome.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Shifts));
             }
-            ViewData["StoreId"] = new SelectList(_context.Store, "StoreId", "StoreId", shift.StoreId);
-            ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email", shift.UserId);
-            return View(shift);
+            /*ViewData["StoreId"] = new SelectList(_context.Store, "StoreId", "StoreId", shift.StoreId);
+            ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email", shift.UserId);*/
+            ModelState.AddModelError(string.Empty, "There was an error editing this shift.");
+            ViewBag.openModal = true;
+            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
+            return RedirectToAction(nameof(Shifts), shift);
         }
 
         // GET: Calendar/Delete/5

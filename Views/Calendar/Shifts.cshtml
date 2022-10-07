@@ -30,12 +30,13 @@
 
     <div id="sharedCalendar"></div>
 
-    @if (User.FindFirst("RoleId").Value != "1") { // only allow managers/owners to add shifts
+    @if (User.FindFirst("RoleId").Value != "1") // only allow managers/owners to add shifts
+    { 
         <div id="shiftModal" class="modal fade" role="dialog" aria-labelledby="shiftModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="shiftModalLabel">Add a Shift</h4>       
+                        <h4 class="modal-title">Add a Shift</h4>       
                     </div>
                         <div class="modal-body">
                             <form asp-action="Shifts">
@@ -70,7 +71,52 @@
         </div>
     }
 
+    @if (User.FindFirst("RoleId").Value != "1") // only allow managers/owners to edit shifts
+    {
+        <div id="editModal" class="modal fade" role="dialog" aria-labelledby="shiftModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Shift</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-action="Edit" id="editForm">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                            <div class="form-group">
+                                <label class="control-label">Worker Name</label>
+                                <input id="workerId" asp-for="UserId" class="form-control" />
+                                <span asp-validation-for="UserId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">Start Shift</label>
+                                <!-- editing properties has to be a text type when passing from ajax as the values themselves are basically strings -->
+                                <input id="startTime" type="text" asp-for="StartShift" class="form-control" />
+                                <span asp-validation-for="StartShift" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">End Shift</label>
+                                <input id="endTime" type="datetime-local" asp-for="EndShift" class="form-control" />
+                                <span asp-validation-for="EndShift" class="text-danger"></span>
+                            </div>
+
+                            <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+                            <input type="hidden" asp-for="ShiftId" id="shiftId" />
+
+                            <input id="txtName" value="69" type="text" />
+                            @*<input id="myInputHidden" type="hidden" asp-for="ShiftId" value="222" />*@
+
+                            <div class="modal-footer">
+                                <input type="submit" value="Update" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
     
 </body>
 </html>

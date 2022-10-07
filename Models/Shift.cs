@@ -7,8 +7,11 @@ namespace BaristaHome.Models
     public class Shift
     {
         public int ShiftId { get; set; }
+
+        [Required(ErrorMessage = "You forgot to specify the start time.")]
         public DateTime StartShift { get; set; }
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:h:mm tt}")]
+
+        [Required(ErrorMessage = "Every shift should have a end time! No one works forever...")]
         public DateTime EndShift { get; set; }
         
         // Relationships
