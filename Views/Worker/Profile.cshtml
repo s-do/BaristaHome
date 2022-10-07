@@ -113,7 +113,7 @@
         <label>
             @if (Model.UserImageData == null)
             {
-                <img src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3">
+                <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
             }
             else
             {
@@ -156,10 +156,22 @@
                     }
                 </dd>
                 <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Wage)
+                    @if(Model.RoleId == 1) {
+                        @Html.DisplayNameFor(model => model.Wage)
+                    }
                 </dt>
                 <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Wage)
+                    @if(Model.RoleId == 1) {
+                        @if (Model.Wage == null)
+                        {
+                                <p>Wage has not been specified.</p>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(model => model.Wage)
+                        }
+                    }
+   
                 </dd>
 
             </dl>

@@ -157,7 +157,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Password" class="control-label"></label>
-                        <input asp-for="Password" class="form-control" autocomplete="true" />
+                        <input asp-for="Password" class="form-control" autocomplete="true" value="@User.FindFirst("Password").Value" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -194,7 +194,7 @@
                     <label>
                         @if (Model.UserImageData == null)
                         {
-                            <img src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3">
+                            <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
                         }
                         else
                         {
