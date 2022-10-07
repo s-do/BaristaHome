@@ -37,7 +37,7 @@ namespace BaristaHome.Controllers
         }
 
 
-
+        //POST add a drink
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
         {
@@ -128,7 +128,7 @@ namespace BaristaHome.Controllers
         }
 
 
-        // GET: Drink Details
+        // GET: Display drink information of drink's page
         public async Task<IActionResult> Drink(int? id)
         {
             if (id == null)
@@ -144,6 +144,7 @@ namespace BaristaHome.Controllers
             }
             else
             {
+                //Selina's Part
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
@@ -176,6 +177,7 @@ namespace BaristaHome.Controllers
             }
             else
             {
+                //Selina's Part
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                            join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                            join tag in _context.Tag on drinkTag.TagId equals tag.TagId
@@ -191,7 +193,8 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
-        //Edit Drink details
+
+        //POST Edit Drink details
         [HttpPost]
         public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
         {
@@ -231,18 +234,6 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            if (id == 0)
-            {
-                return NotFound();
-            }
-            var registerViewModel = await _context.Drink.FindAsync(id);
-            _context.Drink.Remove(registerViewModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Menu", "Menu");
-        }
 
         //Method for rendering images
         public async Task<ActionResult> RenderImage(int id)

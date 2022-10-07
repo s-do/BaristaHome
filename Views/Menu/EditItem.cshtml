@@ -17,6 +17,7 @@
 </head>
 
 <body>
+@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <!-- Binding Data-->
@@ -28,6 +29,7 @@
         <input type="hidden" asp-for="Instructions" />
         <input type="hidden" asp-for="DrinkImageData" />
         <input type="hidden" asp-for="DrinkImage" />*@
+@*       Nav Bar*@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
@@ -84,6 +86,8 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                   
                 </div>
+@*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+@*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
                 @*Drink tags*@
                 <a>Tags</a>
                 <div class = "drink-tags">
@@ -91,7 +95,8 @@
                 </div>
             </div>
         </div>
-
+@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Drink instrunctions and ingredients*@
         <div class = "add-drink-bottom">
             <div class = "drink-instructions">
@@ -124,5 +129,6 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </form>
+@*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 </body>
 </html>

@@ -150,7 +150,6 @@
 }
 
 .drinks {
-    outline: 5px dotted red;
     width: 75%;
     min-height: auto;
     overflow:auto;

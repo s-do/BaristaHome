@@ -19,7 +19,7 @@
 </head>
 
 <body>
-
+@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
             <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
@@ -28,26 +28,23 @@
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
 @*            <input type="hidden" asp-for="@Model.DrinkId" />*@
-            <form asp-action="Delete">
+@*            <form asp-action="Delete">
                 <input type="hidden" asp-for="DrinkId" />
                 <input type="submit" value="Delete" class="pink-button-right" />
-            </form>
+            </form>*@
         </nav>
     </header>
 
     <div class = "add-drink-top">
         
         @*Drink Image*@
-        <div>
-            <p>Drink Image</p>
-        </div>
         <div class = "drink-image">
             @*<img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" style="background-color: white; border: 3px solid #DFB3D3"/>*@
              @*Dynamic Image*@
             <label class="img-container">
                 @if(Model.DrinkImageData == null)
                 {
-                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3">
+                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
                 }
                 else
                 {
@@ -66,6 +63,8 @@
             <div class="text-display" style="height: 150px;">
                 @Html.DisplayFor(model => model.Description)
             </div>
+    @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+    @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
             @*Drink tags*@
             <a>Tags</a>
             <div class = "drink-tags">
@@ -81,7 +80,8 @@
             </div>
         </div>
     </div>
-
+    @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+    @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     @*Drink instrunctions and ingredients*@
     <div class = "add-drink-bottom">
         <div class = "drink-instructions">
@@ -95,12 +95,11 @@
         <div class = "drink-ingredients">
             <a>Ingredients</a>
             <div class="text-display" style="height: 150px;">
-
             </div>
 
         </div>
     </div>
-
+    @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     <footer class="border-top footer text-muted">
         <div class="container">
