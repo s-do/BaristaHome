@@ -18,7 +18,6 @@
     @*Delete button icon for tag in add drink*@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
-    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">*@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -81,17 +80,86 @@
                 </div>
                 @*Drink tags*@
                 <a>Tags</a>
+                <a href="#" class="addTag">&plus;</a>
+                <div class = "drink-tags">
+                    <div class="inputGroup" id= "tagList">
+
+                    </div>
+
+                    @*<script type="text/javascript">
+                        var id = 1;
+                        $(document).ready(function () {
+                            $('#tagList').on('input', function () {
+                                $('<input type=\"text\" name=\"tagList[' + id + ']\" id=\"Tag' + id + '\" class=\"form-control\"/>').appendTo("#tagList");
+                                document.getElementById("Tag" + id).focus();
+                                id++;
+                            });
+                        });
+                    </script>*@
+
+                    @*Dynamic field creation*@
+                    <script>
+                        const addBtn = document.querySelector(".addTag");
+                        const input = document.querySelector(".inputGroup");
+                        var id = 0;
+
+                        function removeInput(){
+                                                    
+                            this.parentElement.style.display = "none";
+                            //var pId = this.parentElement.id;
+                            //this.getElementById(pId).innerHTML = ""
+
+                            //this.parentElement.id.innerHTML = "";
+                            //this.parentElement.remove();
+
+                            //id--;
+                            //return pId;
+                            
+                        }
+
+                        function addInput(){
+                            const newTag = document.createElement("input");
+                            newTag.type = "text";
+                            newTag.placeholder = "Enter a tag";
+                            newTag.name = "tagList[" + id + "]";
+                            newTag.id = "tagId" + id;
+
+                            const btn = document.createElement("a");
+                            btn.className = "delete";
+                            btn.innerHTML = "&times";
+
+                            
+
+                            const flex = document.createElement("div");
+                            flex.className = "flex";
+
+                            btn.addEventListener("click", removeInput);
+
+
+                            
+                            flex.appendChild(newTag);
+                            flex.appendChild(btn);
+                            input.appendChild(flex);
+
+                            id++;
+                        }
+
+
+                        addBtn.addEventListener("click", addInput);
+                    </script>
+                </div>
+
                 <!-- Button trigger modal -->
-                <button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModal">
+                @*<button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModal">
                     +Tag
                 </button>
-                <div class = "drink-tags">
+                <div class = "drink-tags">*@
                     @*<a class="badge badge-primary" asp-area="" asp-controller="Menu" asp-action="AddTag">Add Tag</a>*@
 
                     
 
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    @*<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -104,8 +172,9 @@
                                 <div class="form-group">
                                     <label asp-for="DrinkTags">Tag Name</label>
                                     <input asp-for="DrinkTags" id="newTag" class="form-control" />
-                                    <span asp-validation-for="DrinkTags" class="text-danger"></span>
+                                    <span asp-validation-for="DrinkTags" class="text-danger"></span>*@
                                     @*<input type="text" class="form-control" id="newTag" placeholder="tag name">*@
+@*
                                 </div>
                           </div>
                           <div class="modal-footer">
@@ -116,7 +185,6 @@
                         </div>
                       </div>
                     </div>
-                    <p id="fooBar"></p>
                     <script>
                         function add() {
                             //Create a button dynamically
@@ -138,7 +206,13 @@
                             add();
                         };
                     </script>
-                </div>
+                    <p id="fooBar"></p>
+                    
+                </div>*@
+
+
+
+
             </div>
         </div>
 

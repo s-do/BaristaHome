@@ -39,10 +39,21 @@ namespace BaristaHome.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId,Image,DrinkTags")] Drink drink, List<string> tagList)
         {
             /*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
                         drink.StoreId = storeId;*/
+            var d = tagList;
+
+            // Converting the x,y,z,... string to an int list
+            /*List<string> tagList = listOfTags.Split(',').ToList();*/
+
+            /*foreach (var t in tagList)
+            {
+                Tag tag = new Tag { TagName = t };
+                _context.Add(tag);
+            }*/
+
             if (drink.Image != null)
             {
                 using (var ms = new MemoryStream())
@@ -108,6 +119,42 @@ namespace BaristaHome.Controllers
                              .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
                              join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
                              select d).Distinct();                                    // ensure distinct drinks to prevent multiple same objs
+
+            /*var searchDrinks = List;
+
+            if filteredDrinks == null{
+                return searchdrinks
+            else if search drinks == null
+                return filtered drinks
+            else{
+                query that has both filter and search
+                return that list
+
+            filtering and searching
+            - existing drink w/ all chosen tags
+                - return the drink w all tags
+
+            - existing drink w/ out all chosen tags
+                - return nothing
+
+            - no existing drink with/without tags
+                - return nothing
+
+            - no tag and no drink
+                - return nothing
+
+            filtering only
+            - choose tags
+                - return drinks w all chosen tags
+                - return nothing if there is no drinks w chosen tags
+
+            search only
+            - enter something in search
+                - return drinks that contain search phrase
+                - return nothing if search doesn't exist
+
+           
+            }*/
 
             // Recreating viewbag to display store's filters/tags again
             var tags = (IEnumerable<Tag>)(from s in _context.Store
