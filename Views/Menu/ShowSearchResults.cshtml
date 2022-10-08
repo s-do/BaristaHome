@@ -1,0 +1,49 @@
+﻿@model IEnumerable<BaristaHome.Models.Drink>
+<p>Showing search results:</p>
+
+<style>
+    .drink-pic{
+        width: 200px;
+        height: 200px;
+    }
+</style>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DrinkName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DrinkName)
+                </td>
+                <td>
+                    @if (item.DrinkImageData == null)
+                    {
+                        <img class="drink-pic" src="../images/calendar.png">
+                    }
+                    else
+                    {
+                        <img class="drink-pic" src="@Url.Action("RenderImage", new { id = item.DrinkId})" />
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+

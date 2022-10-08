@@ -257,6 +257,15 @@ namespace BaristaHome.Controllers
             return File(image, "image/png");
         }
 
+        public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
+        {
+            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            var drinkList = (IEnumerable<Drink>)(from d in _context.Drink
+                                                 where (d.StoreId == storeId && d.DrinkName.Contains(SearchPhrase))
+                                                 orderby d.DrinkId descending
+                                                 select d).ToList();
+            return View(drinkList);
+        }
 
     }
 }
