@@ -207,11 +207,7 @@ namespace BaristaHome.Controllers
                                            join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                            join tag in _context.Tag on drinkTag.TagId equals tag.TagId
                                            where d.DrinkId == drink.DrinkId
-                                           /*join item in _context.Item on inventory.ItemId equals item.ItemId  */
-                                           select new Tag
-                                           {
-                                               TagName = tag.TagName
-                                           }).ToList();
+                                           select tag).ToList();
                 ViewBag.DrinkTagList = drinkTagQuery;
             }
 
@@ -220,8 +216,42 @@ namespace BaristaHome.Controllers
 
         //Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList)
         {
+            /* SAME NUMBER OF TAGS
+             * tags stay the same: {apple, juice} --> compare existing drink tags with list of tags if same, nothing happens
+             * change all tags: {icy, cold} --> compare
+             * change some tags: {apple, cold}
+             * 
+             * DIFFERENT NUMBER OF TAGS
+             * tags stay the same and add new tags: {apple, juice, cold}
+             * add all different tags and new amount: {icy, cold, fruit}
+             * keep some previous tags and add new tags: {apple, red, cold}
+             * 
+             * removing all the tags and adding none
+             */
+            foreach (var t in tagList)
+            {
+                var existingDrinkTag = (from s in _context.Store
+                                         join d in _context.Drink on s.StoreId equals d.StoreId
+                                         join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                         join tag in _context.Tag on dt.TagId equals tag.TagId
+                                         where dt.DrinkId == drink.DrinkId
+                                         select tag).ToList();
+                existingDrinkTag.Sort();
+                tagList.Sort();
+                //When you edit list and have the same number of tags but the tags are different
+                if ((existingDrinkTag.Count() == tagList.Count()) && (existingDrinkTag.Equals(tagList) == false))
+                {
+                    var existingTag = (from s in _context.Store
+                                            join d in _context.Drink on s.StoreId equals d.StoreId
+                                            join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                            join tag in _context.Tag on dt.TagId equals tag.TagId
+                                            where dt.DrinkId == drink.DrinkId
+                                            select tag);
+                }
+            }
+
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
                                  select d).FirstOrDefault();
