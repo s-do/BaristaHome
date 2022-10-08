@@ -6,11 +6,12 @@
 }
 @*Invite page, worker controller
 *@
-<div>
-    <a asp-controller = "Worker" asp-action="Index">Back to Workers</a>
-</div>
 
 <style>
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
     .title{
         font-size:30px;
@@ -28,12 +29,42 @@
         font-size: 40px;
     }
 
+    .pink-button{
+    background-color: pink;
+    color:black;
+    border:none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+    transition: background-color 0.15s, color 0.15s;
+    }
+
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
 </style>
 
 <body>
-    <p class= "title">Invite An Employee</p>
-    <p class= "instructions">When a user registers an account, they need to use the invite code below to be added to your store.</P>
-    <p class="invite-code"> @Model.InviteCode </p>
+    
+    <button class="pink-button">
+        <a asp-controller="Worker" asp-action="Index">Back</a>
+    </button>
+
+    <div class="background">
+        <p class= "title">Invite An Employee</p>
+        <p class= "instructions">When a user registers an account, they need to use the invite code below to be added to your store.</P>
+        <p class="invite-code"> @Model.InviteCode </p>
+
+    </div>
 
    
 </body>

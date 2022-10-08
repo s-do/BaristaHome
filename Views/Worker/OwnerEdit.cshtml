@@ -4,58 +4,191 @@
     ViewData["Title"] = "OwnerEdit";
 }
 
-<p>Edit a worker</p>
-<p>@Model.FirstName @Model.LastName</p>
-@*Owner POV for Edit, worker controller*@
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="OwnerEdit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="InviteCode" />
-            <input type="hidden" asp-for="StoreId" />
-            <input type="hidden" asp-for="UserImageData" />
-            <input type="hidden" asp-for="UserImage" />
-            <input type="hidden" asp-for="FirstName" />
-            <input type="hidden" asp-for="LastName" />
-            <input type="hidden" asp-for="Email" />
-            <input type="hidden" asp-for="Password" />
-            <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Wage" class="control-label"></label>
-                <input asp-for="Wage" type="number" min="0" max="999" step=".01" class="form-control" />
-                <span asp-validation-for="Wage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserDescription" class="control-label"></label>
-                <input asp-for="UserDescription" class="form-control" />
-                <span asp-validation-for="UserDescription" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label class="control-label">Role</label>
-                <select asp-for="RoleId" class="form-control">
-                    <option value="1">Worker</option>
-                    <option value="2">Manager</option>
-                </select>
-            </div>
+<style>
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .profile-pic {
+        border-radius: 200px;
+        height: 200px;
+        width: 200px;
+        object-fit: cover;
+        display: flex;
+        margin-right: 10px;
+    }
+
+    .profile-info {
+        display: flex;
+    }
+
+    .profile {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .page-title {
+        display: flex;
+        padding-bottom: 30px;
+        font-size: 30px;
+        padding-left: 20px;
+        font-weight: 500;
+    }
+
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .pink-button {
+        background-color: pink;
+        color: black;
+        border: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+    }
+
+        .pink-button:hover {
+            background-color: lightpink;
+            cursor: pointer;
+        }
+
+        .pink-button:active {
+            background-color: rgba(219, 113, 152, 0.67);
+        }
+
+    .user-profile-title-and-button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .edit-button {
+        background-color: white;
+        border-color: rgba(219, 113, 152, 0.67);
+        color: rgba(219, 113, 152, 0.67);
+        height: 45px;
+        width: 120px;
+        border-style: solid;
+    }
+
+    .profile-pic-and-name{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .profile-pic-and-name-and-editable-fields{
+        display:inline-block;
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+
+    }
+</style>
+
+<button class="pink-button">
+    <a asp-controller="Worker" asp-action="Index">Back</a>
+</button>
+
+<p class="page-title">Edit worker</p>
+
+<div  class = "profile-pic-and-name-and-editable-fields">
+    @*Profile picture and name of worker that is being edited*@
+    <div class="profile-pic-and-name">
+        <div style="display:block;
+            align-items: center;
+            justify-content: center;">
+            <label>
+                @if (Model.UserImageData == null)
+                {
+                    <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
+                }
+                else
+                {
+                    <img class="profile-pic" src="@Url.Action("RenderImage", new { id = Model.UserId})" style="background-color: white; border: 3px solid #DFB3D3" />
+                }
+            </label>
+        </div>
+
+        <div >
+            <p style="display: flex; display:block;
+                    align-items: center;
+                    justify-content: center;" class="page-title">@Model.FirstName @Model.LastName</p>
+        </div>
+        
+
     </div>
+
+
+    @*Editable information fields*@
+    <div style="display:inline-block; width: 900px; display: flex;
+        align-items: center;
+        justify-content: center;" class="row">
+        <div class="col-md-4">
+            <form asp-action="OwnerEdit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="InviteCode" />
+                <input type="hidden" asp-for="StoreId" />
+                <input type="hidden" asp-for="UserImageData" />
+                <input type="hidden" asp-for="UserImage" />
+                <input type="hidden" asp-for="FirstName" />
+                <input type="hidden" asp-for="LastName" />
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="Password" />
+                <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
+                <div class="form-group">
+                    <label asp-for="Color" class="control-label"></label>
+                    <input asp-for="Color" class="form-control" />
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Wage" class="control-label"></label>
+                    <input asp-for="Wage" type="number" min="0" max="999" step=".01" class="form-control" />
+                    <span asp-validation-for="Wage" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">Role</label>
+                    <select asp-for="RoleId" class="form-control">
+                        <option value="1">Worker</option>
+                        <option value="2">Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <p style="margin-bottom:0;" >User Description</p>
+                    <input asp-for="UserDescription" class="form-control" />
+                    <span asp-validation-for="UserDescription" class="text-danger"></span>
+                </div>
+                <div style = "margin-top: 10px;" class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{
