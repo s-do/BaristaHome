@@ -349,6 +349,7 @@ namespace BaristaHome.Controllers
 
 
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        //Method for returning and displaying all the store's Drink items that contain the search phrase in its name
         public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
         {
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
