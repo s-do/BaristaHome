@@ -69,11 +69,12 @@
 }
 
 .drink-tags {
-    outline: 5px dotted blue;
+    /*outline: 5px dotted blue;*/
     float: left;
     height: 30%;
     width: 100%;
-    padding: inherit;
+    /*padding: inherit;*/
+    overflow: auto;
 }
 
 .add-drink-bottom {
@@ -218,12 +219,24 @@
 
 /*Add tag button design*/
 .addTag {
-    border: 2px solid;
+    /*border: 2px solid;
     background-color: #FFD9F4;
     font-size: 16px;
     cursor: pointer;
     border-color: #FFD9F4;
+    color: black;*/
+    text-decoration: none;
+    /*display: inline-block;*/
+    width: 30px;
+    height: 30px;
+    background: #FFD9F4;
+    font-size: 2rem;
+    font-weight: bold;
     color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: right;
 }
 
 /*Add tag button hover*/
@@ -231,6 +244,44 @@
     background-color: #DFB3D3;
     color: black;
 }
+
+/*Dynamic field creation*/
+.flex{
+    display: flex;
+    gap: 1.5em;
+    margin-bottom: 15px;
+}
+
+.delete{
+    text-decoration: none;
+    display: inline-block;
+    background: #808080;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    /*margin-left: auto;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/*Input box for new tags in add drink*/
+input {
+    padding: 5px 5px 5px 0px;
+    /*background: #FFD9F4;*/
+    width: 100%;
+    border: 3px solid #DFB3D3;
+}
+
+input:focus{
+    outline: 1px solid #DFB3D3;
+}
+
+
 
 /*New tag in add drink*/
 .newTag {

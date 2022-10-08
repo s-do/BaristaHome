@@ -48,7 +48,7 @@
                 @*Image file input*@
                 <div class="form-group">
                     <label asp-for="Image"></label>
-                    <input id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="Image" class="form-control" />
+                    <input id="file-input" style="display:none" accept="image" onchange="loadFile(event)" asp-for="Image" class="form-control" />
                     <span asp-validation-for="Image" class="text-danger"></span>
                 </div>
                 @*Dynamic Image*@
@@ -90,8 +90,81 @@
 @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
                 @*Drink tags*@
                 <a>Tags</a>
+                <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
+                    <div class="existingTags">
+                        @{
+                            var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
 
+                            if(myList.Any()) {
+                                foreach(var t in myList) {
+                                    //<button type="button" id="existingTag" name="tagList" class="btn newTag">@t.TagName</button>
+                                    <input type="text" id="existingTag" name="tagList" value=@t.TagName class="input" style="width:93%;">
+                                    <a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+                                }
+                            }
+                        }
+                    </div>
+                    @*Delete existing tag*@
+                    <script>
+                        //const existingTag = document.getElementById("existingTag")
+                        /*const deleteBtn = document.getElementById("deleteExistingTag")
+                        
+
+                        function removeExistingTag(){
+                            var t = document.getElementsByName("newTag")
+                            for(let i = 0; i < t.length; i++){
+                                if(t[i].v)
+                            }
+                            existingTag.remove(); 
+                            deleteBtn.remove();
+                        }
+                        deleteBtn.addEventListener("click", removeExistingTag)
+
+                        /*const t = document.getElementById('tagList');
+
+                        t.addEventListener('click', function handleClick(event) {
+                          event.target.remove();
+                        });*/
+
+                    </script>
+
+                    @*Dynamic input field is generated here*@
+                    <div class="inputGroup"></div>
+
+                    @*Dynamic input field creation*@
+                    <script>
+                        const addBtn = document.querySelector(".addTag");
+                        const input = document.querySelector(".inputGroup");
+
+                        @*Function to remove existing input in view*@
+                        function removeInput(){
+                            this.parentElement.remove();                                                    
+                        }
+
+                        @*Function to add new input to view*@
+                        function addInput(){
+                            const newTag = document.createElement("input");
+                            newTag.type = "text";
+                            newTag.placeholder = "Enter a tag";
+                            newTag.name = "tagList";
+
+                            const btn = document.createElement("a");
+                            btn.className = "delete";
+                            btn.innerHTML = "&times";
+
+                            const flex = document.createElement("div");
+                            flex.className = "flex";
+
+                            btn.addEventListener("click", removeInput);
+                            
+                            flex.appendChild(newTag);
+                            flex.appendChild(btn);
+                            input.appendChild(flex);
+                        }
+
+                        addBtn.addEventListener("click", addInput);
+                    </script>
                 </div>
             </div>
         </div>
