@@ -65,6 +65,7 @@
                     };
                 </script>
             </div>
+
             @*Drink name and description*@
             <div class = "drink-details">
 
@@ -82,137 +83,45 @@
                 <a>Tags</a>
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
-                    <div class="inputGroup" id= "tagList">
 
-                    </div>
+                    @*Dynamic Input field is generated here*@
+                    <div class="inputGroup"></div>
 
-                    @*<script type="text/javascript">
-                        var id = 1;
-                        $(document).ready(function () {
-                            $('#tagList').on('input', function () {
-                                $('<input type=\"text\" name=\"tagList[' + id + ']\" id=\"Tag' + id + '\" class=\"form-control\"/>').appendTo("#tagList");
-                                document.getElementById("Tag" + id).focus();
-                                id++;
-                            });
-                        });
-                    </script>*@
 
-                    @*Dynamic field creation*@
+                    @*Dynamic input field creation*@
                     <script>
                         const addBtn = document.querySelector(".addTag");
                         const input = document.querySelector(".inputGroup");
-                        var id = 0;
 
+                        @*Function to remove existing input in view*@
                         function removeInput(){
-                                                    
-                            this.parentElement.style.display = "none";
-                            //var pId = this.parentElement.id;
-                            //this.getElementById(pId).innerHTML = ""
-
-                            //this.parentElement.id.innerHTML = "";
-                            //this.parentElement.remove();
-
-                            //id--;
-                            //return pId;
-                            
+                            this.parentElement.remove();                                                    
                         }
 
+                        @*Function to add new input to view*@
                         function addInput(){
                             const newTag = document.createElement("input");
                             newTag.type = "text";
                             newTag.placeholder = "Enter a tag";
-                            newTag.name = "tagList[" + id + "]";
-                            newTag.id = "tagId" + id;
+                            newTag.name = "tagList";
 
                             const btn = document.createElement("a");
                             btn.className = "delete";
                             btn.innerHTML = "&times";
 
-                            
-
                             const flex = document.createElement("div");
                             flex.className = "flex";
 
                             btn.addEventListener("click", removeInput);
-
-
                             
                             flex.appendChild(newTag);
                             flex.appendChild(btn);
                             input.appendChild(flex);
-
-                            id++;
                         }
-
 
                         addBtn.addEventListener("click", addInput);
                     </script>
                 </div>
-
-                <!-- Button trigger modal -->
-                @*<button type="button" class="btn addTag" data-toggle="modal" data-target="#exampleModal">
-                    +Tag
-                </button>
-                <div class = "drink-tags">*@
-                    @*<a class="badge badge-primary" asp-area="" asp-controller="Menu" asp-action="AddTag">Add Tag</a>*@
-
-                    
-
-                    <!-- Modal -->
-                    @*<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Enter a new tag</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                                <div class="form-group">
-                                    <label asp-for="DrinkTags">Tag Name</label>
-                                    <input asp-for="DrinkTags" id="newTag" class="form-control" />
-                                    <span asp-validation-for="DrinkTags" class="text-danger"></span>*@
-                                    @*<input type="text" class="form-control" id="newTag" placeholder="tag name">*@
-@*
-                                </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button id="btnAdd" type="button" class="btn addTag" data-dismiss="modal">Add Tag</button>
-                            
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <script>
-                        function add() {
-                            //Create a button dynamically
-                            var button = document.createElement("button");
-                            //Assign different attributes to the element. 
-                            button.className = 'btn newTag fa-solid fa-xmark'
-                            button.innerHTML = document.getElementById("newTag").value;
-                            button.onclick = function(event) { // Note this is a function
-                                //alert("blabla");
-                                //Removes button when you click on it 
-                                event.target.parentNode.removeChild(event.target);
-                            };
-
-                            var foo = document.getElementById("fooBar");
-                            //Append the element in page (in span).  
-                            foo.appendChild(button);
-                        }
-                        document.getElementById("btnAdd").onclick = function() {
-                            add();
-                        };
-                    </script>
-                    <p id="fooBar"></p>
-                    
-                </div>*@
-
-
-
-
             </div>
         </div>
 
