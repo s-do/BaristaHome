@@ -201,20 +201,13 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
-        public async Task<IActionResult> OwnerSelfEdit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var worker = await _context.User.FindAsync(id);
-            if (worker == null)
-            {
-                return NotFound();
-            }
-            return View(worker);
+        public async Task<IActionResult> OwnerSelfEdit()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -308,6 +301,46 @@ namespace BaristaHome.Controllers
 
 
             return File(image, "image/png");
+        }
+        
+        public async Task<IActionResult> ChangePassword()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
+        {
+            worker.Password = Crypto.HashPassword(worker.Password);
+            worker.ConfirmPassword = worker.Password;
+
+            /*ViewBag.Roles = new SelectList("1","2");*/
+            var existingEmail = (from u in _context.User
+                                 where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
+                                 select u).FirstOrDefault();
+
+            if (existingEmail != null)
+            {
+                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
+                return View(worker);
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(worker);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return View(worker);
+                //return RedirectToAction(nameof(Index));
+            }
+            return View(worker);
         }
     }
 }

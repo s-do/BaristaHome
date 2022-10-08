@@ -6,7 +6,6 @@
 
 @*Worker POV for Edit, worker controller*@
 
-
 <style>
     .gfg {
         all: unset;
@@ -70,14 +69,14 @@
         display:inline-block;
     }
 
-        .pink-button:hover {
-            background-color: lightpink;
-            cursor: pointer;
-        }
+    .pink-button:hover {
+        background-color: lightpink;
+        cursor: pointer;
+    }
 
-        .pink-button:active {
-            background-color: rgba(219, 113, 152, 0.67);
-        }
+    .pink-button:active {
+        background-color: rgba(219, 113, 152, 0.67);
+    }
 
     .user-profile-title-and-button-row {
         display: flex;
@@ -89,9 +88,20 @@
         background-color: white;
         border-color: rgba(219, 113, 152, 0.67);
         color: rgba(219, 113, 152, 0.67);
-        height: 45px;
-        width: 120px;
+        height: 40px;
+        width: 200px;
+        margin-top: 10px;
+        margin-bottom:10px;
         border-style: solid;
+        transition: background-color 0.15s, color 0.25s;
+
+    }
+
+    .edit-button:hover{
+        background-color: lightpink;
+        border-color: lightpink;
+        color:white;
+
     }
 
     .profile-title-and-pic{
@@ -155,16 +165,10 @@
                         <input asp-for="Email" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Password" class="control-label"></label>
-                        <input asp-for="Password" class="form-control" autocomplete="true" value="@User.FindFirst("Password").Value" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ConfirmPassword" class="control-label"></label>
-                        <input asp-for="ConfirmPassword" class="form-control" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
+
+                    <button class="edit-button">
+                        <a asp-controller="Worker" asp-action="ChangePassword">Change Password</a>
+                    </button>
 
 
                     <div class="form-group">

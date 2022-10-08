@@ -103,9 +103,18 @@
 
     <div class="user-profile-title-and-button-row">
         <div class="page-title"> User Profile </div>
-        <button class="edit-button">
-            <a asp-controller="Worker" asp-action="WorkerEdit">Edit Profile</a>
-        </button>
+        @if(Model.RoleId == 1)
+        {
+            <button class="edit-button">
+                <a asp-controller="Worker" asp-action="WorkerEdit">Edit Profile</a>
+            </button>
+        } 
+        else {
+            <button class="edit-button">
+                <a asp-controller="Worker" asp-action="OwnerSelfEdit">Edit Profile</a>
+            </button>
+        }
+
     </div>
 
     <div class="profile">
