@@ -26,6 +26,8 @@ namespace BaristaHome.Controllers
                 }*/
 
         /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        //Displays view for add drink
+        [HttpGet]
         public IActionResult Additem()
         {
             return View();
@@ -39,13 +41,15 @@ namespace BaristaHome.Controllers
         /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
-        //POST add a drink
+        //POST add a drink, drink tag, and tag to database
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkImage,StoreId,Image,DrinkTags")] Drink drink, List<string> tagList)
         {
             /*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
                         drink.StoreId = storeId;*/
             //var d = tagList;
+
+            //Store Id
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -111,6 +115,7 @@ namespace BaristaHome.Controllers
 
         }
 
+        //Displays view for menu
         [HttpGet]
         public async Task<IActionResult> Menu()
         {
@@ -125,7 +130,7 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-            // To get tags from database
+            // To get tags that belong to a store from database
             var tags = (IEnumerable<Tag>)(from s in _context.Store
                               join d in _context.Drink on s.StoreId equals d.StoreId
                               join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
@@ -145,6 +150,7 @@ namespace BaristaHome.Controllers
         }
 
         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        //Displays the filtered menu
         [HttpPost]
         public async Task<IActionResult> Menu(string tagLine)
         {
@@ -152,7 +158,6 @@ namespace BaristaHome.Controllers
             // Converting the x,y,z,... string to an int list
             List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
 
-            // I took god knows how long to figure out this query :DDDDfdiodfgijoiodfjgdf 
             var filteredDrinks = (from dt in _context.DrinkTag
                              .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
                              join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
@@ -171,7 +176,7 @@ namespace BaristaHome.Controllers
         }
         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-
+        [HttpGet]
         // GET: Display drink information of drink's page
         public async Task<IActionResult> Drink(int? id)
         {
@@ -192,6 +197,7 @@ namespace BaristaHome.Controllers
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             else
             {
+                //Gets a list of tags that a drink has
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
@@ -204,6 +210,7 @@ namespace BaristaHome.Controllers
             return View(drink);
         }
 
+        [HttpGet]
         // GET: Drink Details
         public async Task<IActionResult> EditItem(int? id)
         {
@@ -224,6 +231,7 @@ namespace BaristaHome.Controllers
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             else
             {
+                //Gets a list of tags that a drink has
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                            join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                            join tag in _context.Tag on drinkTag.TagId equals tag.TagId

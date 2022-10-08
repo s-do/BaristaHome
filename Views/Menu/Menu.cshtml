@@ -38,19 +38,21 @@
         </nav>
     </header>
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
 @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     <div align="center">
         @*For search bar and filters button*@
         <div class="searchFilter">
+            @*Multiselect Filter with dropdown*@
             <div class="filter">
                 <form asp-action="Menu">
-                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple required></select>
+                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple></select>
                     <input type="submit" class="btn newTag" value="Filter" style="width:25%;">
                 </form>
-@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
             </div>
+@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
+@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
             <div class="search">
                 <form asp-action="ShowSearchResults">
                     <div style="width: 700px;" class="input-group mb-3">
@@ -68,6 +70,7 @@
             </div>
         </div>
 @*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
 @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Display Drinks*@
         <div class="drinks">

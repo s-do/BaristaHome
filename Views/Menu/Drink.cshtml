@@ -64,9 +64,11 @@
                 @Html.DisplayFor(model => model.Description)
             </div>
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
     @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
             @*Drink tags*@
             <a>Tags</a>
+            @*Displays all the tags that a drink has*@
             <div class = "drink-tags">
                 @{
                     var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
@@ -81,6 +83,7 @@
         </div>
     </div>
     @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
     @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     @*Drink instrunctions and ingredients*@
     <div class = "add-drink-bottom">

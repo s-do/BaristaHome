@@ -93,6 +93,7 @@
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
                     <div class="existingTags">
+                        @*Displays the tags that the drink currently has*@
                         @{
                             var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
 
@@ -169,6 +170,7 @@
             </div>
         </div>
 @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
 @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Drink instrunctions and ingredients*@
         <div class = "add-drink-bottom">
