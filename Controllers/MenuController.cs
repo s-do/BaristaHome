@@ -180,13 +180,8 @@ namespace BaristaHome.Controllers
                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
                                       where d.DrinkId == drink.DrinkId
-                                      select new Tag
-                                      {
-                                          TagName = tag.TagName
-                                      }).ToList();
+                                      select tag).ToList();
                 ViewBag.DrinkTagList = drinkTagQuery;
-
-
             }
 
             return View(drink);
