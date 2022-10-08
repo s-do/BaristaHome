@@ -45,9 +45,10 @@
             <div class="filter">
                 <form asp-action="Menu">
                     <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple required></select>
-                    <input type="submit" class="btn newTag" value="Filter">
+                    <input type="submit" class="btn newTag" value="Filter" style="width:25%;">
                 </form>
-                
+@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
             </div>
 
             <div class="search">
@@ -66,7 +67,7 @@
                 </form>
             </div>
         </div>
-@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Display Drinks*@
         <div class="drinks">
@@ -107,6 +108,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
     @*csscript imports for filter*@
     @*used this website cssscript.com/select-box-virtual-scroll/*@
     <script type="text/javascript" src="~/js/virtual-select.min.js"></script>
@@ -115,5 +117,6 @@
           ele: '#multipleSelect' 
         });  
     </script>
+@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 </body>
 </html>

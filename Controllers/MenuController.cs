@@ -20,11 +20,12 @@ namespace BaristaHome.Controllers
         {
             _context = context;
         }
-/*        public IActionResult Menu()
-        {
-            return View();
-        }*/
+        /*        public IActionResult Menu()
+                {
+                    return View();
+                }*/
 
+        /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         public IActionResult Additem()
         {
             return View();
@@ -35,6 +36,7 @@ namespace BaristaHome.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
         //POST add a drink
@@ -46,6 +48,7 @@ namespace BaristaHome.Controllers
             //var d = tagList;
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             if (drink.Image != null)
             {
                 using (var ms = new MemoryStream())
@@ -60,7 +63,9 @@ namespace BaristaHome.Controllers
             {
                 _context.Add(drink);
                 await _context.SaveChangesAsync();
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+                /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                 foreach (var tag in tagList)
                 {
                     //Checks Tag database to see if tag from list exists or not
@@ -97,6 +102,7 @@ namespace BaristaHome.Controllers
                         _context.Add(drinkTag);
                         await _context.SaveChangesAsync();
                     }
+                    /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                 }
                 return RedirectToAction("Menu", "Menu");
             }
@@ -108,6 +114,7 @@ namespace BaristaHome.Controllers
         [HttpGet]
         public async Task<IActionResult> Menu()
         {
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             // Used to get drink list
             // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
@@ -115,7 +122,9 @@ namespace BaristaHome.Controllers
                                                 where d.StoreId == storeId
                                                 orderby d.DrinkId descending
                                                 select d;
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             // To get tags from database
             var tags = (IEnumerable<Tag>)(from s in _context.Store
                               join d in _context.Drink on s.StoreId equals d.StoreId
@@ -130,10 +139,12 @@ namespace BaristaHome.Controllers
                                       TagName = tag.TagName
                                   }).ToList();
             ViewBag.TagList = tagQuery;*/
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             return View(drinkList);
         }
 
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         [HttpPost]
         public async Task<IActionResult> Menu(string tagLine)
         {
@@ -158,11 +169,13 @@ namespace BaristaHome.Controllers
 
             return View(filteredDrinks);           
         }
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
         // GET: Display drink information of drink's page
         public async Task<IActionResult> Drink(int? id)
         {
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             if (id == null)
             {
                 return NotFound();
@@ -174,9 +187,11 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             else
             {
-                //Selina's Part
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
@@ -184,6 +199,7 @@ namespace BaristaHome.Controllers
                                       select tag).ToList();
                 ViewBag.DrinkTagList = drinkTagQuery;
             }
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             return View(drink);
         }
@@ -191,6 +207,7 @@ namespace BaristaHome.Controllers
         // GET: Drink Details
         public async Task<IActionResult> EditItem(int? id)
         {
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             if (id == null)
             {
                 return NotFound();
@@ -202,9 +219,11 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             else
             {
-                //Selina's Part
                 List<Tag> drinkTagQuery = (from d in _context.Drink
                                            join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
                                            join tag in _context.Tag on drinkTag.TagId equals tag.TagId
@@ -212,7 +231,7 @@ namespace BaristaHome.Controllers
                                            select tag).ToList();
                 ViewBag.DrinkTagList = drinkTagQuery;
             }
-
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
         }
 
@@ -221,6 +240,8 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList)
         {
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
             /* SAME NUMBER OF TAGS
              * tags stay the same: {apple, juice} --> compare existing drink tags with list of tags if same, nothing happens
              * change all tags: {icy, cold} --> compare
@@ -254,7 +275,9 @@ namespace BaristaHome.Controllers
                                             select tag);
                 }
             }
+            /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
                                  select d).FirstOrDefault();
@@ -289,9 +312,10 @@ namespace BaristaHome.Controllers
                 return RedirectToAction("Menu", "Menu");
             }
             return View(drink);
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
 
-
+        /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         //Method for rendering images
         public async Task<ActionResult> RenderImage(int id)
         {
@@ -313,7 +337,10 @@ namespace BaristaHome.Controllers
 
             return File(image, "image/png");
         }
+        /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+
+        /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
         {
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
@@ -323,6 +350,6 @@ namespace BaristaHome.Controllers
                                                  select d).ToList();
             return View(drinkList);
         }
-
+        /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
 }

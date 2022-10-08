@@ -1,4 +1,5 @@
-﻿.center {
+﻿/*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+.center {
     width: 75%;
     text-align: center;
 }
@@ -126,14 +127,14 @@
 
 .searchFilter {
     /*outline: 5px dotted blue;*/
-    height: 200px;
+    height: 100px;
     width: 75%;
     /*align-self: center;*/
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 
 .filter {
-    outline: 5px dotted blue;
+    /*outline: 5px dotted blue;*/
     height: 200px;
     width: 25%;
     /*align-self:center;*/
@@ -142,7 +143,7 @@
 }
 
 .search {
-    outline: 5px dotted blue;
+    /*outline: 5px dotted blue;*/
     height: 200px;
     width: 75%;
     align-self: center;
@@ -215,8 +216,9 @@
     padding-right: 10px;
     padding-bottom: 10px;
 }
+/*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-
+/*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 /*Add tag button design*/
 .addTag {
     /*border: 2px solid;
@@ -316,3 +318,4 @@ input:focus{
     font-size: calc(1.375rem + 1.5vw);
     text-decoration: none;
 }
+/*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
