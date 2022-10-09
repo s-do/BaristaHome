@@ -69,7 +69,8 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <form asp-action= "SearchBarResults">
+
+@*                    <form asp-action= "SearchBarResults">
                         <div class="form-group">
                             <input asp-for="searchPhrase" class="mytext" />
                             <span asp-validation-for="searchPhrase" class="text-danger"></span>
@@ -80,7 +81,22 @@
                                 <input type="submit" value="Search" class="btn btn-primary" />
                             </div>
                         </div>
+                    </form>*@
+
+                    <form asp-action="ShowBarResults">
+                        <div style="width: 700px;" class="input-group mb-3">
+                            <label for="SearchPhrase" class="control-label"></label>
+                            <input type="text" name="SearchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button style="background-color: lightpink;
+                                         border-color:lightpink;
+                                         color:black;" class="btn btn-outline-secondary" type="submit">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
                     </form>
+
                 </div>
             </div>
         </div>
