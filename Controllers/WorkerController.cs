@@ -34,45 +34,10 @@ namespace BaristaHome.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        //Display list of workers that belong to the store
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            /*//Get the list of all users
-            List<User>? listOfUsers = await _context.User.ToListAsync();
-
-            //Create a new list to store users that belong to the current store
-            List<User> listOfStoreUsers = new List<User>();
-
-            //Get the current user (which should be the owner/admin)
-            var currentUser = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
-
-            //Get their invite code
-            string storeInviteCode = currentUser.InviteCode;
-
-            //Go through the list of all users
-            foreach (var u in listOfUsers)
-            {
-                //And if their invite code is the same, add them to the new list
-                if (storeInviteCode != null && u.InviteCode != null)
-                {
-                    if (u.InviteCode.Equals(storeInviteCode))
-                    {
-                        listOfStoreUsers.Add(u);
-                    }
-                }
-
-            }
-            //Pass the list of store users to the view
-            return View(listOfStoreUsers);*/
-
-            // you could simply use a LINQ query to display all workers inside a specific store using the storeid claim instead of using the invite code
-            var workerList = (from u in _context.User
-                              where u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value) // Selecting very user with that storeid
-                              orderby u.RoleId descending, u.FirstName // Order by the roles in alphabetical order
-                              select u) as IEnumerable<User>;
-
-            // A cool way to do a LINQ query asynchronously instead! I still don't understand when to use 
-            // asynchronous and synchronous queries, best thing people said was it helps with a more responsive UI
             var workers = await _context.User
                             .Where(u => u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value))
                             .OrderByDescending(u => u.RoleId)
@@ -82,12 +47,13 @@ namespace BaristaHome.Controllers
             return View(workers);
         }
 
+        //Return a worker edit page for the current user
         public async Task<IActionResult> WorkerEdit()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
-        // GET: Account/Details/5
+        //Return a details page for the current user
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -105,22 +71,8 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
-        // GET: Account/Edit/UserId
-        /*        public async Task<IActionResult> WorkerEdit(int? id)
-                {
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
 
-                    var registerViewModel = await _context.User.FindAsync(id);
-                    if (registerViewModel == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(registerViewModel);
-                }*/
-
+        //Retrieve all input from the worker edit page, and then update the user model and save the user model in the database
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> WorkerEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image")] User worker)
@@ -136,7 +88,7 @@ namespace BaristaHome.Controllers
                 return View(worker);
             }
 
-
+            //Saves worker image as a byte array
             if (worker.Image != null)
             {
                 using (var ms = new MemoryStream())
@@ -151,7 +103,7 @@ namespace BaristaHome.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {   //Hashes the new password and updates it as the new password for user
                     worker.Password = Crypto.HashPassword(worker.Password);
                     _context.Update(worker);
                     await _context.SaveChangesAsync();
@@ -165,6 +117,7 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
+        //Return owner editing page based on their id
         public async Task<IActionResult> OwnerEdit(int? id)
         {
             if (id == null)
@@ -180,6 +133,8 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
+
+        //Updates and saves any new changes inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OwnerEdit(User worker)
@@ -201,7 +156,7 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
-
+        //Returns an owner self editing page based on their id
         public async Task<IActionResult> OwnerSelfEdit()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
@@ -209,6 +164,7 @@ namespace BaristaHome.Controllers
 
 
 
+        //Saves any new changes to the user information inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OwnerSelfEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
@@ -242,7 +198,7 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
-        // GET: Account/Delete/5
+        // Returns a delete page based on the selected user's id
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -261,7 +217,7 @@ namespace BaristaHome.Controllers
         }
 
 
-        // POST: Account/Delete/5
+        // Removes the selected user from the database
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -272,17 +228,19 @@ namespace BaristaHome.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //Displays an invite code page based on the user id
         public async Task<IActionResult> Invite()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
-
+        //Displays user profile based on the user id
         public async Task<IActionResult> Profile()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
+        //Returns the current users image to the view
         public async Task<ActionResult> RenderImage(int id)
         {
             if (id == null)
@@ -302,12 +260,14 @@ namespace BaristaHome.Controllers
 
             return File(image, "image/png");
         }
-        
+
+        //Returns a change password page based on the user id
         public async Task<IActionResult> ChangePassword()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
+        //Updates and saves the new password to the database
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
