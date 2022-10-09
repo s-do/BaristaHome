@@ -352,11 +352,17 @@ namespace BaristaHome.Controllers
         //Method for returning and displaying all the store's Drink items that contain the search phrase in its name
         public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
         {
+
+            //Get current store ID
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+
+            //Return a list of drinks that contain the search phrase in its name
             var drinkList = (IEnumerable<Drink>)(from d in _context.Drink
                                                  where (d.StoreId == storeId && d.DrinkName.Contains(SearchPhrase))
                                                  orderby d.DrinkId descending
                                                  select d).ToList();
+
+            //Return list of drinks to the .cshtml to be displayed
             return View(drinkList);
         }
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/

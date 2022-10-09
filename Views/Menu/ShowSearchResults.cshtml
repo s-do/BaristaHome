@@ -4,8 +4,10 @@
 
 @*CINDIE*@
 
-
+@*CSS styling for displaying the button and drinks*@
 <style>
+
+    @*CSS styling for the drink results*@
     .drink-pic{
         width: 200px;
         height: 200px;
@@ -21,6 +23,7 @@
         display: inline-block;
     }
 
+    @*CSS styling for the back button*@
     .pink-button {
         background-color: pink;
         color: black;
@@ -68,7 +71,7 @@
 
                 }
                 else
-                {
+                {@*If drink has a picture, then display that picture*@
                     <div class="drink-pic-background">
                         <img class="drink-pic" src="@Url.Action("RenderImage", new { id = item.DrinkId})" />
                     </div>
