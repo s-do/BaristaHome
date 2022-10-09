@@ -15725,14 +15725,15 @@ document.addEventListener('DOMContentLoaded', function () {
         selectable: true,
         select: addShift, 
         // parsing the shifts from the store and then updating it on the view
-        /*events: '/Calendar/GetShifts',*/
+        events: '/Calendar/GetShifts',
         eventClick: updateShift,
-        events: [
+/*        events: [
             {
                 id: 1,
                 title: 'Shift1',
                 start: '2022-10-12T06:30:00',
-                end: '2022-10-12T17:30:00'
+                end: '2022-10-12T17:30:00',
+                UserId: 42
             },
             {
                 id: 2,
@@ -15752,7 +15753,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 url: 'http://google.com/',
                 start: '2022-10-28'
             }
-        ]
+        ]*/
 
         
     });
@@ -15765,15 +15766,12 @@ function addShift() {
 
 function updateShift(info) {
     /* TODO: Figure out how to get event property values and put them into the html input tags (as well as formatting the time correctly)*/
-    // this doesn't work
-    $('#startTime').val(info.event.start);
-    $('#endTime').val(info.event.end);
-    $('#shiftId').val(info.event.id);
-    // hardcoding does
-    $('#workerId').val(2);
+    $('#startTime').val(info.event.start); // working but reformat the data and figure out how to change input type
+    $('#endTime').val(info.event.end); // same as above
+    $('#shiftId').val(info.event.id); // works when u set the viewmodel to the exact naming of the event property
 
-    /*var getTxtValue = info.event.id; 
-    $("#myInputHidden").val(info.event.id);*/
+    $('#workerId').val(info.event.extendedProps.UserId); // figure out how to call custom properties 
+
 
     $('#editModal').modal('show');
     //alert('TODO: UPDATE A SHIFT');

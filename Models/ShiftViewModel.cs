@@ -2,10 +2,11 @@
 {
     public class ShiftViewModel
     {
-        public int EventId { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Start { get; set; }
         public string End { get; set; }
         public string Color { get; set; }
+        public int UserId { get; set; }
     }
 }

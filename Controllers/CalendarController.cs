@@ -81,11 +81,12 @@ namespace BaristaHome.Controllers
                                 // Then we need to feed the data as a json feed that abides to FullCalendar's property names
                                 select new ShiftViewModel()
                                 {
-                                    EventId = Convert.ToInt32(s.ShiftId),
+                                    Id = Convert.ToInt32(s.ShiftId),
                                     Title = u.FirstName + " " + u.LastName,
                                     Start = Convert.ToString(s.StartShift),
                                     End = Convert.ToString(s.EndShift),
                                     Color = u.Color,
+                                    UserId = u.UserId
                                 }).ToListAsync();
             return Json(shifts);
         }
