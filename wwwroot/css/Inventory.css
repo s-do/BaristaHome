@@ -59,6 +59,7 @@ body {
 .table-inventory{
     width:96%;
     margin-left:auto;
+    
 }
 .table-inventory th{
     padding:20px;
@@ -90,6 +91,7 @@ body {
 .mytext {
     width: 600px;
     height:45px;
+    
 }
 
 .form-control {
@@ -100,4 +102,23 @@ body {
 .row {
     display: inline-block;
 }
+
+.input-group-inventory {
+    background-color: red;
+}
+
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    margin-right: auto;
+    margin-left: auto;
+    width: 92%;
+    height: 70px;
+}
+
+.button-test {
+    height: 39px;
+}
+
 

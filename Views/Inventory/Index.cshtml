@@ -61,42 +61,33 @@
 
     <!-- Trying to group the new Item button and search bar onto same line-->
 
-     <p>
-        <div class="container">
 
-@*            <div class="btn-float-right" style="background-color:#ffdcf4">
-                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#inventoryModal"> + New Item</a>
-            </div>*@
+    <div class="flex-container">
 
-            <div class="row">
-                <div class="col-md-12">
-                    <form asp-action="SearchBarResults">
-                        <div style="width: 700px;" class="input-group mb-3">
-                            <label for="searchPhrase" class="control-label"></label>
-                            <input type="text" name="searchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username">
+        <form asp-action="SearchBarResults">
+            <div style="width: 700px;" class="input-group mb-3">
+                <label for="searchPhrase" class="control-label"></label>
+                <input type="text" name="searchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username">
 
-                            <div class="input-group-append">
-                                <button style="background-color: lightpink;
+                <div class="input-group-append">
+                    <button style="background-color: lightpink;
                                          border-color:lightpink;
                                          color:black;" class="btn btn-outline-secondary" type="submit">
-                                    <img src="../images/searchIcon.png" height="24" width="23">
-                                </button>
-                            </div>
-                        </div>
-
-                    </form>
-
-                    <div>
-                        <button style="background-color: lightpink;border-color:lightpink;
-                                    color:black;" class="btn btn-outline-secondary" data-toggle="modal" data-target="#inventoryModal">
-                                    New Item +
-                        </button>
-                    </div>
-
+                        <img src="../images/searchIcon.png" height="24" width="23">
+                    </button>
                 </div>
             </div>
+
+        </form>
+
+        <div>
+            <button style="background-color: lightpink;border-color:lightpink;
+                                    color:black;" class="btn btn-outline-secondary" data-toggle="modal" data-target="#inventoryModal">
+                New Item +
+            </button>
         </div>
-    </p>
+
+    </div>
 
 
 
