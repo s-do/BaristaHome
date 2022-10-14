@@ -50,7 +50,7 @@ namespace BaristaHome.Controllers
         {
             if (ModelState.IsValid)
             {
-                Console.WriteLine(shift.UserId);
+                // Error Handling
                 if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0 || DateTime.Compare(shift.StartShift, shift.EndShift) > 0)
                 {
                     ModelState.AddModelError(string.Empty, "Oops, you either chose shifts at the same times, or your start shift is bigger than the end shift!");
@@ -59,7 +59,20 @@ namespace BaristaHome.Controllers
                     ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
                     return View(shift);
                 }
-                ViewBag.openModal = false;
+
+                // Checking if user has an overlapping shift on that day 
+                var existingShift = (from s in _context.Shift
+                                    where s.UserId.Equals(shift.UserId) && ((shift.StartShift >= s.StartShift && shift.StartShift <= s.EndShift) || (shift.EndShift >= s.StartShift && shift.EndShift <= s.EndShift))
+                                    select s).FirstOrDefault();
+                if (existingShift != null)
+                {
+                    ModelState.AddModelError(string.Empty, "This worker has an existing shift that overlaps with this one! Choose a different time.");
+                    ViewBag.openModal = true;
+                    ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
+                    return View(shift);
+                }
+
+                // Add shift and refresh page to update calendar
                 _context.Add(shift);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Shifts));
@@ -86,32 +99,12 @@ namespace BaristaHome.Controllers
                                     Start = Convert.ToString(s.StartShift),
                                     End = Convert.ToString(s.EndShift),
                                     Color = u.Color,
-                                    UserId = u.UserId
+                                    UserId = Convert.ToInt32(u.UserId)
                                 }).ToListAsync();
             return Json(shifts);
         }
 
-        /*// GET: Calendar/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Shift == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shift.FindAsync(id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-            ViewData["StoreId"] = new SelectList(_context.Store, "StoreId", "StoreId", shift.StoreId);
-            ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email", shift.UserId);
-            return View(shift);
-        }*/
-
         // POST: Calendar/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("ShiftId,StartShift,EndShift,ShiftDate,UserId,StoreId")] Shift shift)
@@ -125,6 +118,24 @@ namespace BaristaHome.Controllers
             {
                 try
                 {
+                    // Error Handling
+                    if (DateTime.Compare(shift.StartShift, shift.EndShift) == 0 || DateTime.Compare(shift.StartShift, shift.EndShift) > 0)
+                    {
+                        TempData["editShiftError"] = "Oops, you either chose shifts at the same times, or your start shift is bigger than the end shift!";
+                        return RedirectToAction(nameof(Shifts));
+                    }
+
+                    // Checking if user has an overlapping shift on that day 
+                    var existingShift = (from s in _context.Shift
+                                        where !s.ShiftId.Equals(shift.ShiftId) && s.UserId.Equals(shift.UserId) && 
+                                        ((shift.StartShift >= s.StartShift && shift.StartShift <= s.EndShift) || (shift.EndShift >= s.StartShift && shift.EndShift <= s.EndShift))
+                                        select s).FirstOrDefault();
+                    if (existingShift != null)
+                    {
+                        TempData["editShiftError"] = "This worker has an existing shift that overlaps with this one! Choose a different time.";
+                        return RedirectToAction(nameof(Shifts));
+                    }
+
                     _context.Update(shift);
                     await _context.SaveChangesAsync();
                 }
@@ -141,11 +152,7 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction(nameof(Shifts));
             }
-            /*ViewData["StoreId"] = new SelectList(_context.Store, "StoreId", "StoreId", shift.StoreId);
-            ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email", shift.UserId);*/
-            ModelState.AddModelError(string.Empty, "There was an error editing this shift.");
-            ViewBag.openModal = true;
-            ViewData["UserId"] = new SelectList(_context.User.Where(w => w.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value)), "UserId", "FirstName", shift.UserId);
+            TempData["editShiftError"] = "There was an error editing this shift.";
             return RedirectToAction(nameof(Shifts), shift);
         }
 
