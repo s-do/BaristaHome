@@ -132,6 +132,9 @@
             {
                 foreach (var item in inventoryList)
                 {
+                    var dataTargetEdit = "#ModalEdit" + item.ItemId;
+                    var modalID = "ModalEdit" + item.ItemId;
+
                             <tr>
                                 <td>
                                     @item.Name
@@ -146,10 +149,10 @@
                                     @item.UnitName
                                 </td>
                                 <td>
-                                    <a class="img-size" data-toggle="modal" data-target="#editModal" >
+                                    <a class="img-size" data-toggle="modal" data-target="@dataTargetEdit" >
                                         <img src="../images/editButton.png">
                                     </a>
-                                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="@modalID" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">

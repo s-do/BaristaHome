@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using System.Collections;
+using System.Web.Helpers;
 
 namespace BaristaHome.Controllers
 {
@@ -216,6 +217,66 @@ namespace BaristaHome.Controllers
             return View();
 
         }
+
+
+
+        // GET Edit InventoryItem
+        // GET: Account/Edit/UserId
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var editViewModel = await _context.InventoryItem.FirstOrDefaultAsync(m => m.ItemId == id);
+
+  
+            if (editViewModel == null)
+            {
+                return NotFound();
+            }
+            return View(editViewModel);
+        }
+
+
+
+
+
+        // Edit Value in Inventory
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ItemId,StoreId,Quantity,PricePerUnit")] InventoryItem editViewModel)
+        {
+            if (id != editViewModel.ItemId)
+            {
+                return NotFound();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(editViewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ItemViewModelExists(editViewModel.ItemId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(editViewModel);
+        }
+
 
 
 
