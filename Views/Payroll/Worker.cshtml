@@ -1,7 +1,46 @@
 ﻿@{
     ViewData["Title"] = "Worker";
+    Layout = null;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Payroll Worker</h1>
-</div>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Payroll.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Back</a>
+            <div class="center">
+                @*<h1 class="title">Payroll View</h1>*@
+                <a class="text-black title" asp-area="" asp-controller="Payroll" asp-action="Worker">Payroll View</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <div align="center">
+
+        <div class="worker">
+        </div>
+
+        <div class="information">
+           
+        </div>
+    </div>
+
+
+</body>
+
+</html>

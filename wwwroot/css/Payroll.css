@@ -1,5 +1,59 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿.center {
+    width: 75%;
+    text-align: center;
+}
+
+.pink-button-right {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: right;
+    margin-right: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    object-fit: contain;
+}
+
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.worker {
+    outline: 5px dotted blue;
+    height: 150px;
+    width: 75%;
+    /*align-self: center;*/
+    margin-bottom: 30px;
+}
+
+.information {
+    outline: 5px dotted red;
+    width: 75%;
+    min-height: auto;
+    overflow: auto;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.375rem + 1.5vw);
+    text-decoration: none;
 }
