@@ -58,9 +58,10 @@
 <div class="drinks">
     @foreach (var item in Model)
     {
+        <div style = "display:inline-block; margin-right: 10px; ">
         <a asp-action="Drink" asp-route-id="@item.DrinkId" class="drink-item">
             @*Drink image*@
-            <div class="drink-icon">
+            <div style ="border: 5px; border-style:solid; border-color: lightpink; box-shadow: 3px 3px 3 rgba(0, 0, 0, 0.15);" class="drink-icon">
                 @*Display default icon if drink has no image*@
                 @if (item.DrinkImageData == null)
                 {
@@ -79,12 +80,13 @@
                 }
             </div>
             @*Drink Name*@
-            <div class="drink-name">
-                @Html.DisplayFor(modelItem => item.DrinkName)
+            <div style = "color: inherit; text-decoration:none; vertical-align:middle;" class="drink-name">
+                <p> @item.DrinkName </p>
             </div>
         </a>
+            </div>
+
     }
 
 </div>
     
-
