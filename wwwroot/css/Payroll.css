@@ -57,3 +57,7 @@
     font-size: calc(1.375rem + 1.5vw);
     text-decoration: none;
 }
+
+.user-img {
+    border-radius: 50%;
+}
