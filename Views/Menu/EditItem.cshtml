@@ -92,20 +92,47 @@
                 <a>Tags</a>
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
-                    <div class="existingTags">
-                        @*Displays the tags that the drink currently has*@
-                        @{
-                            var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
+                    @*<form asp-action="Edit">
+                    </form>*@
+                    
+                        <div class="existingTags">
+                            @*Displays the tags that the drink currently has*@
+                            @{
+                                var myList = ViewBag.DrinkTagList==null ? new List<DrinkTag>() : (List<DrinkTag>)ViewBag.DrinkTagList;
 
-                            if(myList.Any()) {
-                                foreach(var t in myList) {
-                                    //<button type="button" id="existingTag" name="tagList" class="btn newTag">@t.TagName</button>
-                                    <input type="text" id="existingTag" name="tagList" value=@t.TagName class="input" style="width:93%;">
-                                    <a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+                                if(myList.Any()) {
+                                    foreach(var dt in myList) {
+                                        //<button type="button" id="existingTag" name="tagList" class="btn newTag">@t.TagName</button>
+
+                                        //<input type="text" id="existingTag" name="tagList" value=@t.TagName class="input" style="width:93%;">
+                                        //<a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+
+                                        //<button name="existingTag" type="button" class="btn newTag" style="width:93%;">@t.TagName</button>
+                                        //<a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+                                        //<a class="delete" asp-action="DeleteTag" asp-route-id="@Model.DrinkId" style="float:right;">x</a>
+                                        var list = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
+                                        var tagName = "";
+                                        if(list.Any()) {
+                                            foreach(var t in list) {
+                                                if(dt.TagId == t.TagId)
+                                                {
+                                                    tagName = t.TagName;
+                                                    <p>tagName</p>
+                                                    <p>@t.TagName</p>
+                                                    <button type="button" class="btn newTag" style="width:93%;">@t.TagName</button>
+                                                }
+                                            }
+                                        }
+                                        
+                                        <p>@dt.DrinkId</p>
+                                        <p>@dt.TagId</p>
+                                        
+                                        <button type="submit" class="btn delete" asp-controller="Menu" asp-action="Delete" asp-route-tagId="@dt.TagId" asp-route-drinkId="@dt.DrinkId" style="float:right;">x</button>
+                                    }
                                 }
                             }
-                        }
-                    </div>
+                        </div>
+                    
                     @*Delete existing tag*@
                     <script>
                         //const existingTag = document.getElementById("existingTag")
