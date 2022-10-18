@@ -8,6 +8,9 @@ using BaristaHome.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BaristaHome.Controllers
 {
@@ -350,21 +353,88 @@ namespace BaristaHome.Controllers
 
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         //Method for returning and displaying all the store's Drink items that contain the search phrase in its name
-        public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
+        //If there are any filters/tags selected, it will return only drinks with matching filters/tags
+
+        public async Task<IActionResult> ShowSearchResults(string SearchPhrase, string tagLine)
         {
 
             //Get current store ID
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
             //Return a list of drinks that contain the search phrase in its name
-            var drinkList = (IEnumerable<Drink>)(from d in _context.Drink
+            var drinkList = (List<Drink>)(from d in _context.Drink
                                                  where (d.StoreId == storeId && d.DrinkName.Contains(SearchPhrase))
                                                  orderby d.DrinkId descending
                                                  select d).ToList();
 
+            if (tagLine == null)
+            {
+                return View(drinkList);
+            }
+
+
+            List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
+            int numOfTags = tagList.Count;
+            int numOfMatchingTags = 0;
+            List<Drink> resultDrinks = new List<Drink>();
+
+            if ((tagLine != null) && (SearchPhrase == null))
+            {
+                Menu();
+            }
+
+            //If there are tags selected
+            if (tagList.Any())
+            {
+                //If there are drinks that match the search phrase
+                if (drinkList.Any())
+                {
+                    // For each drink that contains the search phrase
+                    foreach (Drink d in drinkList)
+                    {
+                        numOfMatchingTags = 0;
+
+                        // Get all tags belonging to the current drink
+                        var drinkTagList = (IEnumerable<Tag>)(from dt in _context.DrinkTag
+                                                              join t in _context.Tag on dt.TagId equals t.TagId
+                                                              where d.DrinkId == dt.DrinkId
+                                                              select t).ToList();
+                        // Go thru each tag that the current drink has
+                        foreach (Tag t in drinkTagList)
+                        {
+                            // Go thru each tag that the user selected 
+                            foreach (int drinkTag in tagList)
+                            {
+                                // Check if they are the same tag
+                                if (drinkTag.Equals(t.TagId))
+                                {
+                                    numOfMatchingTags += 1;
+                                }
+
+                                // If the drink contains all of the tags that the user selected, add the drink to the result list
+                                if (numOfMatchingTags == numOfTags)
+                                {
+                                    resultDrinks.Add(d);
+                                    numOfMatchingTags = 0;
+
+                                }
+                            }
+
+                        }
+
+
+                    }
+                }
+            }
+            else
+            {
+                return View(drinkList);
+            }
+
+
             //Return list of drinks to the .cshtml to be displayed
-            return View(drinkList);
+            return View(resultDrinks);
         }
-        /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
+    /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 }
