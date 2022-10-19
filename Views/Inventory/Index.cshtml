@@ -1,0 +1,373 @@
+﻿@model BaristaHome.Models.ItemViewModel
+
+@{
+    ViewData["Title"] = "Inventory Item";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
+
+<!--Nav bar area-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Inventory</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Inventory" asp-action="Index">Tracker</a>
+        </nav>
+    </header>
+
+
+
+
+    <!-- Attempt to align search box and button, will come back to once search works-->
+
+@*    <div class="container">
+        <h4>Option 1</h4>
+        <div class="form-inline">
+            <input class="myte">
+            <button class="btn btn-primary">enter</button>
+            <button class="btn btn-primary">New Item</button>
+
+ 
+            <form method="post">
+                    <input asp-for="searchPhrase" class="mytext" />
+                    <span asp-validation-for="searchPhrase" class="text-danger"></span>
+                    <input type="submit" value="Register" class="btn btn-primary" />
+                    <a href="#" button type="button" class="btn-float-right" data-toggle="modal" data-target="#inventoryModal"> + New Item</a>
+
+
+            </form>
+        </div>
+   
+    </div>*@
+
+
+
+    <!-- Trying to group the new Item button and search bar onto same line-->
+
+    <div class="flex-container">
+
+        <form asp-action="SearchBarResults">
+            <div style="width: 700px;" class="input-group mb-3">
+                <label for="searchPhrase" class="control-label"></label>
+                <input type="text" name="searchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username">
+
+                <div class="input-group-append">
+                    <button style="background-color: lightpink;
+                                         border-color:lightpink;
+                                         color:black;" class="btn btn-outline-secondary" type="submit">
+                        <img src="../images/searchIcon.png" height="24" width="23">
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div>
+            <button style="background-color: lightpink;border-color:lightpink;
+                                    color:black;" class="btn btn-outline-secondary" data-toggle="modal" data-target="#inventoryModal">
+                New Item +
+            </button>
+        </div>
+
+    </div>
+
+
+
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
+
+
+
+<!-- My scuffed attempt to display items of a store I DON'T KNOW HOW TO FORMAT THINGS TO BE C  OO  L AND  CL  E A N-->
+<table class="table-inventory">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePerUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            // https://stackoverflow.com/questions/57727635/how-to-pass-selected-query-list-using-viewbag i used this link to display list of store's items
+            var inventoryList = ViewBag.Inventory == null ? new List<ItemViewModel>() : (List<ItemViewModel>)ViewBag.Inventory;
+            if (inventoryList.Any())
+            {
+                foreach (var item in inventoryList)
+                {
+                    var dataTargetEdit = "#ModalEdit" + item.ItemId;
+                    var modalID = "ModalEdit" + item.ItemId;
+
+                            <tr>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.PricePerUnit
+                                </td>
+                                <td>
+                                    @item.UnitName
+                                </td>
+                                <td>
+                                    <a class="img-size" data-toggle="modal" data-target="@dataTargetEdit" >
+                                        <img src="../images/editButton.png">
+                                    </a>
+                                    <div class="modal fade" id="@modalID" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="center">
+                                                        <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.ItemId">Edit</a>
+                                                        <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+@* Import bootstrap for modal (Need more research on why these ones are used)*@
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+
+
+
+<style>
+    .modal-content {
+        background: #ffe4b4;
+    }
+</style>
+
+
+<style>
+    .btn-primary, .btn-outline-dark {
+        background-color: #ffdcf4 !important;
+    }
+</style>
+
+
+@* Code for the modal pop up of New Item *@
+<div class="modal fade" id="inventoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Item</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input asp-for="Name" class="form-control" style="text-transform:lowercase" /> 
+                        <span asp-validation-for="Name" class="text-danger" ></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Quantity"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PricePerUnit">Price Per Unit </label>
+                        <input asp-for="PricePerUnit" class="form-control" />
+                        <span asp-validation-for="PricePerUnit" class="text-danger"></span>
+                    </div>
+                    
+
+                    <label class="control-label">Unit Name</label>
+                    <select asp-for="UnitName" class="form-control" asp-items="ViewBag.UnitNames"></select>
+                   
+
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" value="Save" class="btn btn-outline-dark m-1" />
+                            <a class="btn btn-outline-dark m-1" asp-area="" asp-controller="Inventory" asp-action="Index">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*Code for 2nd pop up, edit button *@
+@*Currently not working due to @item.ItemId , needs to be in foreach inventory loop above*@
+
+
+@*<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="center">
+                    <<a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.ItemId">Delete</a>
+                    <a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">User</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+
+<script>
+    $(document).ready(function(){
+        $("btnSave").click(function() {
+            var inventoryFormData =$("#inventoryForm").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/InventoryItem/SaveInventory",
+                data: inventoryFromData,
+                success: function () {
+                    window.location.href = "/Inventory/Index";
+                }
+            })
+
+        })
+    })
+</script>
+
+
+
+
+
+
+<table class="table table-bordered">
+    <tr class="btn-success"></tr>
+    <thead>
+        <tr>
+            <th>
+                Item Name
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                PricePerPoint
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in ViewBag.InventoryItem) {
+        <tr>
+            <td>
+                @item.Item.ItemId
+            </td>
+            <td>
+                @item.Quantity
+            </td>
+            <td>
+                @item.PricePerUnit
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+*@

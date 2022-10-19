@@ -11,7 +11,7 @@ namespace BaristaHome.Models
 
         // Relationships
         public int UnitId { get; set; }
-        public virtual Unit Unit { get; set; }
+        public virtual Unit? Unit { get; set; }
 
         public virtual ICollection<InventoryItem>? InventoryItems { get; set; }
     }
