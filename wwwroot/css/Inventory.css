@@ -1,0 +1,124 @@
+﻿
+body {
+  
+}
+
+.btn-float-right a {
+    float: right;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-right: 100px;
+    background-color: #ffdcf4;
+    color: black;
+}
+
+
+
+.pink-button-right {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: right;
+    margin-right: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    object-fit: contain;
+}
+
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+.table-inventory th {
+    background-color: #ffffff;
+}
+
+.table-inventory tr:nth-of-type(odd) {
+    background-color: #f0ecec;
+}
+.table-inventory tr:nth-of-type(even) {
+    background-color: #ffffff;
+}
+.table-inventory{
+    width:96%;
+    margin-left:auto;
+    
+}
+.table-inventory th{
+    padding:20px;
+}
+.table-inventory td{
+    padding:20px;
+}
+
+
+.table-inventory th:last-child,td:last-child{
+    background:#ffe4bc;
+    width:5%;
+}
+
+
+.img-size img {
+    margin-right: 5px;
+    vertical-align: middle;
+    width:18px;
+    height:18px;
+}
+
+
+.center {
+    text-align:center;
+}
+
+
+.mytext {
+    width: 600px;
+    height:45px;
+    
+}
+
+.form-control {
+    display: inline-block;
+}
+
+
+.row {
+    display: inline-block;
+}
+
+.input-group-inventory {
+    background-color: red;
+}
+
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    margin-right: auto;
+    margin-left: auto;
+    width: 92%;
+    height: 70px;
+}
+
+.button-test {
+    height: 39px;
+}
+
+

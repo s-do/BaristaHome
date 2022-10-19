@@ -20,3 +20,11 @@ body {
     background-color: #ffe4bc;
     font-family: 'Inter', sans-serif;
 }
+
+.capitalize-first-letter {
+    text-transform: lowercase;
+}
+
+.capitalize-first-letter::first-letter {
+        text-transform: uppercase;
+}
