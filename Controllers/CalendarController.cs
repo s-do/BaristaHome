@@ -86,7 +86,6 @@ namespace BaristaHome.Controllers
         [HttpGet]
         public async Task<IActionResult> GetShifts(DateTime start, DateTime end)
         {
-            Console.WriteLine(Convert.ToInt32(User.FindFirst("StoreId").Value));
             // Query the store's shifts
             var shifts = await (from s in _context.Shift
                                 join u in _context.User on s.UserId equals u.UserId
@@ -156,43 +155,23 @@ namespace BaristaHome.Controllers
             return RedirectToAction(nameof(Shifts), shift);
         }
 
-        // GET: Calendar/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Shift == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shift
-                .Include(s => s.Store)
-                .Include(s => s.User)
-                .FirstOrDefaultAsync(m => m.ShiftId == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return View(shift);
-        }
-
         // POST: Calendar/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete([Bind("ShiftId")] Shift shift)
         {
             if (_context.Shift == null)
             {
                 return Problem("Entity set 'BaristaHomeContext.Shift'  is null.");
             }
-            var shift = await _context.Shift.FindAsync(id);
-            if (shift != null)
+            var queryShift = await _context.Shift.FindAsync(shift.ShiftId);
+            if (queryShift != null)
             {
-                _context.Shift.Remove(shift);
+                _context.Shift.Remove(queryShift);
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Shifts));
         }
 
         private bool ShiftExists(int id)
