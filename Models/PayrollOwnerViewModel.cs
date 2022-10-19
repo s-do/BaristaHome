@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,11 +14,10 @@ namespace BaristaHome.Models
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
-
-
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
+        [DisplayName("Full Name")]
         public string? FullName { get; set; }
 
     }

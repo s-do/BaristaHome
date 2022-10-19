@@ -3,13 +3,49 @@
 
 @{
     ViewData["Title"] = "Owner";
+    Layout = null;
 }
 
 <link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
 
-<div class="text-center">
-    <h1 class="display-4">Payroll Owner</h1>
-</div>
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Payroll Management</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="" asp-action="">Add Payroll</a>
+        </nav>
+    </header>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
 
 
 <table class="table-inventory">
@@ -51,6 +87,11 @@
                         </td>
                         <td>
                             @item.Date.ToShortDateString()
+                        </td>
+                        <td>
+                            <a class="img-size" >
+                                <img src="../images/editButton.png">
+                            </a>
                         </td>
                     </tr>
                 }
