@@ -69,18 +69,41 @@
                         <p>Clocking</p>
                     </div>
                 </a>
-                <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="payroll">
+                <!--Using Claims to display different views based on user's role-->
+                @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+                {
+                    <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="worker">
+                        <div class="top">
+                            <img class="contain" src="../images/payroll.png">
+                        </div>
+                        <div class="bottom">
+                            <p>Payroll</p>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="owner">
+                        <div class="top">
+                            <img class="contain" src="../images/payroll.png">
+                        </div>
+                        <div class="bottom">
+                            <p>Payroll</p>
+                        </div>
+                    </a>
+                }
+@*                <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="payroll">
                     <div class="top">
                         <img class="contain" src="../images/payroll.png">
                     </div>
                     <div class="bottom">
                         <p>Payroll</p>
                     </div>
-                </a>
+                </a>*@
             </div>
             <!--Second row of containers-->
             <div class="box-row">
-                <a class="nav-link feature" asp-area="" asp-controller="inventory" asp-action="inventory">
+                <a class="nav-link feature" asp-area="" asp-controller="inventory" asp-action="index">
                     <div class="top">
                         <img class="contain" src="../images/inventory.png">
                     </div>

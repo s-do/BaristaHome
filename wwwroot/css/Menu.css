@@ -1,4 +1,5 @@
-﻿.center {
+﻿/*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+.center {
     width: 75%;
     text-align: center;
 }
@@ -34,11 +35,6 @@
     text-align: center;
 }
 
-.store-name {
-    margin-top: 50px;
-    font-size: 50px
-}
-
 
 .footer {
     position: absolute;
@@ -47,3 +43,280 @@
     white-space: nowrap;
     line-height: 60px;
 }
+
+.add-drink-top {
+    /*outline: 5px dotted green;*/
+    height: 500px;
+    width: 100%;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.drink-image {
+    /*outline: 5px dotted red;*/
+    float: left;
+    height: inherit;
+    width: 30%;
+    padding: inherit;
+    object-fit: contain;
+}
+
+.drink-details {
+    /*outline: 5px dotted blue;*/
+    float: left;
+    height: inherit;
+    width: 70%;
+    padding: inherit;
+}
+
+.drink-tags {
+    /*outline: 5px dotted blue;*/
+    float: left;
+    height: 30%;
+    width: 100%;
+    /*padding: inherit;*/
+    overflow: auto;
+}
+
+.add-drink-bottom {
+    /*outline: 5px dotted red;*/
+    height: 700px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.drink-instructions {
+    /*outline: 5px dotted green;*/
+    float: left;
+    height: inherit;
+    width: 50%;
+    padding: inherit;
+}
+
+.drink-ingredients {
+   /* outline: 5px dotted blue;*/
+    float: left;
+    height: inherit;
+    width: 50%;
+    padding: inherit;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-container {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-height: inherit;
+    vertical-align: middle;
+    width: 100%;
+    height: 400px;
+    /*outline: 5px dotted red;*/
+    object-fit:contain;
+}
+
+#Instructions, #DrinkName, #Description, #DrinkIngredients {
+    border: 3px solid #DFB3D3;
+}
+
+.searchFilter {
+    /*outline: 5px dotted blue;*/
+    height: 100px;
+    width: 75%;
+    /*align-self: center;*/
+    margin-bottom: 30px;
+}
+
+.filter {
+    /*outline: 5px dotted blue;*/
+    height: 200px;
+    width: 25%;
+    /*align-self:center;*/
+    margin-bottom:50px;
+    float:left;
+}
+
+.search {
+    /*outline: 5px dotted blue;*/
+    height: 200px;
+    width: 75%;
+    align-self: center;
+    margin-bottom: 50px;
+    float: right;
+}
+
+.drinks {
+    width: 75%;
+    min-height: auto;
+    overflow:auto;
+}
+
+.drink-item {
+    background-color: white;
+    border: 5px solid #ffdcf4;
+    position: relative;
+    margin-top: 2%;
+    margin-bottom: 2%;
+/*    margin-right: 2%;*/
+    margin-left: 4%;
+    float: left;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    padding: 6px;
+    color: black;
+    text-align: center;
+    font-size: 40px;
+    font-family: 'Inter';
+    box-shadow: -9px 6px 11px rgba(201, 125, 200, 0.6);
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.contain {
+    width: inherit;
+    height: inherit;
+    object-fit: contain;
+}
+
+.drink-icon {
+    width: 170px;
+    height: 170px;
+    align-self: flex-start;
+    position: absolute;
+}
+
+.drink-icon .image {
+    width: calc(100% - 15px);
+    height: calc(100% - 15px);
+    object-fit: contain;
+    align-self: normal;
+    position: unset;
+}
+
+.drink-name {
+    margin-top: 160px;
+    font-size: 15px;
+}
+
+.text-display {
+    background-color: #F3CD95;
+    height: 45px;
+    width: 100%;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+/*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+/*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+/*Add tag button design*/
+.addTag {
+    /*border: 2px solid;
+    background-color: #FFD9F4;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;*/
+    text-decoration: none;
+    /*display: inline-block;*/
+    width: 30px;
+    height: 30px;
+    background: #FFD9F4;
+    font-size: 2rem;
+    font-weight: bold;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: right;
+}
+
+/*Add tag button hover*/
+.addTag:hover {
+    background-color: #DFB3D3;
+    color: black;
+}
+
+/*Dynamic field creation*/
+.flex{
+    display: flex;
+    gap: 1.5em;
+    margin-bottom: 15px;
+}
+
+/*Delete button in add drink*/
+.delete{
+    text-decoration: none;
+    display: inline-block;
+    background: #808080;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    /*margin-left: auto;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/*Input box for new tags in add drink*/
+input {
+    padding: 5px 5px 5px 0px;
+    /*background: #FFD9F4;*/
+    width: 100%;
+    border: 3px solid #DFB3D3;
+}
+
+input:focus{
+    outline: 1px solid #DFB3D3;
+}
+
+
+
+/*New tag in add drink*/
+.newTag {
+    border: 2px solid;
+    background-color: #FFD9F4;
+    font-size: 16px;
+    font-family:Arial;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;
+}
+
+/*Gets rid of outside border and makes filter left align*/
+#multipleSelect {
+    background-color: transparent;
+    border: none;
+    max-width: 60%;
+    float: left;
+}
+
+/*Changes the color of the filter box*/
+.vscomp-wrapper.has-error .vscomp-toggle-button {
+    border: none;
+    background-color: #FFD9F4;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.375rem + 1.5vw);
+    text-decoration: none;
+}
+/*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/

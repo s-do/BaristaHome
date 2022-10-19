@@ -13,7 +13,12 @@ namespace BaristaHome.Controllers
         {
             _logger = logger;
         }
-        public IActionResult Payroll()
+        public IActionResult Owner()
+        {
+            return View();
+        }
+
+        public IActionResult Worker()
         {
             return View();
         }

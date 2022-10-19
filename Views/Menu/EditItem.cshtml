@@ -1,6 +1,6 @@
 ﻿@model BaristaHome.Models.Drink
 @{
-    ViewData["Title"] = "Add Item";
+    ViewData["Title"] = "Edit Item";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -14,44 +14,53 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
-
-    @*Delete button icon for tag in add drink*@
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 
 <body>
- @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
     <form method="post" enctype="multipart/form-data">
-@*        Menu Bar Items*@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <!-- Binding Data-->
+        <input type="hidden" asp-for="DrinkId" />
+        <input type="hidden" asp-for="StoreId" />
+        <input type="hidden" asp-for="DrinkImageData" />
+@*        <input type="hidden" asp-for="DrinkName" />
+        <input type="hidden" asp-for="Description" />
+        <input type="hidden" asp-for="Instructions" />
+        <input type="hidden" asp-for="DrinkImageData" />
+        <input type="hidden" asp-for="DrinkImage" />*@
+@*       Nav Bar*@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Cancel</a>
                 <div class="center">
-                    <h1 class="title">Add new drink</h1>
+                    <h1 class="title">Edit drink</h1>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="pink-button-right" />
                 </div>
             </nav>
         </header>
-        <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value"/>
+
         <div class = "add-drink-top">
 
             <div class = "drink-image">
                 @*Image file input*@
                 <div class="form-group">
                     <label asp-for="Image"></label>
-                    <input id="file-input" style="display:none" accept="image/*" onchange="loadFile(event)" asp-for="Image" class="form-control" />
+                    <input id="file-input" style="display:none" accept="image" onchange="loadFile(event)" asp-for="Image" class="form-control" />
                     <span asp-validation-for="Image" class="text-danger"></span>
                 </div>
                 @*Dynamic Image*@
                 <label class="img-container" for="file-input">
-                    <img class="img-container" for="file-input" src="../images/plus.png" id="output" style="background-color: white; border: 3px solid #DFB3D3">
+                        @if(Model.DrinkImageData == null)
+                        {
+                            <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                        }
+                        else
+                        {
+                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3"/>
+                        }
                 </label>
                 @*Script for the dynamic image*@
                 <script>
@@ -64,31 +73,65 @@
                     };
                 </script>
             </div>
-
             @*Drink name and description*@
             <div class = "drink-details">
-
                 <div class="form-group">
                     <label asp-for="DrinkName"></label>
-                    <input asp-for="DrinkName" class="form-control" />
+                    <input asp-for="DrinkName" class="form-control" placeholder="@Model.DrinkName"/>
                     <span asp-validation-for="DrinkName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Description"></label>
-                    <textarea type="input" rows="5" asp-for="Description" class="form-control"></textarea>
+                    <textarea type="input" rows="5" asp-for="Description" class="form-control" placeholder="@Model.Description"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
+                  
                 </div>
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-
-@*Selina vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+@*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
                 @*Drink tags*@
                 <a>Tags</a>
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
+                    <div class="existingTags">
+                        @*Displays the tags that the drink currently has*@
+                        @{
+                            var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
 
-                    @*Dynamic Input field is generated here*@
+                            if(myList.Any()) {
+                                foreach(var t in myList) {
+                                    //<button type="button" id="existingTag" name="tagList" class="btn newTag">@t.TagName</button>
+                                    <input type="text" id="existingTag" name="tagList" value=@t.TagName class="input" style="width:93%;">
+                                    <a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+                                }
+                            }
+                        }
+                    </div>
+                    @*Delete existing tag*@
+                    <script>
+                        //const existingTag = document.getElementById("existingTag")
+                        /*const deleteBtn = document.getElementById("deleteExistingTag")
+                        
+
+                        function removeExistingTag(){
+                            var t = document.getElementsByName("newTag")
+                            for(let i = 0; i < t.length; i++){
+                                if(t[i].v)
+                            }
+                            existingTag.remove(); 
+                            deleteBtn.remove();
+                        }
+                        deleteBtn.addEventListener("click", removeExistingTag)
+
+                        /*const t = document.getElementById('tagList');
+
+                        t.addEventListener('click', function handleClick(event) {
+                          event.target.remove();
+                        });*/
+
+                    </script>
+
+                    @*Dynamic input field is generated here*@
                     <div class="inputGroup"></div>
-
 
                     @*Dynamic input field creation*@
                     <script>
@@ -134,11 +177,12 @@
             <div class = "drink-instructions">
                 <div class="form-group">
                     <label asp-for="Instructions"></label>
-                    <textarea type="input" rows="10" asp-for="Instructions" class="form-control"></textarea>
+                    <textarea type="input" rows="10" asp-for="Instructions" class="form-control" placeholder="@Model.Instructions"></textarea>
                     <span asp-validation-for="Instructions" class="text-danger"></span>
+                  
                 </div>
-            </div>
 
+            </div>
 
          <div class = "drink-ingredients">
                 <div class="form-group">
@@ -149,7 +193,7 @@
 
             </div>
         </div>
-@*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
 
         <footer class="border-top footer text-muted">
             <div class="container">
@@ -160,5 +204,6 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </form>
+@*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 </body>
 </html>

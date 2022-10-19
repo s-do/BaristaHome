@@ -97,3 +97,8 @@
     white-space: nowrap;
     line-height: 60px;
 }
+
+#FirstName, #LastName, #Email, #Password, #ConfirmPassword, #InviteCode {
+    background-color: #F8DDAA;
+    opacity: 0.6;
+}

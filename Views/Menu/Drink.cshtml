@@ -1,0 +1,118 @@
+﻿@model BaristaHome.Models.Drink
+
+@{
+    ViewData["Title"] = "Drink";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+
+<body>
+@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Back</a>
+            <div class="center">
+                <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
+@*            <input type="hidden" asp-for="@Model.DrinkId" />*@
+@*            <form asp-action="Delete">
+                <input type="hidden" asp-for="DrinkId" />
+                <input type="submit" value="Delete" class="pink-button-right" />
+            </form>*@
+        </nav>
+    </header>
+
+    <div class = "add-drink-top">
+        
+        @*Drink Image*@
+        <div class = "drink-image">
+            @*<img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" style="background-color: white; border: 3px solid #DFB3D3"/>*@
+             @*Dynamic Image*@
+            <label class="img-container">
+                @if(Model.DrinkImageData == null)
+                {
+                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
+                }
+                else
+                {
+                    <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" style="background-color: white; border: 3px solid #DFB3D3"/>
+                }
+            </label>
+
+        </div>
+        @*Drink name and description*@
+        <div class = "drink-details">
+            @Html.DisplayNameFor(model => model.DrinkName)
+            <div class="text-display">
+                @Html.DisplayFor(model => model.DrinkName)
+            </div>
+            @Html.DisplayNameFor(model => model.Description)
+            <div class="text-display" style="height: 150px;">
+                @Html.DisplayFor(model => model.Description)
+            </div>
+    @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+    @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+            @*Drink tags*@
+            <a>Tags</a>
+            @*Displays all the tags that a drink has*@
+            <div class = "drink-tags">
+                @{
+                    var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
+
+                    if(myList.Any()) {
+                        foreach(var t in myList) {
+                            <button type="button" class="btn newTag">@t.TagName</button>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+    @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+    @*Drink instrunctions and ingredients*@
+    <div class = "add-drink-bottom">
+        <div class = "drink-instructions">
+            <a>Instructions</a>
+            <div class="text-display" style="height: 150px">
+                @Html.DisplayFor(model => model.Instructions)
+            </div>
+
+        </div>
+
+        <div class = "drink-ingredients">
+            <a>Ingredients</a>
+            <div class="text-display" style="height: 150px;">
+            </div>
+
+        </div>
+    </div>
+    @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+

@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220930043313_[NewColumn]")]
+    partial class NewColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -339,14 +341,14 @@ namespace BaristaHome.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShiftId"), 1L, 1);
 
-                    b.Property<DateTime>("EndShift")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("EndShift")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("ShiftDate")
                         .HasColumnType("Date");
 
-                    b.Property<DateTime>("StartShift")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("StartShift")
+                        .HasColumnType("time");
 
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
