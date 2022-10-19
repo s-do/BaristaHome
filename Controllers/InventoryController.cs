@@ -85,8 +85,8 @@ namespace BaristaHome.Controllers
                 if (existingItem != null)
                 {
                     // Okay the item exists in our Item table, now we check if this item is already in THIS STORE
-                    var existingInventoryItem = (from inv in _context.InventoryItem
-                                                 where inv.ItemId.Equals(existingItem.ItemId)
+                    var existingInventoryItem = (from inv in _context.InventoryItem                                 // Makes sure doesn't conflict with other stores with same item
+                                                 where inv.ItemId.Equals(existingItem.ItemId) && inv.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))                                              
                                                  select inv).FirstOrDefault();
 
                     if (existingInventoryItem != null)

@@ -1,20 +1,22 @@
-﻿@model IEnumerable<BaristaHome.Models.Payroll>
+﻿@model IEnumerable<BaristaHome.Models.PayrollOwnerViewModel>
 
 
 @{
     ViewData["Title"] = "Owner";
 }
 
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
+
 <div class="text-center">
     <h1 class="display-4">Payroll Owner</h1>
 </div>
 
 
-<table class="table">
+<table class="table-inventory">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+                @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hours)
@@ -29,22 +31,30 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Hours)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
+        @{
+           
+            var payrollList = ViewBag.Payroll == null ? new List<PayrollOwnerViewModel>() : (List<PayrollOwnerViewModel>)ViewBag.Payroll;
+            if (payrollList.Any())
+            {
+                foreach (var item in payrollList)
+                {
 
-                </td>
-            </tr>
+                    <tr>
+                        <td>
+                            @item.FullName
+                        </td>
+                        <td>
+                            @item.Hours
+                        </td>
+                        <td>
+                            @item.Amount
+                        </td>
+                        <td>
+                            @item.Date.ToShortDateString()
+                        </td>
+                    </tr>
+                }
+            }
         }
     </tbody>
 </table>
