@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BaristaHome.Models.User
+@{
     ViewData["Title"] = "Worker";
     Layout = null;
 }
@@ -30,18 +31,48 @@
 
 
     <div align="center">
-
         <div class="worker">
             <div class="picture">
-
+                @*-----------------Fix this image thing----------------*@
+                @*Drink image*@
+                <div class="drink-icon">
+                    @*Display default icon if drink has no image*@
+                    @if(Model.UserImageData ==null)
+                    {
+                        <img class="drink-icon image" src="../images/calendar.png"> //Default image display
+                    }
+                    else
+                    {
+                        <img class="drink-icon image" src="@Url.Action("RenderImage", new { id = Model.UserId})" />
+                    }
+                </div>
             </div>
-            <div class="name">
-
+            <div class="name-area">
+                <div class="name">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</div>
             </div>
         </div>
 
         <div class="information">
-           
+
+            <table style="width:100%">
+                <tr style="background-color:#ffdcf4; height:70px">
+                    <td style="width:33.33%">Date</td>
+                    <td style="width:33.33%">Hours</td>
+                    <td style="width:33.33%">Amount</td>
+                </tr>
+                @{
+                    var myList = ViewBag.PayrollList==null ? new List<Payroll>() : (List<Payroll>)ViewBag.PayrollList;
+                    if(myList.Any()) {
+                        foreach(var p in myList) {
+                            <tr style="height:70px">
+                                <td style="width:33.33%">@p.Date.Month/@p.Date.Day/@p.Date.Year</td>
+                                <td style="width:33.33%">@p.Hours</td>
+                                <td style="width:33.33%">@p.Amount</td>
+                            </tr>
+                        }
+                    }
+                }
+            </table>
         </div>
     </div>
 
