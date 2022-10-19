@@ -51,14 +51,22 @@ namespace BaristaHome.Controllers
                                         .ThenBy(u => u.FirstName)
                                         .ToListAsync();*/
 
-            var payrolls = (from payroll in _context.Payroll
-                           join user in _context.User on payroll.UserId equals user.UserId
-                           join store in _context.Store on user.StoreId equals store.StoreId
-                           where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                           select payroll
-                           ).ToList();
+            List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
+                                                   join user in _context.User on payroll.UserId equals user.UserId
+                                                   join store in _context.Store on user.StoreId equals store.StoreId
+                                                   where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                   select new PayrollOwnerViewModel
+                                                   {
+                                                       Hours = payroll.Hours,
+                                                       Amount = payroll.Amount,
+                                                       Date = payroll.Date,
+                                                       UserId = user.UserId,
+                                                       FullName = user.FirstName + " " + user.LastName,
+                                                   }).ToList();
 
-            return View(payrolls);
+            ViewBag.Payroll = payrolls;
+
+            return View();
         }
 
 
