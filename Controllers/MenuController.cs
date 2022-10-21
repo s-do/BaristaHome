@@ -243,14 +243,14 @@ namespace BaristaHome.Controllers
                                        select tag).ToList();
             ViewBag.TagList = tagQuery;
 
-            List<DrinkTag> drinkTagQuery = (from dt in _context.DrinkTag
+            /*List<DrinkTag> drinkTagQuery = (from dt in _context.DrinkTag
                                   join d in _context.Drink on dt.DrinkId equals d.DrinkId
                                   join t in _context.Tag on dt.TagId equals t.TagId
                                   where d.DrinkId == drink.DrinkId
                                   select dt).ToList();
 
-                ViewBag.DrinkTagList = drinkTagQuery;
-                Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            ViewBag.DrinkTagList = drinkTagQuery;*/
+            Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             /*}*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
@@ -259,9 +259,11 @@ namespace BaristaHome.Controllers
 
         //POST Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList, List<string> existingTagList)
         {
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+            var a = tagList;
+            var b = existingTagList;
 
             /* SAME NUMBER OF TAGS
              * tags stay the same: {apple, juice} --> compare existing drink tags with list of tags if same, nothing happens
@@ -369,24 +371,36 @@ namespace BaristaHome.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? drinkId, int? tagId)
         {
-            var a = drinkId;
-            var b = tagId;
-            /*var b = existingTag;
-            foreach (var tag in existingTag)
-            {
-                var dTag = await (from dt in _context.DrinkTag
-                                  join d in _context.Drink on dt.DrinkId equals d.DrinkId
-                                  join t in _context.Tag on dt.TagId equals t.TagId
-                                  where d.DrinkId == id && t.TagName == tag
-                                  select dt).FirstOrDefaultAsync();
-                _context.DrinkTag.Remove(dTag);
-                await _context.SaveChangesAsync();
-            }*/
-            var dTag = await _context.DrinkTag.FindAsync(drinkId);
-            _context.DrinkTag.Remove(dTag);
+            var existingDrinkTag = (from dt in _context.DrinkTag
+                                    join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                    join t in _context.Tag on dt.TagId equals t.TagId
+                                    where d.DrinkId == drinkId && t.TagId == tagId
+                                    select dt).FirstOrDefault();
+
+            //var z = existingDrinkTag;
+            //var b = existingTag;
+            /* foreach (var tag in existingTag)
+             {
+                 var dTag = await (from dt in _context.DrinkTag
+                                   join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                   join t in _context.Tag on dt.TagId equals t.TagId
+                                   where d.DrinkId == id && t.TagName == tag
+                                   select dt).FirstOrDefaultAsync();
+                 _context.DrinkTag.Remove(dTag);
+                 await _context.SaveChangesAsync();
+             }*/
+            //var dTag = await _context.DrinkTag.FindAsync(drinkId, tagId);
+            _context.DrinkTag.Remove(existingDrinkTag);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            var drink = await _context.Drink
+                .FirstOrDefaultAsync(m => m.DrinkId == drinkId);
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            return View(drink);
 
 
             /*var filteredDrinks = (from dt in _context.DrinkTag
