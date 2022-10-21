@@ -232,16 +232,26 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-            else
-            {
-                //Gets a list of tags that a drink has
-                List<Tag> drinkTagQuery = (from d in _context.Drink
-                                           join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
-                                           join tag in _context.Tag on drinkTag.TagId equals tag.TagId
-                                           where d.DrinkId == drink.DrinkId
-                                           select tag).ToList();
+            /*else
+            {*/
+                Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^edit drink method");
+            //Gets a list of tags that a drink has
+            List<Tag> tagQuery = (from d in _context.Drink
+                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                       where d.DrinkId == drink.DrinkId
+                                       select tag).ToList();
+            ViewBag.TagList = tagQuery;
+
+            List<DrinkTag> drinkTagQuery = (from dt in _context.DrinkTag
+                                  join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                  join t in _context.Tag on dt.TagId equals t.TagId
+                                  where d.DrinkId == drink.DrinkId
+                                  select dt).ToList();
+
                 ViewBag.DrinkTagList = drinkTagQuery;
-            }
+                Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            /*}*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
         }
@@ -273,8 +283,8 @@ namespace BaristaHome.Controllers
                                          join tag in _context.Tag on dt.TagId equals tag.TagId
                                          where dt.DrinkId == drink.DrinkId
                                          select tag).ToList();
-                existingDrinkTag.Sort();
-                tagList.Sort();
+                /*existingDrinkTag.Sort();
+                tagList.Sort();*/
                 //When you edit list and have the same number of tags but the tags are different
                 if ((existingDrinkTag.Count() == tagList.Count()) && (existingDrinkTag.Equals(tagList) == false))
                 {
@@ -325,6 +335,75 @@ namespace BaristaHome.Controllers
             return View(drink);
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
+
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        //[HttpGet]
+        /*public async Task<IActionResult> Delete(int? id)
+        {
+            var a = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var drink = await _context.Drink.FirstOrDefaultAsync(m => m.DrinkId == id);
+
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            List<Tag> drinkTagQuery = (from d in _context.Drink
+                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                       where d.DrinkId == drink.DrinkId
+                                       select tag).ToList();
+            ViewBag.DrinkTagList = drinkTagQuery;
+
+            return View(drink);
+        }*/
+
+        // POST: Menu/Delete/DrinkId
+
+        [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int? drinkId, int? tagId)
+        {
+            var a = drinkId;
+            var b = tagId;
+            /*var b = existingTag;
+            foreach (var tag in existingTag)
+            {
+                var dTag = await (from dt in _context.DrinkTag
+                                  join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                  join t in _context.Tag on dt.TagId equals t.TagId
+                                  where d.DrinkId == id && t.TagName == tag
+                                  select dt).FirstOrDefaultAsync();
+                _context.DrinkTag.Remove(dTag);
+                await _context.SaveChangesAsync();
+            }*/
+            var dTag = await _context.DrinkTag.FindAsync(drinkId);
+            _context.DrinkTag.Remove(dTag);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+
+
+            /*var filteredDrinks = (from dt in _context.DrinkTag
+                             .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
+                             join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
+                             select d).Distinct();                                    // ensure distinct drinks to prevent multiple same objs
+            */
+            /*
+                var tags = await (from s in _context.Store
+                        join d in _context.Drink on s.StoreId equals d.StoreId
+                        join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                        join t in _context.Tag on dt.TagId equals t.TagId
+                        select t).ToListAsync();
+                */
+
+        }
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
         /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         //Method for rendering images
