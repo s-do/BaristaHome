@@ -1,7 +1,56 @@
-﻿@{
+﻿@model IEnumerable<BaristaHome.Models.UserShiftStatus>
+@{
     ViewData["Title"] = "Clocking";
+    Layout = null;
 }
+<!DOCTYPE html>
 
-<div class="text-center">
-    <h1 class="display-4">Clocking</h1>
-</div>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Barista Home</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+        <link rel="stylesheet" href="~/css/Clocking.css" asp-append-version="true" /> 
+    </head>
+
+
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Back</a>
+                <div class="center">
+                    <h1 class="title">Clocking</h1>
+                </div>
+            </nav>
+        </header>
+
+        <div class="text-center">
+            
+            <h1>Hello <i>@ViewBag.FirstName @ViewBag.LastName</i>, current shift status is:</h1>
+            <br />
+            <h2><strong>shift status displayed here</strong></h2>
+        </div>
+
+        <div align="center">
+            
+            <div class = "shift-statuses">
+                @{
+                    var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
+
+                    if(myList.Any()) {
+                        foreach(var ss in myList) {
+                            <button type="button" class="btn shift-button">@ss.ShiftStatusName</button>
+                        }
+                    }
+                }
+            </div>
+            
+
+        </div>
+
+    </body>
+</html>

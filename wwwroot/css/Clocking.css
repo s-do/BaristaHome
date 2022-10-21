@@ -1,0 +1,21 @@
+﻿.shift-statuses {
+/*    border: 1px solid black;
+*/    height: 550px;
+    width: 350px;
+    margin-top: 50px;
+}
+
+.shift-button {
+    border: 2px solid;
+    background-color: #FFD9F4;
+    font-size: 24px;
+    font-family: Arial;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;
+    display: block;
+    width: 100%;
+    margin-bottom: 50px;
+    padding: 32px 16px;
+    border-radius: 12px;
+}
