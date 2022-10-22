@@ -39,58 +39,66 @@
     </header>
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
-@*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-    <div align="center">
-        @*For search bar and filters button*@
-        <div class="searchFilter">
-            @*Multiselect Filter with dropdown*@
-            <div class="filter">
-                <form asp-action="Menu">
-                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple></select>
-                    <input type="submit" class="btn newTag" value="Filter" style="width:25%;">
-                </form>
-            </div>
-@*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+    @*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+    <div style="margin-top: 200px;" align="center">
 
-@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-            @*Search bar*@
-            @*Sends search phrase to ShowSearchResults() to display search results*@
-            <div class="search">
-                <form asp-action="ShowSearchResults">
+        @*For search bar and filters button*@
+        <form asp-action="ShowSearchResults">
+            <div class="searchFilter">
+
+                @*Search bar*@
+                @*Sends search phrase to ShowSearchResults() to display search results*@
+
+
+                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+                @*Multiselect Filter with dropdown*@
+                <div class="filter">
+                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple></select>
+                    <input type="submit" asp-action="Menu" class="btn newTag" value="Filter" style="width:25%;">
+                </div>
+                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+
+                <div class="search">
+
                     <div style="width: 700px;" class="input-group mb-3">
                         <label for="SearchPhrase" class="control-label"></label>
                         <input type="text" name="SearchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
                         <div class="input-group-append">
                             <button style="background-color: lightpink;
-                    border-color:lightpink;
-                    color:black;" class="btn btn-outline-secondary" type="submit">
+                                    border-color:lightpink;
+                                    color:black;" class="btn btn-outline-secondary" type="submit" asp-action="ShowSearchResults" asp-route-SearchPhrase=SearchPhrase asp-route-tagLine="ViewBag.Tags">
                                 Search
                             </button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+                </div>
 
-@*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+            </div>
+        </form>
+        @*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+
+        @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Display Drinks*@
         <div class="drinks">
-            @foreach (var item in Model) {
+            @foreach (var item in Model)
+            {
                 <a asp-action="Drink" asp-route-id="@item.DrinkId" class="drink-item">
                     @*Drink image*@
                     <div class="drink-icon">
                         @*Display default icon if drink has no image*@
-                        @if(item.DrinkImageData ==null)
+                        @if (item.DrinkImageData == null)
                         {
-                            <img class="drink-icon image" src="../images/calendar.png"> //Default image display
+                            <img class="drink-icon image" src="../images/calendar.png">
+                            //Default image display
                         }
                         else
                         {
                             <img class="drink-icon image" src="@Url.Action("RenderImage", new { id = item.DrinkId})" />
                         }
                     </div>
-                                        @*Drink Name*@
+                    @*Drink Name*@
                     <div class="drink-name">
                         @Html.DisplayFor(modelItem => item.DrinkName)
                     </div>
@@ -101,8 +109,13 @@
                 <img src="../images/plus.png" style="width: 50px;height: 50px;object-fit: contain;">
             </a>
         </div>
+
+        @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
     </div>
-@*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+        
+@*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+
 
     <footer class="border-top footer text-muted">
         <div class="container">

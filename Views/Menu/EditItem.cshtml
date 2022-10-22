@@ -92,43 +92,21 @@
                 <a>Tags</a>
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
-                    <div class="existingTags">
-                        @*Displays the tags that the drink currently has*@
-                        @{
-                            var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
-
-                            if(myList.Any()) {
-                                foreach(var t in myList) {
-                                    //<button type="button" id="existingTag" name="tagList" class="btn newTag">@t.TagName</button>
-                                    <input type="text" id="existingTag" name="tagList" value=@t.TagName class="input" style="width:93%;">
-                                    <a href="#" id="deleteExistingTag" class="delete" style="display:flex; float:right;">&times;</a>
+                    @*<form asp-action="Edit">
+                    </form>*@
+                    
+                        <div class="existingTags">
+                            @*Displays the tags that the drink currently has*@
+                            @{
+                                var myList = ViewBag.TagList==null ? new List<Tag>() : (List<Tag>)ViewBag.TagList;
+                                if(myList.Any()) {
+                                    foreach(var t in myList) {
+                                        <button name="tagList" type="button" class="btn newTag" style="width:93%;" innerHTML="@t.TagName">@t.TagName</button>
+                                        <button type="submit" class="btn delete" asp-controller="Menu" asp-action="Delete" asp-route-tagId="@t.TagId" asp-route-drinkId="@Model.DrinkId" style="float:right;">x</button>
+                                    }
                                 }
                             }
-                        }
-                    </div>
-                    @*Delete existing tag*@
-                    <script>
-                        //const existingTag = document.getElementById("existingTag")
-                        /*const deleteBtn = document.getElementById("deleteExistingTag")
-                        
-
-                        function removeExistingTag(){
-                            var t = document.getElementsByName("newTag")
-                            for(let i = 0; i < t.length; i++){
-                                if(t[i].v)
-                            }
-                            existingTag.remove(); 
-                            deleteBtn.remove();
-                        }
-                        deleteBtn.addEventListener("click", removeExistingTag)
-
-                        /*const t = document.getElementById('tagList');
-
-                        t.addEventListener('click', function handleClick(event) {
-                          event.target.remove();
-                        });*/
-
-                    </script>
+                        </div>
 
                     @*Dynamic input field is generated here*@
                     <div class="inputGroup"></div>
