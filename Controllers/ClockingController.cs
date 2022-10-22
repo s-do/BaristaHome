@@ -44,7 +44,7 @@ namespace BaristaHome.Controllers
 
         //When a user decides to "Clock Out" their clock out time will be saved
         //User will be taken to "Not Clocked In" status page
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> Clocking(int? id)
         {
             UserShiftStatus userSS = new UserShiftStatus();
@@ -57,7 +57,7 @@ namespace BaristaHome.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Clocking", "Clocking");
-        }
+        }*/
 
         [HttpGet]
         public IActionResult ClockIn()
@@ -86,7 +86,7 @@ namespace BaristaHome.Controllers
         //When a user decides to "Clock In" their clock in time will be saved
         //Or when a user clicks on "End Break" the end of their break time will be saved
         //User will be taken to "Working" status page
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> ClockIn(int? id)
         {
             UserShiftStatus userSS = new UserShiftStatus();
@@ -99,7 +99,7 @@ namespace BaristaHome.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("ClockIn", "Clocking");
-        }
+        }*/
 
         [HttpGet]
         public IActionResult StartBreak()
@@ -127,7 +127,7 @@ namespace BaristaHome.Controllers
 
         //When a user decides to "Start Break" their break time will be saved
         //User will be taken to "Taking Break" status page
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> StartBreak(int? id)
         {
             UserShiftStatus userSS = new UserShiftStatus();
@@ -140,9 +140,9 @@ namespace BaristaHome.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("StartBreak", "Clocking");
-        }
+        }*/
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> ShiftStatus(int? id)
         {
             UserShiftStatus userSS = new UserShiftStatus();
@@ -156,13 +156,13 @@ namespace BaristaHome.Controllers
 
             //Clock In and End Break
             //Show status as "working"
-            if(id == 1 || id == 4)
+            if (id == 1 || id == 4)
             {
                 return RedirectToAction("ClockIn", "Clocking");
             }
             //Clock Out
             //Shows status as "not clocked in"
-            else if(id == 2)
+            else if (id == 2)
             {
                 return RedirectToAction("Clocking", "Clocking");
             }
@@ -172,7 +172,7 @@ namespace BaristaHome.Controllers
             {
                 return RedirectToAction("StartBreak", "Clocking");
             }
-            
-        }*/
+
+        }
     }
 }

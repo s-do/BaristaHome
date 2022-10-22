@@ -47,7 +47,7 @@
                             //End Break
                             if (ss.ShiftStatusId == 4)
                             {
-                                <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ClockIn" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
+                                <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
                             }
                         }
                     }

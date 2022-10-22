@@ -45,20 +45,20 @@
                         if(myList.Any()) {
                             foreach(var ss in myList) {
                                 //Clock Out or Start Break
-                                @*if (ss.ShiftStatusId == 2 || ss.ShiftStatusId == 3)
+                                if (ss.ShiftStatusId == 2 || ss.ShiftStatusId == 3)
                                 {
-                                    <a type="button" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus">@ss.ShiftStatusName</a>
-                                }*@
+                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
+                                }
                                 //Start Break
-                                if (ss.ShiftStatusId == 3)
+                                @*if (ss.ShiftStatusId == 3)
                                 {
                                     <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="StartBreak" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
-                                }
+                                }*@
                                 //Clock Out 
-                                else if(ss.ShiftStatusId == 2)
+                                @*else if(ss.ShiftStatusId == 2)
                                 {
                                     <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="Clocking" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
-                                }
+                                }*@
                             }
                         }
                     }
