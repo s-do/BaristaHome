@@ -51,6 +51,22 @@
         display:flex;
         justify-content: space-between;
     }
+
+
+    .profile-pic {
+        border-radius: 50px;
+        height: 50px;
+        width: 50px;
+        object-fit: cover;
+    }
+    
+    .employee-name{
+        font-weight:bold;
+    }
+
+    .employee-role{
+        color:rgba(80,80,80, 1);
+    }
 </style>
 
 <button style = "width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
@@ -69,16 +85,13 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
+                    <p>Worker</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.LastName)
+                    <p>Name</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Role)
+                   <p>Email</p>
                 </th>
                 <th></th>
             </tr>
@@ -88,28 +101,40 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
+                        @if (item.UserImageData == null)
+                        {
+                            <img class="profile-pic" src="../images/default-profile-pic.jpg" >
+                        }
+                        else
+                        {
+                            <img class="profile-pic" src="@Url.Action("RenderImage", new { id = item.UserId})"  />
+                        }
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        <div class="employee-name">
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </div>
+                        <div class="employee-role">
+                             @if (item.RoleId == 1)
+                            {
+                                <p>Worker</p>
+                            }
+                            else if (item.RoleId == 2)
+                            {
+                                <p>Owner</p>
+                            }
+                            else
+                            {
+                                <p>Manager</p>
+                            }
+                        </div>
+
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
-                    <td>
-                        @if (item.RoleId == 1)
-                        {
-                            <p>Worker</p>
-                        }
-                        else if (item.RoleId == 2)
-                        {
-                            <p>Owner</p>
-                        }
-                        else
-                        {
-                            <p>Manager</p>
-                        }
-                    </td>
+
                     <td>
                         @if (item.RoleId == 2)
                         {

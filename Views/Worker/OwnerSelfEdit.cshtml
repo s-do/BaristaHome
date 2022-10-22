@@ -58,7 +58,9 @@
     .pink-button {
         background-color: pink;
         color: black;
-        border: none;
+        border-color:pink;
+        border-style:solid;
+        border-radius:4px;
         padding-top: 10px;
         padding-bottom: 10px;
         padding-left: 20px;
@@ -100,6 +102,7 @@
         background-color: lightpink;
         border-color: lightpink;
         color: white;
+        border-radius:4px;
     }
 
     .profile-title-and-pic {
@@ -117,7 +120,7 @@
 
 
 <div class="pink-button">
-    <a asp-controller="Worker" asp-action="Index">Back</a>
+    <a asp-controller="Worker" asp-action="Profile">Back</a>
 </div>
 
 <div class="background">
@@ -187,7 +190,7 @@
                     <p> </p>
 
                     <div>
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="pink-button" />
                     </div>
                 </form>
             </div>

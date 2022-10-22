@@ -167,10 +167,9 @@ namespace BaristaHome.Controllers
         //Saves any new changes to the user information inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerSelfEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
+        public async Task<IActionResult> OwnerSelfEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image")] User worker)
         {
 
-            /*ViewBag.Roles = new SelectList("1","2");*/
             var existingEmail = (from u in _context.User
                                  where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
                                  select u).FirstOrDefault();
@@ -181,10 +180,23 @@ namespace BaristaHome.Controllers
                 return View(worker);
             }
 
+            //Saves worker image as a byte array
+            if (worker.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    worker.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    worker.UserImageData = fileBytes;
+                }
+            }
+
+
             if (ModelState.IsValid)
             {
                 try
-                {
+                {   //Hashes the new password and updates it as the new password for user
+                    worker.Password = Crypto.HashPassword(worker.Password);
                     _context.Update(worker);
                     await _context.SaveChangesAsync();
                 }
@@ -192,8 +204,7 @@ namespace BaristaHome.Controllers
                 {
                     throw;
                 }
-                return View(worker);
-                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             return View(worker);
         }
