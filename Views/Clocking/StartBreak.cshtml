@@ -32,7 +32,7 @@
             
             <h1>Hello <i>@ViewBag.FirstName @ViewBag.LastName</i>, current shift status is:</h1>
             <br />
-            <h2><strong>NOT CLOCKED IN</strong></h2>
+            <h2><strong>TAKING BREAK</strong></h2>
         </div>
 
         <div align="center">
@@ -43,16 +43,11 @@
 
                 if(myList.Any()) {
                     foreach(var ss in myList) {
-                        //Clock In
-                        if (ss.ShiftStatusId == 1)
+                        //End Break
+                        if (ss.ShiftStatusId == 4)
                         {
-                            <a type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ClockIn">@ss.ShiftStatusName</a>
+                            <a type="button" class="btn shift-button" asp-controller="Clocking" asp-action="ClockIn">@ss.ShiftStatusName</a>
                         }
-                        @*else
-                        {
-                            <button type="button" class="btn not-option-button">@ss.ShiftStatusName</button>
-                        }*@
-
                     }
                 }
             }
