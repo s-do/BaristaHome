@@ -35,31 +35,31 @@
             <h2><strong>NOT CLOCKED IN</strong></h2>
         </div>
 
-        <div align="center">
-            
-            <div class = "shift-statuses">
-            @{
-                var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div align="center">
+                <div class = "shift-statuses">
+                @{
+                    var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
 
-                if(myList.Any()) {
-                    foreach(var ss in myList) {
-                        //Clock In
-                        if (ss.ShiftStatusId == 1)
-                        {
-                            <a type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ClockIn">@ss.ShiftStatusName</a>
+                    if(myList.Any()) {
+                        foreach(var ss in myList) {
+                            //Clock In
+                            if (ss.ShiftStatusId == 1)
+                            {
+                                <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ClockIn" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
+                            }
+                            @*else
+                            {
+                                <button type="button" class="btn not-option-button">@ss.ShiftStatusName</button>
+                            }*@
                         }
-                        @*else
-                        {
-                            <button type="button" class="btn not-option-button">@ss.ShiftStatusName</button>
-                        }*@
-
                     }
                 }
-            }
+                </div>
             </div>
-            
-
-        </div>
+        </form>
+        
 
     </body>
 </html>

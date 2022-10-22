@@ -35,31 +35,36 @@
             <h2><strong>WORKING</strong></h2>
         </div>
 
-        <div align="center">
-            
-            <div class = "shift-statuses">
-            @{
-                var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div align="center">
+                <div class = "shift-statuses">
+                    @{
+                        var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
 
-                if(myList.Any()) {
-                    foreach(var ss in myList) {
-                        //Start Break
-                        if (ss.ShiftStatusId == 3)
-                        {
-                            <a type="button" class="btn shift-button" asp-controller="Clocking" asp-action="StartBreak">@ss.ShiftStatusName</a>
-                        }
-                        //Clock Out 
-                        else if(ss.ShiftStatusId == 2)
-                        {
-                            <a type="button" class="btn shift-button" asp-controller="Clocking" asp-action="Clocking">@ss.ShiftStatusName</a>
+                        if(myList.Any()) {
+                            foreach(var ss in myList) {
+                                //Clock Out or Start Break
+                                @*if (ss.ShiftStatusId == 2 || ss.ShiftStatusId == 3)
+                                {
+                                    <a type="button" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus">@ss.ShiftStatusName</a>
+                                }*@
+                                //Start Break
+                                if (ss.ShiftStatusId == 3)
+                                {
+                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="StartBreak" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
+                                }
+                                //Clock Out 
+                                else if(ss.ShiftStatusId == 2)
+                                {
+                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="Clocking" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
+                                }
+                            }
                         }
                     }
-                }
-            }
+                    </div>
             </div>
-            
-
-        </div>
+        </form>
 
     </body>
 </html>
