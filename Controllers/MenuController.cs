@@ -8,6 +8,9 @@ using BaristaHome.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BaristaHome.Controllers
 {
@@ -229,16 +232,26 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-            else
-            {
-                //Gets a list of tags that a drink has
-                List<Tag> drinkTagQuery = (from d in _context.Drink
-                                           join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
-                                           join tag in _context.Tag on drinkTag.TagId equals tag.TagId
-                                           where d.DrinkId == drink.DrinkId
-                                           select tag).ToList();
-                ViewBag.DrinkTagList = drinkTagQuery;
-            }
+            /*else
+            {*/
+                Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^edit drink method");
+            //Gets a list of tags that a drink has
+            List<Tag> tagQuery = (from d in _context.Drink
+                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                       where d.DrinkId == drink.DrinkId
+                                       select tag).ToList();
+            ViewBag.TagList = tagQuery;
+
+            /*List<DrinkTag> drinkTagQuery = (from dt in _context.DrinkTag
+                                  join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                  join t in _context.Tag on dt.TagId equals t.TagId
+                                  where d.DrinkId == drink.DrinkId
+                                  select dt).ToList();
+
+            ViewBag.DrinkTagList = drinkTagQuery;*/
+            Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            /*}*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
         }
@@ -246,9 +259,11 @@ namespace BaristaHome.Controllers
 
         //POST Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkImage,StoreId,Image")] Drink drink, List<string> tagList, List<string> existingTagList)
         {
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+            var a = tagList;
+            var b = existingTagList;
 
             /* SAME NUMBER OF TAGS
              * tags stay the same: {apple, juice} --> compare existing drink tags with list of tags if same, nothing happens
@@ -270,8 +285,8 @@ namespace BaristaHome.Controllers
                                          join tag in _context.Tag on dt.TagId equals tag.TagId
                                          where dt.DrinkId == drink.DrinkId
                                          select tag).ToList();
-                existingDrinkTag.Sort();
-                tagList.Sort();
+                /*existingDrinkTag.Sort();
+                tagList.Sort();*/
                 //When you edit list and have the same number of tags but the tags are different
                 if ((existingDrinkTag.Count() == tagList.Count()) && (existingDrinkTag.Equals(tagList) == false))
                 {
@@ -323,6 +338,87 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
 
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        //[HttpGet]
+        /*public async Task<IActionResult> Delete(int? id)
+        {
+            var a = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var drink = await _context.Drink.FirstOrDefaultAsync(m => m.DrinkId == id);
+
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            List<Tag> drinkTagQuery = (from d in _context.Drink
+                                       join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
+                                       join tag in _context.Tag on drinkTag.TagId equals tag.TagId
+                                       where d.DrinkId == drink.DrinkId
+                                       select tag).ToList();
+            ViewBag.DrinkTagList = drinkTagQuery;
+
+            return View(drink);
+        }*/
+
+        // POST: Menu/Delete/DrinkId
+
+        [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int? drinkId, int? tagId)
+        {
+            var existingDrinkTag = (from dt in _context.DrinkTag
+                                    join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                    join t in _context.Tag on dt.TagId equals t.TagId
+                                    where d.DrinkId == drinkId && t.TagId == tagId
+                                    select dt).FirstOrDefault();
+
+            //var z = existingDrinkTag;
+            //var b = existingTag;
+            /* foreach (var tag in existingTag)
+             {
+                 var dTag = await (from dt in _context.DrinkTag
+                                   join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                   join t in _context.Tag on dt.TagId equals t.TagId
+                                   where d.DrinkId == id && t.TagName == tag
+                                   select dt).FirstOrDefaultAsync();
+                 _context.DrinkTag.Remove(dTag);
+                 await _context.SaveChangesAsync();
+             }*/
+            //var dTag = await _context.DrinkTag.FindAsync(drinkId, tagId);
+            _context.DrinkTag.Remove(existingDrinkTag);
+            await _context.SaveChangesAsync();
+
+            var drink = await _context.Drink
+                .FirstOrDefaultAsync(m => m.DrinkId == drinkId);
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            return View(drink);
+
+
+            /*var filteredDrinks = (from dt in _context.DrinkTag
+                             .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
+                             join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
+                             select d).Distinct();                                    // ensure distinct drinks to prevent multiple same objs
+            */
+            /*
+                var tags = await (from s in _context.Store
+                        join d in _context.Drink on s.StoreId equals d.StoreId
+                        join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                        join t in _context.Tag on dt.TagId equals t.TagId
+                        select t).ToListAsync();
+                */
+
+        }
+        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
         /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         //Method for rendering images
         public async Task<ActionResult> RenderImage(int id)
@@ -350,21 +446,88 @@ namespace BaristaHome.Controllers
 
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         //Method for returning and displaying all the store's Drink items that contain the search phrase in its name
-        public async Task<IActionResult> ShowSearchResults(string SearchPhrase)
+        //If there are any filters/tags selected, it will return only drinks with matching filters/tags
+
+        public async Task<IActionResult> ShowSearchResults(string SearchPhrase, string tagLine)
         {
 
             //Get current store ID
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
             //Return a list of drinks that contain the search phrase in its name
-            var drinkList = (IEnumerable<Drink>)(from d in _context.Drink
+            var drinkList = (List<Drink>)(from d in _context.Drink
                                                  where (d.StoreId == storeId && d.DrinkName.Contains(SearchPhrase))
                                                  orderby d.DrinkId descending
                                                  select d).ToList();
 
+            if (tagLine == null)
+            {
+                return View(drinkList);
+            }
+
+
+            List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
+            int numOfTags = tagList.Count;
+            int numOfMatchingTags = 0;
+            List<Drink> resultDrinks = new List<Drink>();
+
+            if ((tagLine != null) && (SearchPhrase == null))
+            {
+                Menu();
+            }
+
+            //If there are tags selected
+            if (tagList.Any())
+            {
+                //If there are drinks that match the search phrase
+                if (drinkList.Any())
+                {
+                    // For each drink that contains the search phrase
+                    foreach (Drink d in drinkList)
+                    {
+                        numOfMatchingTags = 0;
+
+                        // Get all tags belonging to the current drink
+                        var drinkTagList = (IEnumerable<Tag>)(from dt in _context.DrinkTag
+                                                              join t in _context.Tag on dt.TagId equals t.TagId
+                                                              where d.DrinkId == dt.DrinkId
+                                                              select t).ToList();
+                        // Go thru each tag that the current drink has
+                        foreach (Tag t in drinkTagList)
+                        {
+                            // Go thru each tag that the user selected 
+                            foreach (int drinkTag in tagList)
+                            {
+                                // Check if they are the same tag
+                                if (drinkTag.Equals(t.TagId))
+                                {
+                                    numOfMatchingTags += 1;
+                                }
+
+                                // If the drink contains all of the tags that the user selected, add the drink to the result list
+                                if (numOfMatchingTags == numOfTags)
+                                {
+                                    resultDrinks.Add(d);
+                                    numOfMatchingTags = 0;
+
+                                }
+                            }
+
+                        }
+
+
+                    }
+                }
+            }
+            else
+            {
+                return View(drinkList);
+            }
+
+
             //Return list of drinks to the .cshtml to be displayed
-            return View(drinkList);
+            return View(resultDrinks);
         }
-        /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
+    /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 }
