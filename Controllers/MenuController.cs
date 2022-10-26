@@ -672,30 +672,7 @@ namespace BaristaHome.Controllers
         }
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-        /*ALEXvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-        //Delete ingredient when editing
-        [HttpPost, ActionName("DeleteIngredient")]
-        public async Task<IActionResult> DeleteIngredient(int? drinkId, int? ingredientId)
-        {
 
-            var existingDrinkIngredient = (from di in _context.DrinkIngredient
-                                           join d in _context.Drink on di.DrinkId equals d.DrinkId
-                                           join i in _context.Ingredient on di.IngredientId equals i.IngredientId
-                                           select di).FirstOrDefault();
-
-            _context.DrinkIngredient.Remove(existingDrinkIngredient);
-            await _context.SaveChangesAsync();
-
-            var drink = await _context.Drink.FirstOrDefaultAsync(m => m.DrinkId == drinkId);
-            if (drink == null)
-            {
-                return NotFound();
-            }
-
-            return View(drink);
-
-        }
-        /*Alex ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
 
 }
