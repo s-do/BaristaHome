@@ -173,14 +173,14 @@
 
             @*Dynamic Instruction input*@
             <div class = "drink-ingredients">
-                @*Displays the tags that the drink currently has*@
+                @*Displays drink ingredients*@
                 @{
                     var ingredientList = ViewBag.IngredientList==null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
                     if(ingredientList.Any()) {
                         foreach(var i in ingredientList){
                             <flex class="flex2">
                                 <input type="text" placeholder="@i.IngredientName" name="ingredientList" value="@i.IngredientName"/>
-                                <button type="submit" class="btn delete" asp-controller="Menu" asp-action="Delete" asp-route-tagId="@i.IngredientId" asp-route-drinkId="@Model.DrinkId" style="float:right;">x</button>
+                                <button type="submit" class="btn delete" asp-controller="Menu" asp-action="DeleteIngredient" asp-route-ingredientId="@i.IngredientId" asp-route-drinkId="@Model.DrinkId" style="float:right;">x</button>
                             </flex>
                         }
                     }
