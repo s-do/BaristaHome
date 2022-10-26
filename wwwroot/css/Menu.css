@@ -80,9 +80,11 @@
 
 .add-drink-bottom {
     /*outline: 5px dotted red;*/
-    height: 700px;
+    height: fit-content;
+    min-height: 300px;
     padding-left: 50px;
     padding-right: 50px;
+    padding-bottom: 100px;
 }
 
 .drink-instructions {
@@ -121,7 +123,7 @@
     object-fit:contain;
 }
 
-#Instructions, #DrinkName, #Description, #DrinkIngredients {
+#Instructions, #DrinkName, #Description, #DrinkIngredients, #DrinkImage {
     border: 3px solid #DFB3D3;
 }
 
@@ -320,3 +322,71 @@ input:focus{
     text-decoration: none;
 }
 /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+.drink-video {
+/*    outline: 5px dotted blue;*/
+    padding-left: 50px;
+    padding-right: 50px;
+    height: 400px;
+    text-align: center;
+}
+
+.middle {
+/*    outline: 5px dotted green;*/
+    width: 50%;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 10px;
+}
+
+iframe {
+    border: 3px solid #DFB3D3;
+    height: 400px;
+    width: 600px;
+}
+
+.newIngredient {
+    border: 2px solid;
+    background-color: #FFD9F4;
+    font-size: 16px;
+    font-family: Arial;
+    cursor: pointer;
+    border-color: #FFD9F4;
+    color: black;
+}
+
+/*Add Ingredient button*/
+.addIngredient {
+    text-decoration: none;
+/*    background: #FFD9F4;*/
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    font-size: 20px;
+}
+
+    .addIngredient:hover {
+/*        background-color: #DFB3D3;*/
+        color: black;
+        font-weight: bold;
+    }
+
+.flex2 {
+    display: flex;
+    gap: 1.5em;
+    margin-bottom: 15px;
+}
+
+.instruction {
+    background-color: #F3CD95;
+    height: 45px;
+    width: 100%;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}

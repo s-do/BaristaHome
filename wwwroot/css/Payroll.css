@@ -110,11 +110,16 @@ user-img .image {
     vertical-align: central;
 }
 
-table, th, td {
-    border: 1px solid black;
-}
 
 td {
     font-family: 'Inter', sans-serif;
     font-size: 30px;
+}
+
+.table-payroll tr:nth-of-type(odd) {
+    background-color: #f0ecec;
+}
+
+.table-payroll tr:nth-of-type(even) {
+    background-color: #ffffff;
 }

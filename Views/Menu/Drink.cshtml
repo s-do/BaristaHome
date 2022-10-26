@@ -85,23 +85,49 @@
     @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-    @*Drink instrunctions and ingredients*@
+    @*Drink instrunctions and ingredients*@"
+
     <div class = "add-drink-bottom">
+
         <div class = "drink-instructions">
             <a>Instructions</a>
             <div class="text-display" style="height: 150px">
                 @Html.DisplayFor(model => model.Instructions)
             </div>
-
         </div>
 
-        <div class = "drink-ingredients">
+@*        <div class = "drink-ingredients">
             <a>Ingredients</a>
             <div class="text-display" style="height: 150px;">
             </div>
+        </div>*@
 
+        @*Drink tags*@
+        <div class = "drink-ingredients">
+            @{
+                var ingredientList = ViewBag.IngredientList == null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
+
+                if(ingredientList.Any()) {
+                    foreach(var i in ingredientList) {
+                        <div class="instruction">
+                            @i.IngredientName
+                        </div>
+                    }
+                }
+            }
         </div>
     </div>
+
+    @if(Model.DrinkImage != null)
+    {
+        <div class="drink-video">
+            <iframe
+                src= "@Html.DisplayFor(model => model.DrinkImage)">
+            </iframe>
+        </div>
+    }
+
+
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     <footer class="border-top footer text-muted">

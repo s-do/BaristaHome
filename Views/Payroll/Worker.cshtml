@@ -53,12 +53,33 @@
         </div>
 
         <div class="information">
-
-            <table style="width:100%">
+            <table class="table-payroll" style="width:100%">
+                <form asp-action="Worker">
+                    <div class="filter" style="float:left">
+                        <select placeholder="Select Month" name="month">
+                            <option value="0">All</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <input type="submit" asp-action="Worker" value="Filter" style="width:25%;">
+                    </div>
+                </form>
                 <tr style="background-color:#ffdcf4; height:70px">
-                    <td style="width:33.33%">Date</td>
-                    <td style="width:33.33%">Hours</td>
-                    <td style="width:33.33%">Amount</td>
+                    <td style="width:50%">
+                        Date
+                    </td>
+                    <td style="width:20%">Hours</td>
+                    <td style="width:30%">Amount</td>
                 </tr>
                 @{
                     var myList = ViewBag.PayrollList==null ? new List<Payroll>() : (List<Payroll>)ViewBag.PayrollList;

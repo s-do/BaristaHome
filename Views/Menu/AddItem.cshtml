@@ -81,7 +81,6 @@
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
 @*Selina vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-                @*Drink tags*@
                 <a>Tags</a>
                 <a href="#" class="addTag">&plus;</a>
                 <div class = "drink-tags">
@@ -131,6 +130,15 @@
 @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
         @*Drink instrunctions and ingredients*@
         <div class = "add-drink-bottom">
+
+            <div class="middle">
+                <div class="form-group">
+                    <label asp-for="DrinkImage"></label>
+                    <input asp-for="DrinkImage" class="form-control" />
+                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class = "drink-instructions">
                 <div class="form-group">
                     <label asp-for="Instructions"></label>
@@ -139,14 +147,46 @@
                 </div>
             </div>
 
+            @*Dynamic Instruction input*@
+            <div class = "drink-ingredients">
+               @*Dynamic Input field is generated here*@
+                <div class="inputIngredientGroup"></div>
+                <a href="#" class="addIngredient">+Ingredient</a>
 
-         <div class = "drink-ingredients">
-                <div class="form-group">
-                    <label asp-for="DrinkIngredients">Ingredients</label>
-                    <textarea type="input" rows="10" asp-for="DrinkIngredients" class="form-control"></textarea>
-                    <span asp-validation-for="DrinkIngredients" class="text-danger"></span>
-                </div>
 
+                @*Dynamic input field creation*@
+                <script>
+                    const addIngredientBtn = document.querySelector(".addIngredient");
+                    const input2 = document.querySelector(".inputIngredientGroup");
+
+                    @*Function to remove existing input in view*@
+                    function removeIngredient(){
+                        this.parentElement.remove();                                                    
+                    }
+
+                    @*Function to add new input to view*@
+                    function addIngredientInput(){
+                        const newIngredient = document.createElement("input");
+                        newIngredient.type = "text";
+                        newIngredient.placeholder = "Enter ingredient";
+                        newIngredient.name = "ingredientList";
+
+                        const btn = document.createElement("a");
+                        btn.className = "delete";
+                        btn.innerHTML = "&times";
+
+                        const flex = document.createElement("div");
+                        flex.className = "flex2";
+
+                        btn.addEventListener("click", removeIngredient);
+                            
+                        flex.appendChild(newIngredient);
+                        flex.appendChild(btn);
+                        input2.appendChild(flex);
+                    }
+
+                    addIngredientBtn.addEventListener("click", addIngredientInput);
+                </script>
             </div>
         </div>
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@

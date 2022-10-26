@@ -24,10 +24,10 @@ namespace BaristaHome.Controllers
             return View();
         }
 
-/*        public IActionResult Worker()
-        {
-            return View();
-        }*/
+        /*        public IActionResult Worker()
+                {
+                    return View();
+                }*/
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -52,9 +52,9 @@ namespace BaristaHome.Controllers
             }
 
             List<Payroll> payrollQuery = (from u in _context.User
-                                     join payroll in _context.Payroll on u.UserId equals payroll.UserId
-                                     where payroll.UserId == worker.UserId
-                                     select payroll).ToList();
+                                          join payroll in _context.Payroll on u.UserId equals payroll.UserId
+                                          where payroll.UserId == worker.UserId
+                                          select payroll).ToList();
             ViewBag.PayrollList = payrollQuery;
 
             return View(worker);
@@ -79,6 +79,33 @@ namespace BaristaHome.Controllers
 
 
             return File(image, "image/png");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Worker(int month)
+        {
+            var userId = Convert.ToInt32(User.FindFirst("UserId").Value);
+            //Get list of payroll
+            var payrollList = (List<Payroll>)(from p in _context.Payroll
+                                              where p.UserId == userId
+                                              select p).ToList();
+            ViewBag.PayrollList = payrollList;
+            List<Payroll> resultPayroll = new List<Payroll>();
+            if (month != null)
+            {
+                resultPayroll = (from p in payrollList
+                                where p.Date.Month == month
+                                select p).ToList();
+                ViewBag.PayrollList = resultPayroll;
+            }
+            else
+            {
+                return View(payrollList);
+            }
+
+            return View(resultPayroll);
+
+
         }
     }
 }
