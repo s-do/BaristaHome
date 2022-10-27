@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20220928020639_ChangeShiftColumn")]
+    partial class ChangeShiftColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +102,11 @@ namespace BaristaHome.Migrations
                         .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("DrinkImage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("DrinkImageData")
+                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("DrinkName")
@@ -115,12 +119,7 @@ namespace BaristaHome.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
                     b.HasKey("DrinkId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("Drink");
                 });
@@ -607,17 +606,6 @@ namespace BaristaHome.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Drink", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("Drinks")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.DrinkIngredient", b =>
                 {
                     b.HasOne("BaristaHome.Models.Drink", "Drink")
@@ -831,8 +819,6 @@ namespace BaristaHome.Migrations
             modelBuilder.Entity("BaristaHome.Models.Store", b =>
                 {
                     b.Navigation("Checklists");
-
-                    b.Navigation("Drinks");
 
                     b.Navigation("Feedbacks");
 
