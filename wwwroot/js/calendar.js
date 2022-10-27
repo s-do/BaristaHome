@@ -15706,11 +15706,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
         plugins: [_fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_2__["default"], _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_3__["default"], _fullcalendar_list__WEBPACK_IMPORTED_MODULE_4__["default"]],
+
+        // custom button for requesting shift swap
+        customButtons: {
+            shiftSwapButton: {
+                text: 'shift swap',
+                click: function () {
+                    window.location = '/Calendar/Swap';
+                }
+            }
+        },
+
+        // header bar that pops above the calendar
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next today shiftSwapButton',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
+
+        // the many little fullcalendar adjustments you can make
         height: 1000,
         allDaySlot: false,
         eventStartEditable: false,
@@ -15743,6 +15757,7 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 });
 
+// both of these click functions deal with deleting a shift
 $('#deleteShift').click(() => {
     $("#editModal").modal("hide");
     $('#deleteModal').modal('show');

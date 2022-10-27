@@ -21,17 +21,7 @@ namespace BaristaHome.Controllers
         {
             _context = context;
         }
-
-        // GET: Calendar
-        public async Task<IActionResult> Index()
-        {
-            var baristaHomeContext = _context.Shift.Include(s => s.Store).Include(s => s.User);
-/*            foreach(Shift shift in baristaHomeContext)
-            {
-                shift.StartShift.
-            }*/
-            return View(await baristaHomeContext.ToListAsync());
-        }
+        /* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
 
         public IActionResult Shifts()
         {
@@ -106,6 +96,7 @@ namespace BaristaHome.Controllers
         // POST: Calendar/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Edit([Bind("ShiftId,StartShift,EndShift,ShiftDate,UserId,StoreId")] Shift shift)
         {
             if (shift.ShiftId == 0)
@@ -158,6 +149,7 @@ namespace BaristaHome.Controllers
         // POST: Calendar/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete([Bind("ShiftId")] Shift shift)
         {
             if (_context.Shift == null)
@@ -178,5 +170,24 @@ namespace BaristaHome.Controllers
         {
           return _context.Shift.Any(e => e.ShiftId == id);
         }
+        /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+        /* CINDIE ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+        public IActionResult Swap()
+        {
+            // TODO: query current user's shifts to display and select the one they want to swap with their other same role workers in the store 
+            return View();
+        }
+
+        public IActionResult Requests()
+        {
+            // TODO: display current user's swap requests from other workers (might have to create a table in the db to keep track of this)
+            return View();
+        }
+
+        /* CINDIE ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+
+
     }
 }

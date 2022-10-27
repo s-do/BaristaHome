@@ -10,11 +10,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var calendar = new Calendar(calendarEl, {
         plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
+
+        // custom button for requesting shift swap
+        customButtons: {
+            shiftSwapButton: {
+                text: 'shift swap',
+                click: function () {
+                    window.location = '/Calendar/Swap';
+                }
+            }
+        },
+
+        // header bar that pops above the calendar
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next today shiftSwapButton',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
+
+        // the many little fullcalendar adjustments you can make
         height: 1000,
         allDaySlot: false,
         eventStartEditable: false,
@@ -47,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 });
 
+// both of these click functions deal with deleting a shift
 $('#deleteShift').click(() => {
     $("#editModal").modal("hide");
     $('#deleteModal').modal('show');

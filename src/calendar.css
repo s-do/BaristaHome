@@ -1,12 +1,170 @@
-
-body {
-  margin: 40px 10px;
-  padding: 0;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-#calendar {
-  max-width: 900px;
-  margin: 0 auto;
+/* any css starting with fc is custom FullCalendar css editing/overriding */
+.fc .fc-toolbar-title {
+    font-size: 1.75em;
+    margin: 0px;
+    margin-right: 55px;
+}
+
+.fc .fc-daygrid-day-number {
+    position: relative;
+    z-index: 4;
+    padding: 4px;
+    color: black;
+}
+
+/* --- spacing between time and title --- */
+.fc-direction-ltr .fc-daygrid-event .fc-event-time {
+    margin-right: 3px;
+    color: black;
+}
+
+.fc-direction-rtl .fc-daygrid-event .fc-event-time {
+    margin-left: 3px;
+    color: black;
+}
+
+.fc-daygrid-dot-event .fc-event-title {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0; /* important for allowing to shrink all the way */
+    overflow: hidden;
+    font-weight: bold;
+    color: black;
+}
+
+.fc .fc-col-header-cell-cushion {
+    display: inline-block;
+    padding: 2px 4px;
+    color: black;
+}
+
+.fc-direction-ltr .fc-list-day-text, .fc-direction-rtl .fc-list-day-side-text {
+    float: left;
+    color: black;
+}
+
+.fc-direction-ltr .fc-list-day-side-text, .fc-direction-rtl .fc-list-day-text {
+    float: right;
+    color: black;
+}
+
+/* Changing border colors of the calendar */
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border: 1px solid #DFB3D3;
+    border: 1px solid var(--fc-border-color, #DFB3D3);
+}
+
+.fc-theme-standard .fc-scrollgrid {
+    border: 1px solid #DFB3D3;
+    border: 1px solid var(--fc-border-color, #DFB3D3); /* bootstrap does this. match */
+}
+
+.fc-theme-standard .fc-popover {
+    border: 1px solid #DFB3D3;
+    border: 1px solid var(--fc-border-color, #DFB3D3);
+    background: #fff;
+    background: var(--fc-page-bg-color, #fff);
+}
+
+.fc-theme-standard .fc-list {
+    border: 1px solid #DFB3D3;
+    border: 1px solid var(--fc-border-color, #DFB3D3);
+}
+
+/* Changing calendar buttons */
+.fc .fc-button-primary {
+    color: #000;
+    color: var(--fc-button-text-color, #000);
+    background-color: #2C3E50;
+    background-color: var(--fc-button-bg-color, #ffdcf4);
+    border-color: #2C3E50;
+    border-color: var(--fc-button-border-color, #ffdcf4);
+}
+
+.fc .fc-button-primary:hover {
+    color: #000;
+    color: var(--fc-button-text-color, #000);
+    background-color: #1e2b37;
+    background-color: var(--fc-button-hover-bg-color, #ffdcf4);
+    border-color: #1a252f;
+    border-color: var(--fc-button-hover-border-color, #ffdcf4);
+}
+
+.fc .fc-button-primary:disabled { /* not DRY */
+    color: #000;
+    color: var(--fc-button-text-color, #000);
+    background-color: #2C3E50;
+    background-color: var(--fc-button-bg-color, #ffdcf4);
+    border-color: #2C3E50;
+    border-color: var(--fc-button-border-color, #ffdcf4); /* overrides :hover */
+}
+
+.fc .fc-button-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+}
+
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    color: #000;
+    color: var(--fc-button-text-color, #000);
+    background-color: #DFB3D3;
+    background-color: var(--fc-button-active-bg-color, #DFB3D3);
+    border-color: #151e27;
+    border-color: var(--fc-button-active-border-color, #DFB3D3);
+}
+
+.fc .fc-button-primary:not(:disabled):active:focus,
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+}
+
+/* css for stuff not revolving around FullCalendar */
+.center {
+    width: 75%;
+    text-align: center;
+}
+
+.pink-button-right {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: right;
+    margin-right: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    object-fit: contain;
+}
+
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }

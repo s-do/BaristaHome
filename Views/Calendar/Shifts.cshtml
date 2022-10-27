@@ -5,11 +5,15 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8' />
-    <link rel="stylesheet" href="~/css/calendar.css" />
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] • Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
 </head>
 <body>
 
@@ -37,8 +41,19 @@
         }
     }
 
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Back</a>
+            <div class="center">
+                <h1 class="title">Shared Calendar</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Calendar" asp-action="Requests">Requests</a>
+        </nav>
+    </header>
+
     <!-- Create a tag element so FullCalender can generate the data by finding its id -->
-    <div id="sharedCalendar"></div>
+    <div id="sharedCalendar" class="container"></div>
 
     @if (User.FindFirst("RoleId").Value != "1") // only allow managers/owners to add shifts
     { 
@@ -146,6 +161,6 @@
             </div>
         </div>
     }
-    
+   
 </body>
 </html>
