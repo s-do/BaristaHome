@@ -29,6 +29,17 @@ namespace BaristaHome.Controllers
                              select store.StoreName).FirstOrDefault();
 
             ViewBag.StoreName = storeName;
+
+            var newestShiftStatus = (from u in _context.User
+                                     join st in _context.Store on u.StoreId equals st.StoreId
+                                     join uss in _context.UserShiftStatus on u.UserId equals uss.UserId
+                                     join ss in _context.ShiftStatus on uss.ShiftStatusId equals ss.ShiftStatusId
+                                     orderby uss.Time descending
+                                     where uss.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                     select uss.ShiftStatusId).FirstOrDefault();
+
+            ViewBag.NewestShiftStatus = newestShiftStatus;
+
             return View();
         }
 
