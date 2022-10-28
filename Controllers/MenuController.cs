@@ -157,25 +157,34 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> Menu(string tagLine)
         {
+            if(tagLine != null)
+            {
+                // Converting the x,y,z,... string to an int list
+                List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
 
-            // Converting the x,y,z,... string to an int list
-            List<int> tagList = tagLine.Split(',').Select(int.Parse).ToList();
+                var filteredDrinks = (from dt in _context.DrinkTag
+                                     .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
+                                      join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
+                                      select d).Distinct(); // ensure distinct drinks to prevent multiple same objs
 
-            var filteredDrinks = (from dt in _context.DrinkTag
-                             .Where(dt => tagList.Contains(dt.TagId))                 // get the drinktags that contain any of the ids in tagList
-                             join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
-                             select d).Distinct();                                    // ensure distinct drinks to prevent multiple same objs
+                // Recreating viewbag to display store's filters/tags again
+                var tags = (IEnumerable<Tag>)(from s in _context.Store
+                                              join d in _context.Drink on s.StoreId equals d.StoreId
+                                              join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                              join t in _context.Tag on dt.TagId equals t.TagId
+                                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                              select t);
+                ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
 
-            // Recreating viewbag to display store's filters/tags again
-            var tags = (IEnumerable<Tag>)(from s in _context.Store
-                                          join d in _context.Drink on s.StoreId equals d.StoreId
-                                          join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
-                                          join t in _context.Tag on dt.TagId equals t.TagId
-                                          where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                                          select t);
-            ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");       
+                return View(filteredDrinks);
+            }
 
-            return View(filteredDrinks);           
+            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            var drinkList = (IEnumerable<Drink>)from d in _context.Drink
+                                                where d.StoreId == storeId
+                                                orderby d.DrinkId descending
+                                                select d;
+            return View(drinkList);   
         }
         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
