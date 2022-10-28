@@ -54,7 +54,6 @@ namespace BaristaHome.Data
             builder.Entity<Payroll>().Property(table => table.Hours).HasPrecision(16, 2);
             builder.Entity<Payroll>().Property(table => table.Amount).HasPrecision(16, 2);
 
-            builder.Entity<Sale>().Property(table => table.UnitsSold).HasPrecision(16, 2);
             builder.Entity<Sale>().Property(table => table.Profit).HasPrecision(16, 2);
 
             builder.Entity<User>().Property(table => table.Wage).HasPrecision(16, 2);

@@ -547,13 +547,19 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SellDrink([Bind("DrinkId,DrinkName,Instructions,Description,StoreId")] Drink drink)
+        public async Task<IActionResult> SellDrink([Bind("DrinkId,DrinkName,Instructions,Description,StoreId")] Drink drink)
         {
             if (ModelState.IsValid)
             {
                 TempData["drinkSold"] = "success";
+                Sale sale = new Sale { UnitsSold = 1,
+                                       Profit = 0,
+                                       TimeSold = DateTime.Now,
+                                       DrinkId = drink.DrinkId,
+                                       StoreId = drink.StoreId,};
+                _context.Add(sale);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Drink), new { id = drink.DrinkId });
-
             }
             TempData["drinkSold"] = "failed";
 

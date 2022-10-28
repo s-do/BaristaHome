@@ -29,6 +29,8 @@ namespace BaristaHome.Models
         public virtual Store? Store { get; set; }
         public virtual ICollection<DrinkIngredient>? DrinkIngredients { get; set; }
         public virtual ICollection<DrinkTag>? DrinkTags { get; set; }
+        public virtual ICollection<Sale>? Sales { get; set; }
+
 
 
     }

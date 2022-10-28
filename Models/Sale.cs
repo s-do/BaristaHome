@@ -5,11 +5,15 @@ namespace BaristaHome.Models
     public class Sale
     {
         public int SaleId { get; set; }
-        public decimal UnitsSold { get; set; }
-        public decimal Profit { get; set; }
+        public int UnitsSold { get; set; }
+        public decimal? Profit { get; set; }
         public DateTime TimeSold { get; set; }
 
         // Relationships
-        public virtual InventoryItem InventoryItem { get; set; }
+        public int? StoreId { get; set; }
+        public virtual Store? Store { get; set; }
+
+        public int? DrinkId { get; set; }
+        public virtual Drink? Drink { get; set; }
     }
 }
