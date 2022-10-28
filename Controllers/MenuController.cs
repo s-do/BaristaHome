@@ -73,44 +73,59 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
                 /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-                foreach (var tag in tagList)
+                if(tagList != null)
                 {
-                    //Checks Tag database to see if tag from list exists or not
-                    var existingTag = (from t in _context.Tag
-                                       where t.TagName == tag
-                                       select t).FirstOrDefault();
-                    //If tag does not exist yet, add it into the Tags database
-                    if (existingTag == null)
+                    foreach (var tag in tagList)
                     {
-                        Tag newTag = new Tag { TagName = tag };
-                        _context.Add(newTag);
-                        await _context.SaveChangesAsync();
-
-                        var addedTag = (from t in _context.Tag
-                                        where t == newTag
-                                        select t.TagId).FirstOrDefault();
-
-                        DrinkTag drinkTag = new DrinkTag
+                        //Checks Tag database to see if tag from list exists or not
+                        var existingTag = (from t in _context.Tag
+                                           where t.TagName == tag
+                                           select t).FirstOrDefault();
+                        //If tag does not exist yet, add it into the Tags database
+                        if (existingTag == null)
                         {
-                            DrinkId = drink.DrinkId,
-                            TagId = addedTag
-                        };
-                        _context.Add(drinkTag);
-                        await _context.SaveChangesAsync();
-                    }
-                    //If tag already exists then add to DrinkTag database with the new drink and associated tag ids
-                    else
-                    {
-                        DrinkTag drinkTag = new DrinkTag
+                            Tag newTag = new Tag { TagName = tag };
+                            _context.Add(newTag);
+                            await _context.SaveChangesAsync();
+
+                            var addedTag = (from t in _context.Tag
+                                            where t == newTag
+                                            select t.TagId).FirstOrDefault();
+
+                            DrinkTag drinkTag = new DrinkTag
+                            {
+                                DrinkId = drink.DrinkId,
+                                TagId = addedTag
+                            };
+                            _context.Add(drinkTag);
+                            await _context.SaveChangesAsync();
+                        }
+                        //If tag already exists then add to DrinkTag database with the new drink and associated tag ids
+                        else
                         {
-                            DrinkId = drink.DrinkId,
-                            TagId = existingTag.TagId
-                        };
-                        _context.Add(drinkTag);
-                        await _context.SaveChangesAsync();
+                            //Checks if there is an existing DrinkTag
+                            var existingDrinkTag = (from d in _context.Drink
+                                                    join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                                    join t in _context.Tag on dt.TagId equals t.TagId
+                                                    where d.DrinkId == dt.DrinkId && t.TagId == dt.TagId
+                                                    select dt).FirstOrDefault();
+
+                            if(existingDrinkTag == null)
+                            {
+                                DrinkTag drinkTag = new DrinkTag
+                                {
+                                    DrinkId = drink.DrinkId,
+                                    TagId = existingTag.TagId
+                                };
+                                _context.Add(drinkTag);
+                                await _context.SaveChangesAsync();
+                            }
+                            
+                        }
+                        /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                     }
-                    /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                 }
+                
                 return RedirectToAction("Menu", "Menu");
             }
             ModelState.AddModelError(string.Empty, drink.DrinkName);
@@ -179,6 +194,7 @@ namespace BaristaHome.Controllers
                 return View(filteredDrinks);
             }
 
+            // If we reached here, that means we selected nothing to filter, so we must requery the drinks of the store again to redisplay onto the view
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
             var drinkList = (IEnumerable<Drink>)from d in _context.Drink
                                                 where d.StoreId == storeId
@@ -243,7 +259,6 @@ namespace BaristaHome.Controllers
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             /*else
             {*/
-                Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^edit drink method");
             //Gets a list of tags that a drink has
             List<Tag> tagQuery = (from d in _context.Drink
                                        join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
@@ -259,7 +274,6 @@ namespace BaristaHome.Controllers
                                   select dt).ToList();
 
             ViewBag.DrinkTagList = drinkTagQuery;*/
-            Console.WriteLine("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             /*}*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
@@ -268,45 +282,25 @@ namespace BaristaHome.Controllers
 
         //POST Edit Drink details
         [HttpPost]
-        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkVideo,StoreId,Image")] Drink drink, List<string> tagList, List<string> existingTagList)
+        public async Task<IActionResult> EditItem([Bind("DrinkId,DrinkName,Description,Instructions,DrinkImageData,DrinkVideo,StoreId,Image")] Drink drink, List<string> tagList)
         {
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-            var a = tagList;
-            var b = existingTagList;
-
-            /* SAME NUMBER OF TAGS
-             * tags stay the same: {apple, juice} --> compare existing drink tags with list of tags if same, nothing happens
-             * change all tags: {icy, cold} --> compare
-             * change some tags: {apple, cold}
-             * 
-             * DIFFERENT NUMBER OF TAGS
-             * tags stay the same and add new tags: {apple, juice, cold}
-             * add all different tags and new amount: {icy, cold, fruit}
-             * keep some previous tags and add new tags: {apple, red, cold}
-             * 
-             * removing all the tags and adding none
+            /* 
+             * check if drinktag alrdy exists: if it does, don't add to db
+             * if drink tag doesnt exist: check if tag exists in tag db, 
+             *      - if tag exists, make drinktag
+             *      - if tag doesnt exist: make tag and make drink tag
+             * check if there are any tags not associated with a drink
+             *      - if a tag is used in no drinks, delete from the tags database
              */
-            foreach (var t in tagList)
+            if (tagList != null)
             {
-                var existingDrinkTag = (from s in _context.Store
-                                         join d in _context.Drink on s.StoreId equals d.StoreId
-                                         join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
-                                         join tag in _context.Tag on dt.TagId equals tag.TagId
-                                         where dt.DrinkId == drink.DrinkId
-                                         select tag).ToList();
-                /*existingDrinkTag.Sort();
-                tagList.Sort();*/
-                //When you edit list and have the same number of tags but the tags are different
-                if ((existingDrinkTag.Count() == tagList.Count()) && (existingDrinkTag.Equals(tagList) == false))
-                {
-                    var existingTag = (from s in _context.Store
-                                            join d in _context.Drink on s.StoreId equals d.StoreId
-                                            join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
-                                            join tag in _context.Tag on dt.TagId equals tag.TagId
-                                            where dt.DrinkId == drink.DrinkId
-                                            select tag);
-                }
+
             }
+
+            
+            
+
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
