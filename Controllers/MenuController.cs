@@ -55,6 +55,18 @@ namespace BaristaHome.Controllers
             //Store Id
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
+            //////////////////////////////////////////////had to add this
+            var existingDrink = (from d in _context.Drink
+                                 where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
+                                 select d).FirstOrDefault();
+
+            if (existingDrink != null)
+            {
+                ModelState.AddModelError(string.Empty, "Drink name in use");
+                return View(drink);
+            }
+            ///////////////////////////////////////////////
+
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             if (drink.Image != null)
             {
@@ -103,7 +115,7 @@ namespace BaristaHome.Controllers
                         //If tag already exists then add to DrinkTag database with the new drink and associated tag ids
                         else
                         {
-                            /*//Gets the DrinkTag with the drink id and tag id
+                            //Gets the DrinkTag with the drink id and tag id
                             var existingDrinkTag = (from d in _context.Drink
                                                     join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
                                                     join t in _context.Tag on dt.TagId equals t.TagId
@@ -111,6 +123,8 @@ namespace BaristaHome.Controllers
                                                     select dt).FirstOrDefault();
 
                             //Checks if there is an existing DrinkTag
+                            //This check is for when users enter in the same tag twice
+                            //Duplicated tag is not added to the DrinkTag db
                             if (existingDrinkTag == null)
                             {
                                 //If DrinkTag doesn't exist yet, add it into the DrinkTag db
@@ -121,14 +135,7 @@ namespace BaristaHome.Controllers
                                 };
                                 _context.Add(drinkTag);
                                 await _context.SaveChangesAsync();
-                            }*/
-                            DrinkTag drinkTag = new DrinkTag
-                            {
-                                DrinkId = drink.DrinkId,
-                                TagId = existingTag.TagId
-                            };
-                            _context.Add(drinkTag);
-                            await _context.SaveChangesAsync();
+                            }
 
                         }
                         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -329,6 +336,7 @@ namespace BaristaHome.Controllers
                      *      - if tag doesnt exist: make tag and make drink tag
                      * check if there are any tags not associated with a drink
                      *      - if a tag is used in no drinks, delete from the tags database
+                     * delete tags from Tag db if no drink is using it (need to do this still)
                      */
                     if (tagList != null)
                     {
@@ -339,29 +347,33 @@ namespace BaristaHome.Controllers
                                        where drink.DrinkId == dt.DrinkId
                                        select t.TagName).ToList();
 
-                        //If drink has existing tags
-                        if(oldTags != null)
+                        //If drink has existing old tags
+                        if (oldTags != null)
                         {
-                            //Gets all the tags that are no longer used
-                            var deleteOldTags = tagList.Except(oldTags);
+                            //Returns a list of tags that are no longer used by the drink
+                            var deleteOldTags = oldTags.Except(tagList);
 
-                            foreach (var ot in deleteOldTags)
+                            if (deleteOldTags != null)
                             {
-                                //Gets the tag if of the tag that is going to be deleted
-                                var deleteTag = (from t in _context.Tag
-                                                   where t.TagName == ot
-                                                   select t.TagId).FirstOrDefault();
+                                foreach (var ot in deleteOldTags)
+                                {
+                                    //Gets the tag id of the tag that is going to be deleted
+                                    var deleteTag = (from t in _context.Tag
+                                                     where t.TagName == ot
+                                                     select t.TagId).FirstOrDefault();
 
-                                //Gets DrinkTag with the tag that is no longer being used
-                                var deleteDrinkTag = (from dt in _context.DrinkTag
-                                                      join d in _context.Drink on dt.DrinkId equals d.DrinkId
-                                                      join t in _context.Tag on dt.TagId equals t.TagId
-                                                      where drink.DrinkId == dt.DrinkId && dt.TagId == deleteTag
-                                                      select dt).FirstOrDefault();
+                                    //Gets DrinkTag with the tag that is no longer being used
+                                    var deleteDrinkTag = (from dt in _context.DrinkTag
+                                                          join d in _context.Drink on dt.DrinkId equals d.DrinkId
+                                                          join t in _context.Tag on dt.TagId equals t.TagId
+                                                          where drink.DrinkId == dt.DrinkId && dt.TagId == deleteTag
+                                                          select dt).FirstOrDefault();
 
-                                //Deletes Drink Tags with old tag from DrinkTag db
-                                _context.DrinkTag.Remove(deleteDrinkTag);
-                                await _context.SaveChangesAsync();
+                                    //Deletes Drink Tags with old tag from DrinkTag db
+                                    _context.DrinkTag.Remove(deleteDrinkTag);
+                                    await _context.SaveChangesAsync();
+
+                                }
                             }
                         }
 
@@ -369,8 +381,8 @@ namespace BaristaHome.Controllers
                         {
                             //Checks Tag database to see if tag from list exists or not
                             var existingTag = (from t in _context.Tag
-                                                where t.TagName == tag
-                                                select t).FirstOrDefault();
+                                               where t.TagName == tag
+                                               select t).FirstOrDefault();
                             //If tag does not exist yet, add it into the Tags database
                             if (existingTag == null)
                             {
@@ -404,6 +416,8 @@ namespace BaristaHome.Controllers
                                 if (existingDrinkTag == null)
                                 {
                                     //If DrinkTag doesn't exist yet, add it into the DrinkTag db
+                                    //This check is for when users enter in the same tag twice
+                                    //Duplicated tag is not added to the DrinkTag db
                                     DrinkTag drinkTag = new DrinkTag
                                     {
                                         DrinkId = drink.DrinkId,
