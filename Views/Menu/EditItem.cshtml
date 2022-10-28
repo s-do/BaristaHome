@@ -156,8 +156,8 @@
             <div class="middle">
                 <div class="form-group">
                     <a>Video</a>
-                    <input asp-for="DrinkImage" class="form-control" placeholder="@Model.DrinkImage"/>
-                    <span asp-validation-for="DrinkImage" class="text-danger"></span>
+                    <input asp-for="DrinkVideo" class="form-control" placeholder="@Model.DrinkVideo"/>
+                    <span asp-validation-for="DrinkVideo" class="text-danger"></span>
                 </div>
             </div>
 
@@ -182,7 +182,6 @@
                             <flex class="flex2">
                                 <input type="text" placeholder="@i.IngredientName" name="ingredientList" value="@i.IngredientName"/>
                                 <a href="#" class="delete" onclick="this.parentElement.remove();">&times</a>
-                                @*<button type="submit" class="btn delete" asp-controller="Menu" asp-action="DeleteIngredient" asp-route-ingredientId="@i.IngredientId" asp-route-drinkId="@Model.DrinkId" style="float:right;">x</button>*@
                             </flex>
                         }
                     }

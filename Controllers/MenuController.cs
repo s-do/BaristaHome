@@ -67,14 +67,14 @@ namespace BaristaHome.Controllers
             }
 
             //Fix youtube link
-            if ((drink.DrinkImage != null) && drink.DrinkImage.Contains("youtube.com"))
+            if ((drink.DrinkVideo != null) && drink.DrinkVideo.Contains("youtube.com"))
             {
-                var temp = drink.DrinkImage.Split("watch?v=");
-                drink.DrinkImage = temp[0] + "embed/" + temp[1];
+                var temp = drink.DrinkVideo.Split("watch?v=");
+                drink.DrinkVideo = temp[0] + "embed/" + temp[1];
             }
             else
             {
-                drink.DrinkImage = null;
+                drink.DrinkVideo = null;
             }
 
             if (ModelState.IsValid)
@@ -375,34 +375,78 @@ namespace BaristaHome.Controllers
                                                       where di.DrinkId == drink.DrinkId
                                                       select di).ToList();
 
+
             List<Ingredient> ingredients = (from i in _context.Ingredient
                                             join di in _context.DrinkIngredient on i.IngredientId equals di.IngredientId
                                             join d in _context.Drink on di.DrinkId equals d.DrinkId
                                             where d.DrinkId == drink.DrinkId
                                             select i).ToList();
 
-            foreach (var di in drinkIngredients)
+            //Removing old ingredients from drink
+            foreach (var existingIngredient in ingredients)
             {
-                _context.DrinkIngredient.Remove(di);
-                await _context.SaveChangesAsync();
-            }
-            foreach (var i in ingredients)
-            {
-                _context.Ingredient.Remove(i);
-                await _context.SaveChangesAsync();
+                var found = false;
+                foreach (var ing in ingredientList)
+                {
+                    if (ing == existingIngredient.IngredientName)
+                    {
+                        found = true;
+                    }
+                }
+                //Remove ingredient if not found in ingredient is not found in new list
+                if (!found)
+                {
+                    //Find Ingredient
+                    var foundIngredient = (from i in _context.Ingredient
+                                            where i.IngredientId == existingIngredient.IngredientId
+                                            select i).FirstOrDefault();
+                    //Remove junction
+                    var DI = (from di in _context.DrinkIngredient
+                              where di.IngredientId == foundIngredient.IngredientId
+                              select di).First();
+                    _context.DrinkIngredient.Remove(DI);
+                    await _context.SaveChangesAsync();
+                    //Delete ingredient from db if no other drinks use ingredient
+                    var count = (from di in _context.DrinkIngredient
+                                 where di.IngredientId == foundIngredient.IngredientId
+                                 select di).Count();
+                    if (count <= 0)
+                    {
+                        _context.Ingredient.Remove(foundIngredient);
+                    }
+                               
+                }
             }
 
-            foreach (var ing in ingredientList)
+            //Adding new ingredients to drink
+            var newList = ingredientList;
+            var allIngredients = (from i in _context.Ingredient
+                                  select i).ToList();
+            foreach (var ingredient in newList)
             {
-                //Check for existing ingredients
-                var existingIng = (from i in _context.Ingredient
-                                   where i.IngredientName == ing
-                                   select i).FirstOrDefault();
-                //Add new ingredient
-                if (existingIng == null)
+                var checkIngredient = (from i in _context.Ingredient
+                                     where i.IngredientName == ingredient
+                                     select i).FirstOrDefault() as Ingredient;
+                //If ingredient exists
+                if (allIngredients.Contains(checkIngredient))
                 {
-                    //Add to db
-                    Ingredient newIngredient = new Ingredient { IngredientName = ing };
+                    //if drink does not have ingredient
+                    if (!ingredients.Contains(checkIngredient))
+                    {
+                        DrinkIngredient drinkIngredient = new DrinkIngredient
+                        {
+                            DrinkId = drink.DrinkId,
+                            IngredientId = checkIngredient.IngredientId
+                        };
+                        _context.Add(drinkIngredient);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                //If ingredient does not exist
+                else
+                {
+                    //Add ingredient to db
+                    Ingredient newIngredient = new Ingredient { IngredientName = ingredient };
                     _context.Add(newIngredient);
                     await _context.SaveChangesAsync();
 
@@ -410,21 +454,12 @@ namespace BaristaHome.Controllers
                     var id = (from i in _context.Ingredient
                               where i == newIngredient
                               select i.IngredientId).FirstOrDefault();
+
+                    //Create junction
                     DrinkIngredient drinkIngredient = new DrinkIngredient
                     {
                         DrinkId = drink.DrinkId,
                         IngredientId = id
-                    };
-                    _context.Add(drinkIngredient);
-                    await _context.SaveChangesAsync();
-                }
-                //If ingredient exists in db
-                else
-                {
-                    DrinkIngredient drinkIngredient = new DrinkIngredient
-                    {
-                        DrinkId = drink.DrinkId,
-                        IngredientId = existingIng.IngredientId
                     };
                     _context.Add(drinkIngredient);
                     await _context.SaveChangesAsync();
@@ -453,14 +488,14 @@ namespace BaristaHome.Controllers
             }
 
             //Format embed link
-            if ((drink.DrinkImage != null) && drink.DrinkImage.Contains("youtube.com"))
+            if ((drink.DrinkVideo != null) && drink.DrinkVideo.Contains("youtube.com"))
             {
-                var temp = drink.DrinkImage.Split("watch?v=");
-                drink.DrinkImage = temp[0] + "embed/" + temp[1];
+                var temp = drink.DrinkVideo.Split("watch?v=");
+                drink.DrinkVideo = temp[0] + "embed/" + temp[1];
             }
             else
             {
-                drink.DrinkImage = null;
+                drink.DrinkVideo = null;
             }
 
             if (ModelState.IsValid)
