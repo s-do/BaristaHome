@@ -75,9 +75,10 @@ namespace BaristaHome.Controllers
         //Retrieve all input from the worker edit page, and then update the user model and save the user model in the database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> WorkerEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image")] User worker)
+        public async Task<IActionResult> 
+            WorkerEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
         {
-
+            
             var existingEmail = (from u in _context.User
                                  where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
                                  select u).FirstOrDefault();
@@ -99,13 +100,19 @@ namespace BaristaHome.Controllers
                 }
             }
 
+            var w = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            w.FirstName = worker.FirstName;
+            w.LastName = worker.LastName;
+            w.Email = worker.Email;
+            w.Image = worker.Image;
+            w.UserImage = worker.UserImage;
+            w.UserImageData = worker.UserImageData;
 
             if (ModelState.IsValid)
             {
                 try
-                {   //Hashes the new password and updates it as the new password for user
-                    worker.Password = Crypto.HashPassword(worker.Password);
-                    _context.Update(worker);
+                {  
+                    _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -114,7 +121,7 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(worker);
+            return View(w);
         }
 
         //Return owner editing page based on their id
@@ -167,7 +174,7 @@ namespace BaristaHome.Controllers
         //Saves any new changes to the user information inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerSelfEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image")] User worker)
+        public async Task<IActionResult> OwnerSelfEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
         {
 
             var existingEmail = (from u in _context.User
@@ -191,13 +198,21 @@ namespace BaristaHome.Controllers
                 }
             }
 
+            var w = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            w.FirstName = worker.FirstName;
+            w.LastName = worker.LastName;
+            w.Email = worker.Email;
+            w.Color = worker.Color;
+            w.Image = worker.Image;
+            w.UserImage = worker.UserImage;
+            w.UserImageData = worker.UserImageData;
+           
 
             if (ModelState.IsValid)
             {
                 try
-                {   //Hashes the new password and updates it as the new password for user
-                    worker.Password = Crypto.HashPassword(worker.Password);
-                    _context.Update(worker);
+                {   
+                    _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -206,7 +221,7 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(worker);
+            return View(w);
         }
 
         // Returns a delete page based on the selected user's id

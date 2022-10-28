@@ -59,6 +59,7 @@
         background-color: pink;
         color: black;
         border: none;
+        border-radius:3px;
         padding-top: 10px;
         padding-bottom: 10px;
         padding-left: 20px;
@@ -146,7 +147,7 @@
 
                     <input type="hidden" asp-for="Password" value="@Model.Password" />
 
-                    <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password"/>
+                    <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
 
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="UserId" value="@Model.UserId" />
@@ -166,7 +167,7 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                    <button class="edit-button">
+                    <button style="margin-top:10px;" class="pink-button">
                         <a asp-controller="Worker" asp-action="ChangePassword">Change Password</a>
                     </button>
 
@@ -186,7 +187,7 @@
                     <p> </p>
 
                     <div>
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="pink-button" asp-controller="Worker" asp-action="Profile" />
                     </div>
                 </form>
             </div>
