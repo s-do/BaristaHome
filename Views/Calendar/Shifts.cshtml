@@ -1,0 +1,166 @@
+﻿@model BaristaHome.Models.Shift
+
+@{
+    ViewData["Title"] = "Shared Calendar";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] • Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" />
+</head>
+<body>
+
+    @section Scripts {
+        <!-- Render and display the Calendar onto view -->
+        <script src="~/js/calendar.js" asp-append-version="true"></script>
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
+        <!-- Reopening modal to display error message if shift could not be added -->
+        @if (ViewBag.openModal)
+        {
+            <script>
+                $(function () {
+                    $('#shiftModal').modal('show');
+                });
+            </script>
+        }
+
+        <!-- Displaying error message if shift could not be edited -->
+        @if (TempData["editShiftError"] != null)
+        {
+            <script>alert('@TempData["editShiftError"]');</script>
+        }
+    }
+
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Back</a>
+            <div class="center">
+                <h1 class="title">Shared Calendar</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Calendar" asp-action="Requests">Requests</a>
+        </nav>
+    </header>
+
+    <!-- Create a tag element so FullCalender can generate the data by finding its id -->
+    <div id="sharedCalendar" class="container"></div>
+
+    @if (User.FindFirst("RoleId").Value != "1") // only allow managers/owners to add shifts
+    { 
+        <div id="shiftModal" class="modal fade" role="dialog" aria-labelledby="shiftModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="addHeader" class="modal-title">Add a Shift</h4>       
+                    </div>
+                        <div class="modal-body">
+                            <form asp-action="Shifts">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Worker Name</label>
+                                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Start Shift</label>
+                                    <input id="start" type="datetime-local" asp-for="StartShift" class="form-control" />
+                                    <span asp-validation-for="StartShift" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">End Shift</label>
+                                    <input id="end" type="datetime-local" asp-for="EndShift" class="form-control" />
+                                    <span asp-validation-for="EndShift" class="text-danger"></span>
+                                </div>
+
+                                <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+
+                                <div class="modal-footer">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.FindFirst("RoleId").Value != "1") // some modal form except this is now for editing a shift
+    {
+        <div id="editModal" class="modal fade" role="dialog" aria-labelledby="shiftModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="editHeader" class="modal-title">Edit Shift</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-action="Edit" id="editForm">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label class="control-label">Start Shift</label>
+                                <!-- editing properties has to be a text type when passing from ajax as the values themselves are basically strings -->
+                                <input id="startTime" type="datetime-local" asp-for="StartShift" class="form-control" />
+                                <span asp-validation-for="StartShift" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">End Shift</label>
+                                <input id="endTime" type="datetime-local" asp-for="EndShift" class="form-control" />
+                                <span asp-validation-for="EndShift" class="text-danger"></span>
+                            </div>
+
+                            <input id="shiftId" type="hidden" asp-for="ShiftId"  />
+                            <input id="workerId" type="hidden" asp-for="UserId" />
+                            <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+
+                            @*<input id="txtName" value="69" type="text" />*@
+                            @*<input id="myInputHidden" type="hidden" asp-for="ShiftId" value="222" />*@
+
+                            <div class="modal-footer">
+                                <input type="submit" value="Update" class="btn btn-primary" />
+                                <button id="deleteShift" type="button" class="btn btn-primary" >Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.FindFirst("RoleId").Value != "1") // for deleting select shift upon editing
+    {
+        <div id="deleteModal" class="modal fade" role="dialog" aria-labelledby="shiftModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="deleteHeader" class="modal-title">Delete Shift</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to delete this shift?</h5>
+                        <form asp-action="Delete" id="deleteForm">
+                            <input id="deleteShiftId" type="hidden" asp-for="ShiftId" />
+                            <div class="modal-footer">
+                                <input type="submit" value="Confirm" class="btn btn-primary" />
+                                <button id="noButton" type="button" class="btn btn-primary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+   
+</body>
+</html>

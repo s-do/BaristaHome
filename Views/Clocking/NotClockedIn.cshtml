@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<BaristaHome.Models.UserShiftStatus>
 @{
-    ViewData["Title"] = "ClockIn";
+    ViewData["Title"] = "NotClockedIn";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -32,39 +32,34 @@
             
             <h1>Hello <i>@ViewBag.FirstName @ViewBag.LastName</i>, current shift status is:</h1>
             <br />
-            <h2><strong>WORKING</strong></h2>
+            <h2><strong>NOT CLOCKED IN</strong></h2>
         </div>
 
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div align="center">
                 <div class = "shift-statuses">
-                    @{
-                        var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
+                @{
+                    var myList = ViewBag.ShiftStatus==null ? new List<ShiftStatus>() : (List<ShiftStatus>)ViewBag.ShiftStatus;
 
-                        if(myList.Any()) {
-                            foreach(var ss in myList) {
-                                //Clock Out or Start Break
-                                if (ss.ShiftStatusId == 2 || ss.ShiftStatusId == 3)
-                                {
-                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
-                                }
-                                //Start Break
-                                @*if (ss.ShiftStatusId == 3)
-                                {
-                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="StartBreak" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
-                                }*@
-                                //Clock Out 
-                                @*else if(ss.ShiftStatusId == 2)
-                                {
-                                    <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="Clocking" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
-                                }*@
+                    if(myList.Any()) {
+                        foreach(var ss in myList) {
+                            //Clock In
+                            if (ss.ShiftStatusId == 1)
+                            {
+                                <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>
                             }
+                            @*else
+                            {
+                                <button type="button" class="btn not-option-button">@ss.ShiftStatusName</button>
+                            }*@
                         }
                     }
-                    </div>
+                }
+                </div>
             </div>
         </form>
+        
 
     </body>
 </html>

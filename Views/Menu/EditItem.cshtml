@@ -28,7 +28,7 @@
         <input type="hidden" asp-for="Description" />
         <input type="hidden" asp-for="Instructions" />
         <input type="hidden" asp-for="DrinkImageData" />
-        <input type="hidden" asp-for="DrinkImage" />*@
+        <input type="hidden" asp-for="DrinkVideo" />*@
 @*       Nav Bar*@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
@@ -55,11 +55,11 @@
                 <label class="img-container" for="file-input">
                         @if(Model.DrinkImageData == null)
                         {
-                            <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                            <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3">
                         }
                         else
                         {
-                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImage" id="output", style="background-color: white; border: 3px solid #DFB3D3"/>
+                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3"/>
                         }
                 </label>
                 @*Script for the dynamic image*@

@@ -20,6 +20,12 @@ namespace BaristaHome.Controllers
         [HttpGet]
         public IActionResult Clocking()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult NotClockedIn()
+        {
             // Getting current user's first name
             var firstName = (from u in _context.User
                              where u.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
@@ -45,7 +51,7 @@ namespace BaristaHome.Controllers
         //When a user decides to "Clock Out" their clock out time will be saved
         //User will be taken to "Not Clocked In" status page
         /*[HttpPost]
-        public async Task<IActionResult> Clocking(int? id)
+        public async Task<IActionResult> NotClockedIn(int? id)
         {
             UserShiftStatus userSS = new UserShiftStatus();
             userSS.UserId = Convert.ToInt16(User.FindFirst("UserId").Value);
@@ -56,7 +62,7 @@ namespace BaristaHome.Controllers
             _context.Add(userSS);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Clocking", "Clocking");
+            return RedirectToAction("NotClockedIn", "Clocking");
         }*/
 
         [HttpGet]
@@ -142,8 +148,31 @@ namespace BaristaHome.Controllers
             return RedirectToAction("StartBreak", "Clocking");
         }*/
 
+        [HttpGet]
+        public IActionResult ShiftStatus(int? id)
+        {
+            //Clock In and End Break
+            //Show status as "working"
+            if (id == 1 || id == 4)
+            {
+                return RedirectToAction("ClockIn", "Clocking");
+            }
+            //Start Break
+            //Shows status as "taking break"
+            else if (id == 3)
+            {
+                return RedirectToAction("StartBreak", "Clocking");
+            }
+            //Clock Out (id == 2)
+            //Shows status as "not clocked in"
+            else
+            {
+                return RedirectToAction("NotClockedIn", "Clocking");
+            }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> ShiftStatus(int? id)
+        public async Task<IActionResult> ShiftStatus(int? id, bool a)
         {
             UserShiftStatus userSS = new UserShiftStatus();
             userSS.UserId = Convert.ToInt16(User.FindFirst("UserId").Value);
@@ -160,17 +189,17 @@ namespace BaristaHome.Controllers
             {
                 return RedirectToAction("ClockIn", "Clocking");
             }
-            //Clock Out
-            //Shows status as "not clocked in"
-            else if (id == 2)
-            {
-                return RedirectToAction("Clocking", "Clocking");
-            }
             //Start Break
             //Shows status as "taking break"
-            else
+            else if (id == 3)
             {
                 return RedirectToAction("StartBreak", "Clocking");
+            }
+            //Clock Out (id == 2)
+            //Shows status as "not clocked in"
+            else
+            {
+                return RedirectToAction("NotClockedIn", "Clocking");
             }
 
         }
