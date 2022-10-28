@@ -143,7 +143,7 @@ namespace BaristaHome.Controllers
                 return RedirectToAction(nameof(Shifts));
             }
             TempData["editShiftError"] = "There was an error editing this shift.";
-            return RedirectToAction(nameof(Shifts), shift);
+            return RedirectToAction(nameof(Shifts));
         }
 
         // POST: Calendar/Delete/5
