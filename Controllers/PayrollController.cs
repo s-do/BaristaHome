@@ -2,6 +2,7 @@
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -45,12 +46,6 @@ namespace BaristaHome.Controllers
 
         public async Task<IActionResult> Owner()
         {
-            /*            var workers = await _context.Payroll
-                                        .Where(u => u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value))
-                                        .OrderByDescending(u => u.RoleId)
-                                        .ThenBy(u => u.FirstName)
-                                        .ToListAsync();*/
-
             List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
                                                    join user in _context.User on payroll.UserId equals user.UserId
                                                    join store in _context.Store on user.StoreId equals store.StoreId
@@ -66,8 +61,13 @@ namespace BaristaHome.Controllers
 
             ViewBag.Payroll = payrolls;
 
+            ViewData["FullNames"] = new SelectList(payrolls, "FullName", "FullName");
+
             return View();
         }
+
+
+
 
 
 
