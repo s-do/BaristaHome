@@ -125,8 +125,8 @@
                     </div>*@
 
 
-                    <label class="control-label">Unit Name</label>
-                    <select asp-for="FullName" class="form-control" asp-items="ViewBag.FullNames"></select>
+                    <label class="control-label"> Name</label>
+                    <select asp-for="FullName" class="form-control" style="text-transform:capitalize" asp-items="ViewBag.FullNames"></select>
 
                     <div class="form-group">
                         <label asp-for="Hours"></label>
@@ -138,6 +138,12 @@
                         <label asp-for="Amount"></label>
                         <input asp-for="Amount" class="form-control" />
                         <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Date</label>
+                        <input id="start" type="datetime-local" asp-for="Date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
 
 
