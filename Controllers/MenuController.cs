@@ -336,7 +336,7 @@ namespace BaristaHome.Controllers
                      *      - if tag doesnt exist: make tag and make drink tag
                      * check if there are any tags not associated with a drink
                      *      - if a tag is used in no drinks, delete from the tags database
-                     * delete tags from Tag db if no drink is using it (need to do this still)
+                     * 
                      */
                     if (tagList != null)
                     {
@@ -429,6 +429,34 @@ namespace BaristaHome.Controllers
                             }
                         }
                     }
+                   
+                    //Gets all the tag IDs from the tag db
+                    var allTags = (from t in _context.Tag
+                                   select t.TagId).ToList();
+
+                    //Gets all the tag IDs from the drinktag db
+                    var allUsedTag = (from d in _context.Drink
+                                            join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                            join t in _context.Tag on dt.TagId equals t.TagId
+                                            where dt.TagId == t.TagId
+                                            select dt.TagId).Distinct();
+                    
+                    //Gets all the tags that are not associated with any drinks
+                    var deleteUnusedTag = allTags.Except(allUsedTag);
+
+                    //If a tag is used in no drinks, delete from the Tags db
+                    if (deleteUnusedTag != null)
+                    {
+                        foreach (var t in deleteUnusedTag)
+                        {
+                            var tag = await _context.Tag.FindAsync(t);
+                            _context.Tag.Remove(tag);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    
+
                     /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                 }
                 catch (DbUpdateConcurrencyException)
