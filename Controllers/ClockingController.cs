@@ -199,6 +199,99 @@ namespace BaristaHome.Controllers
             //Shows status as "not clocked in"
             else
             {
+                //Alex vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+                var userID = Convert.ToInt16(User.FindFirst("UserId").Value);
+                //Start of shift
+                var shiftstart = (from uss in _context.UserShiftStatus
+                             where uss.UserId == userID
+                             where uss.ShiftStatus.ShiftStatusId == 1
+                             orderby uss.Time
+                             select uss).Last();
+                //End of shift
+                var shiftend = userSS;
+
+                var startTime = shiftstart.Time;
+                var endTime = shiftend.Time;
+
+                //Check if there were any breaks
+                var count = (from uss in _context.UserShiftStatus
+                             where uss.UserId == userID
+                             where uss.ShiftStatus.ShiftStatusId == 3
+                             orderby uss.Time
+                             select uss).Count();
+                var startBreak = new DateTime();
+                var endBreak = new DateTime();
+                if (count > 0)
+                {
+                    //Start of break
+                    var shiftstartbreak = (from uss in _context.UserShiftStatus
+                                           where uss.UserId == userID
+                                           where uss.ShiftStatus.ShiftStatusId == 3
+                                           orderby uss.Time
+                                           select uss).Last();
+
+                    if (shiftstartbreak.Time > startTime && shiftstartbreak.Time < endTime)
+                    {
+                        startBreak = shiftstartbreak.Time;
+                        //an end of break must exist of a break has started
+                        //End of break
+                        var shiftendbreak = (from uss in _context.UserShiftStatus
+                                             where uss.UserId == userID
+                                             where uss.ShiftStatus.ShiftStatusId == 4
+                                             orderby uss.Time
+                                             select uss).Last();
+
+                        if (shiftendbreak.Time > startBreak && shiftendbreak.Time < endTime)
+                        {
+                            endBreak = shiftendbreak.Time;
+                        }
+                    }
+                }
+                TimeSpan totalTime = new TimeSpan();
+                if (startBreak.Year == 1)
+                {
+                    totalTime = (startTime - endTime).Duration();
+                }
+                else
+                {
+                    totalTime = (startTime - startBreak).Duration() + (endBreak - endTime).Duration();
+                }
+
+                var wage = (from u in _context.User
+                            where u.UserId == userID
+                            select u.Wage).First();
+
+                if (wage == null)
+                {
+                    wage = 0;
+                }
+
+
+                //Calculate total hours
+                double hours = totalTime.Hours;
+                double minHours = totalTime.Minutes / 60.00;
+                double secHours = totalTime.Seconds / 3600.00;
+/*              //Testing  
+                double hours = 2.00;
+                double minHours = 30.00 / 60.00;
+                double secHours = 0.00 / 3600.00;*/
+                double totalTimeWorked = Math.Round(hours + minHours + secHours, 2);
+                double totalPay = Math.Round((Convert.ToDouble(wage) * totalTimeWorked), 2);
+                var dateWorked = startTime.Date;
+
+
+                
+                Payroll payroll = new Payroll();
+                payroll.UserId = Convert.ToInt16(User.FindFirst("UserId").Value);
+                payroll.Amount = Convert.ToDecimal(totalPay);
+                payroll.Date = dateWorked;
+                payroll.Hours = Convert.ToDecimal(totalTimeWorked);
+
+                _context.Add(payroll);
+                await _context.SaveChangesAsync();
+                //Alex ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
                 return RedirectToAction("NotClockedIn", "Clocking");
             }
 

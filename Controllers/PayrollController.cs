@@ -85,13 +85,14 @@ namespace BaristaHome.Controllers
         public async Task<IActionResult> Worker(int month)
         {
             var userId = Convert.ToInt32(User.FindFirst("UserId").Value);
+            var worker = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             //Get list of payroll
             var payrollList = (List<Payroll>)(from p in _context.Payroll
                                               where p.UserId == userId
                                               select p).ToList();
             ViewBag.PayrollList = payrollList;
             List<Payroll> resultPayroll = new List<Payroll>();
-            if (month != null)
+            if (month != null && month > 0)
             {
                 resultPayroll = (from p in payrollList
                                 where p.Date.Month == month
@@ -100,10 +101,14 @@ namespace BaristaHome.Controllers
             }
             else
             {
-                return View(payrollList);
+                resultPayroll = (from u in _context.User
+                                              join payroll in _context.Payroll on u.UserId equals payroll.UserId
+                                              where payroll.UserId == worker.UserId
+                                              select payroll).ToList();
+                ViewBag.PayrollList = resultPayroll;
             }
 
-            return View(resultPayroll);
+            return View(worker);
 
 
         }

@@ -35,11 +35,11 @@
             <div class="picture">
                 @*-----------------Fix this image thing----------------*@
                 @*Drink image*@
-                <div class="drink-icon">
+                <div class="user-icon">
                     @*Display default icon if drink has no image*@
                     @if(Model.UserImageData ==null)
                     {
-                        <img class="drink-icon image" src="../images/calendar.png"> //Default image display
+                        <img class="user-icon image" src=".../images/calendar.png"> //Default image display
                     }
                     else
                     {
@@ -55,9 +55,9 @@
         <div class="information">
             <table class="table-payroll" style="width:100%">
                 <form asp-action="Worker">
-                    <div class="filter" style="float:left">
+                    <div class="filter" style="float:left;">
                         <select placeholder="Select Month" name="month">
-                            <option value="0">All</option>
+                            <option value="">All</option>
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -71,7 +71,7 @@
                             <option value="11">November</option>
                             <option value="12">December</option>
                         </select>
-                        <input type="submit" asp-action="Worker" value="Filter" style="width:25%;">
+                        <input type="submit" asp-action="Worker" value="Filter" style="fit-content;">
                     </div>
                 </form>
                 <tr style="background-color:#ffdcf4; height:70px">
