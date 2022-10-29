@@ -22,27 +22,59 @@ namespace BaristaHome.Controllers
             _logger = logger;
         }
         */
+
+        //Returns a view displaying a message that says there's no existing timers for the current store
+        public async Task<IActionResult> NoTimers()
+        {
+            return View();
+        }
+
+        //Returns a view displaying all timers, or redirects to NoTimers() if there's no existing timer for the store
         public async Task<IActionResult> Timers()
         {
-            var timer = await _context.StoreTimer.FindAsync(1);
+            StoreTimer? timer = await _context.StoreTimer.FindAsync(12);
+            if (timer == null)
+            {
+                return RedirectToAction("NoTimers");
+            }
+            else
+            {
+               return View(timer);
+            }
+            
+        }
+
+
+        //Returns a page for creating a timer 
+        public async Task<IActionResult> CreateTimer()
+        {
+            return View();
+        }
+
+        //Saves new timer to the database
+        [HttpPost]
+        public async Task<IActionResult> CreateTimer([Bind("TimerName, DurationMin")] StoreTimer timer)
+        {
+            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            timer.StoreId = storeId;
+            _context.Add(timer);
+            await _context.SaveChangesAsync();
             return View(timer);
+        }
+
+        //Deletes a timer from the database
+        public async Task<IActionResult> DeleteTimer(int? timerId)
+        {
+            var timer = await _context.StoreTimer.FindAsync(timerId);
+            _context.Remove(timer); 
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Timers");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateTimer([Bind("TimerName, DurationMin")] string name, int minutes)
-        {
-            StoreTimer timer = new StoreTimer();
-            timer.TimerName = name;
-            timer.DurationMin = minutes;
-            _context.Add(timer);
-            await _context.SaveChangesAsync();
-            return View(timer);
         }
     }
 }
