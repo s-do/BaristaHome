@@ -48,14 +48,10 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkVideo,StoreId,Image,DrinkTags")] Drink drink, List<string> tagList)
         {
-            /*            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
-                        drink.StoreId = storeId;*/
-            //var d = tagList;
-
+            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             //Store Id
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
-            //////////////////////////////////////////////had to add this
             var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
                                  select d).FirstOrDefault();
@@ -65,9 +61,7 @@ namespace BaristaHome.Controllers
                 ModelState.AddModelError(string.Empty, "Drink name in use");
                 return View(drink);
             }
-            ///////////////////////////////////////////////
-
-            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+            
             if (drink.Image != null)
             {
                 using (var ms = new MemoryStream())
@@ -172,12 +166,6 @@ namespace BaristaHome.Controllers
                               where s.StoreId == storeId // forgot to filter by the user's store 
                               select t);
             ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
-            /*List<Tag> tagQuery = (from tag in _context.Tag
-                                  select new Tag
-                                  {
-                                      TagName = tag.TagName
-                                  }).ToList();
-            ViewBag.TagList = tagQuery;*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             return View(drinkList);
@@ -273,8 +261,6 @@ namespace BaristaHome.Controllers
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-            /*else
-            {*/
             //Gets a list of tags that a drink has
             List<Tag> tagQuery = (from d in _context.Drink
                                        join drinkTag in _context.DrinkTag on d.DrinkId equals drinkTag.DrinkId
@@ -282,15 +268,6 @@ namespace BaristaHome.Controllers
                                        where d.DrinkId == drink.DrinkId
                                        select tag).ToList();
             ViewBag.TagList = tagQuery;
-
-            /*List<DrinkTag> drinkTagQuery = (from dt in _context.DrinkTag
-                                  join d in _context.Drink on dt.DrinkId equals d.DrinkId
-                                  join t in _context.Tag on dt.TagId equals t.TagId
-                                  where d.DrinkId == drink.DrinkId
-                                  select dt).ToList();
-
-            ViewBag.DrinkTagList = drinkTagQuery;*/
-            /*}*/
             /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             return View(drink);
         }
@@ -327,13 +304,14 @@ namespace BaristaHome.Controllers
                 {
                     _context.Update(drink);
                     await _context.SaveChangesAsync();
+                    /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
                     /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                     /* 
                      * delete drink tags with old tags from DrinkTag db
-                     * if drink tag doesnt exist: check if tag exists in tag db, check if drinktag alrdy exists
+                     * if drink tag doesnt exist: check if tag exists in tag db, 
                      *      - if tag exists, make drinktag
-                     *      - if tag doesnt exist: make tag and make drink tag
+                     *      - if tag doesnt exist: make tag, check if drinktag alrdy exists, make drink tag
                      * check if there are any tags not associated with a drink
                      *      - if a tag is used in no drinks, delete from the tags database
                      * 
@@ -466,7 +444,7 @@ namespace BaristaHome.Controllers
                 return RedirectToAction("Menu", "Menu");
             }
             return View(drink);
-            /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+            
         }
 
         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
