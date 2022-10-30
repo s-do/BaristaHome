@@ -311,7 +311,7 @@ namespace BaristaHome.Controllers
 
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             var existingDrink = (from d in _context.Drink
-                                 where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
+                                 where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId) && d.StoreId.Equals(drink.StoreId)
                                  select d).FirstOrDefault();
 
             if (existingDrink != null)
@@ -540,9 +540,36 @@ namespace BaristaHome.Controllers
         /*CINDIE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
         /* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
-        public IActionResult Sales()
+        public async Task<IActionResult> Sales()
         {
-            return View();
+            // An anonymous list type that grabs every single sale from the stroe
+            var salesByDate = await (from s in _context.Sale
+                                    join d in _context.Drink on s.DrinkId equals d.DrinkId
+                                    orderby d.DrinkName
+                                    select new
+                                    {
+                                        DrinkName = d.DrinkName,
+                                        UnitsSold = s.UnitsSold,
+                                        Profit = s.Profit,
+                                        TimeSold = s.TimeSold
+                                    }).ToListAsync();
+            ViewBag.salesByDate = salesByDate;
+
+            // Add all the distinct drinks by id then sum up their count sold & profit
+            var distinctQuery = (IEnumerable<SaleViewModel>)
+                await (from s in _context.Sale
+                       join d in _context.Drink on s.DrinkId equals d.DrinkId
+                       // Group rows by the same drink name
+                       group s by new { d.DrinkName } into g
+                       // Then use an aggregate function to sum up the profit and units sold
+                       select new SaleViewModel
+                       {
+                           DrinkName = g.Key.DrinkName,
+                           UnitsSold = g.Sum(s => s.UnitsSold),
+                           Profit = g.Sum(s => s.Profit)
+                       }).ToListAsync();
+
+            return View(distinctQuery);
         }
 
         [HttpPost]

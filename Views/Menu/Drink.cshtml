@@ -70,43 +70,7 @@
             </div>
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
-    @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-            @*Drink tags*@
-            <a>Tags</a>
-            @*Displays all the tags that a drink has*@
-            <div class = "drink-tags">
-                @{
-                    var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
-
-                    if(myList.Any()) {
-                        foreach(var t in myList) {
-                                <button type="button" class="btn newTag">@t.TagName</button>
-                        }
-                    }
-                }
-            </div>
-        </div>
-    </div>
-    @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-
-    @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-    @*Drink instrunctions and ingredients*@
-    <div class = "add-drink-bottom">
-        <div class = "drink-instructions">
-            <a>Instructions</a>
-            <div class="text-display" style="height: 150px">
-                @Html.DisplayFor(model => model.Instructions)
-            </div>
-
-        </div>
-
-        <div class = "drink-ingredients">
-            <a>Ingredients</a>
-            <div class="text-display" style="height: 150px;">
-            </div>
-
-        </div>
-        @* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ *@
+    @* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ *@
 
         <!-- Trigger the modal with a button -->
         <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal">Sell Drink!</button>
@@ -144,14 +108,13 @@
         </div>
 
         <!-- Displaying modal if selling the drink succeeded/failed -->
-
         @if (TempData["drinkSold"] != null)
         {
             @if ((string)TempData["drinkSold"] == "success")
             {
                 <script>
                     $(function () {
-                    $('#successModal').modal('show');
+                        $('#successModal').modal('show');
                     });
                 </script>
             }
@@ -159,12 +122,12 @@
             {
                 <script>
                     $(function () {
-                    $('#failedModal').modal('show');
+                        $('#failedModal').modal('show');
                     });
                 </script>
             }
         }
-        
+
 
         <div class="modal fade" id="successModal">
             <div class="modal-dialog">
@@ -203,7 +166,44 @@
                 </div>
             </div>
         </div>
-        @* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ *@
+    @* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ *@
+
+    @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+            @*Drink tags*@
+            <a>Tags</a>
+            @*Displays all the tags that a drink has*@
+            <div class = "drink-tags">
+                @{
+                    var myList = ViewBag.DrinkTagList==null ? new List<Tag>() : (List<Tag>)ViewBag.DrinkTagList;
+
+                    if(myList.Any()) {
+                        foreach(var t in myList) {
+                                <button type="button" class="btn newTag">@t.TagName</button>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+
+    @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
+    @*Drink instrunctions and ingredients*@
+    <div class = "add-drink-bottom">
+        <div class = "drink-instructions">
+            <a>Instructions</a>
+            <div class="text-display" style="height: 150px">
+                @Html.DisplayFor(model => model.Instructions)
+            </div>
+
+        </div>
+
+        <div class = "drink-ingredients">
+            <a>Ingredients</a>
+            <div class="text-display" style="height: 150px;">
+            </div>
+
+        </div>
 
     </div>
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
