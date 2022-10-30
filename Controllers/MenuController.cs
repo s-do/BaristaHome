@@ -468,7 +468,7 @@ namespace BaristaHome.Controllers
             }
 
 
-/*            var existingDrink = (from d in _context.Drink
+            var existingDrink = (from d in _context.Drink
                                  where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
                                  select d).FirstOrDefault();
 
@@ -476,7 +476,7 @@ namespace BaristaHome.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Drink name in use");
                 return View(drink);
-            }*/
+            }
 
             if (drink.Image != null)
             {
