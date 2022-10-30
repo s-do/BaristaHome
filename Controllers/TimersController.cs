@@ -32,14 +32,22 @@ namespace BaristaHome.Controllers
         //Returns a view displaying all timers, or redirects to NoTimers() if there's no existing timer for the store
         public async Task<IActionResult> Timers()
         {
-            StoreTimer? timer = await _context.StoreTimer.FindAsync(12);
-            if (timer == null)
+
+            var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            var timers = (IEnumerable<StoreTimer>)(from s in _context.Store
+                                          join t in _context.StoreTimer on s.StoreId equals t.StoreId
+                                          where s.StoreId == storeId
+                                          select t);
+            //StoreTimer ? timer = await _context.StoreTimer.FindAsync(12);
+            
+            if (!timers.Any())
             {
                 return RedirectToAction("NoTimers");
             }
             else
             {
-               return View(timer);
+                StoreTimer timer = timers.First();
+                return View(timer);
             }
             
         }

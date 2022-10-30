@@ -2,20 +2,28 @@
     ViewData["Title"] = "Timers";
 }
 
+@*Cindie*@
 @model BaristaHome.Models.StoreTimer
 <html>
     <head>
         <style>
 
+        .gfg {
+            all: unset;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
          @*CSS styling for the timer and its components*@
         .timer {
             font-family: 'ArialRounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
             font-weight: 300;
-            display: inline-block;
+            display: inline;
             border-radius: 20px;
             background: white;
-            height: 200px;
-            width: 250px;
             display:flex;
             flex-direction:column;
             align-content:center;
@@ -58,22 +66,27 @@
         }
 
         .timer__btn--start {
-            background: #00b84c;
-            margin-right: 10px;
+            background: #9bd0b7;
         }
 
         .timer__btn--stop {
-            background: #ff0256;
+            background: #f6b4bf ;
         }
 
         .timer__btn--restart{
-            background:red;
+            background:#f6aa90;
         }
         
         .delete-button{
             align-self:end;
             margin-right: 20px;
             margin-top:15px;
+        }
+
+        .trash-can{
+            align-self:end;
+            margin-top: 15px;
+            margin-right: 20px;
         }
 
         .background {
@@ -83,7 +96,47 @@
             padding-bottom: 30px;
             padding-left: 30px;
             padding-right: 30px;
+
         }
+
+        .timer-perimeter{
+            background: white;
+            display:inline-block;
+            height: 200px;
+            width: 250px;
+            display:flex;
+            flex-direction:column;
+            border-radius:20px;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+
+        }
+
+        
+        @*CSS for create a timer button*@
+        .pink-button {
+        background-color: pink;
+        color: black;
+        border: none;
+        border-radius: 3px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+        display: inline-block;
+    }
+
+        .pink-button:hover {
+            background-color: lightpink;
+            cursor: pointer;
+        }
+
+        .pink-button:active {
+            background-color: rgba(219, 113, 152, 0.67);
+        }
+        
         </style>
 
         @*Bootstrap imports*@
@@ -102,18 +155,17 @@
             <h1 class="display-4">Timers</h1>
         </div>
 
-        <a class="nav-link pink-button-right" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
-
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <p>@Model.TimerName</p>
-        <p>@Model.DurationMin</p>
-
-        <a asp-controller="Timers" asp-action="DeleteTimer" asp-route-timerId=@Model.StoreTimerId>
-            <span class="material-symbols-outlined delete-button" >delete</span>
-        </a>
-        
+        @*Create a timer button*@
+        <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
+        @*Timer*@
         <div class="background">
-            <div class="timer"> </div>
+            <div class="timer-perimeter">
+                <a asp-controller="Timers" asp-action="DeleteTimer" class="trash-can" asp-route-timerId=@Model.StoreTimerId>
+                <span class="material-symbols-outlined" >delete</span>
+                </a>
+                 <div class="timer"> </div>
+            </div>
+           
         </div>
 
 
@@ -224,7 +276,6 @@
 
             static getHTML() {
                 return `
-                    <span class="material-symbols-outlined delete-button">delete</span>
                     <div class="timer-title">
                         @Model.TimerName
                         
