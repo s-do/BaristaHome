@@ -553,7 +553,6 @@ namespace BaristaHome.Controllers
                                         Profit = s.Profit,
                                         TimeSold = s.TimeSold
                                     }).ToListAsync();
-            ViewBag.salesByDate = salesByDate;
 
             // Add all the distinct drinks by id then sum up their count sold & profit
             var distinctQuery = (IEnumerable<SaleViewModel>)
@@ -570,6 +569,45 @@ namespace BaristaHome.Controllers
                        }).ToListAsync();
 
             return View(distinctQuery);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSales()
+        {
+            // Add all the distinct drinks by id then sum up their count sold & profit
+            var salesQuery = (IEnumerable<SaleViewModel>)
+                await(from s in _context.Sale
+                      join d in _context.Drink on s.DrinkId equals d.DrinkId
+                      // Group rows by the same drink name
+                      group s by new { d.DrinkName } into g
+                      // Then use an aggregate function to sum up the profit and units sold
+                      select new SaleViewModel
+                      {
+                          DrinkName = g.Key.DrinkName,
+                          UnitsSold = g.Sum(s => s.UnitsSold),
+                          Profit = g.Sum(s => s.Profit)
+                      }).ToListAsync();
+
+            // append the data into a list to populate google chart's data table
+            List<string[]> data = new List<string[]>();
+            data.Add(new[] { "DrinkName", "UnitsSold", "Profit" });
+            foreach (var item in salesQuery)
+            {
+                data.Add(new[] { item.DrinkName, item.UnitsSold.ToString(), item.Profit.ToString() });
+                Console.WriteLine(item.DrinkName + " | " + item.UnitsSold + " | " + item.Profit);
+            }
+
+            return Json(salesQuery);
+        }
+
+        public JsonResult GetDataAssets()
+        {
+            List<string[]> data = new List<string[]>();
+            data.Add(new[] { "Day", "Kasse", "Bonds", "Stocks", "Futures", "Options" });
+            data.Add(new[] { "01.03.", "200", "500", "100", "0", "10" });
+            data.Add(new[] { "01.03.", "300", "450", "150", "50", "30" });
+            data.Add(new[] { "01.03.", "350", "200", "180", "80", "40" });
+            return Json(data);
         }
 
         [HttpPost]

@@ -6,7 +6,7 @@ namespace BaristaHome.Models
     {
         public int SaleId { get; set; }
         public int UnitsSold { get; set; }
-        public decimal? Profit { get; set; }
+        public decimal Profit { get; set; }
         public DateTime TimeSold { get; set; }
 
         // Relationships
