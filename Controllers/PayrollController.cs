@@ -58,6 +58,7 @@ namespace BaristaHome.Controllers
                                                         Date = payroll.Date,
                                                         UserId = user.UserId,
                                                         FullName = user.FirstName + " " + user.LastName,
+                                                        PayrollId = payroll.PayrollId,
                                                     }).OrderBy(o => o.FullName).ToList();
 
             ViewBag.Payroll = payrolls;
@@ -93,6 +94,7 @@ namespace BaristaHome.Controllers
                                                         Date = payroll.Date,
                                                         UserId = user.UserId,
                                                         FullName = user.FirstName + " " + user.LastName,
+                                                        PayrollId = payroll.PayrollId,
                                                     }).OrderBy(o => o.FullName).ToList();
             ViewBag.Payroll = payrolls;
 
@@ -104,7 +106,6 @@ namespace BaristaHome.Controllers
                                                  {
                                                      UserId = user.UserId,
                                                      FullName = user.FirstName + " " + user.LastName,
-
                                                  }).ToList();
 
 
@@ -136,8 +137,47 @@ namespace BaristaHome.Controllers
         }
 
 
+        // Get: Payroll/Delete/PayrollId
+        public async Task<IActionResult> Delete(int? id) 
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-    
+            var PayrollEntry = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
+
+            if (PayrollEntry == null)
+            {
+                return NotFound();
+            }
+
+            var PayrollName = (from i in _context.Payroll
+                            where i.PayrollId == id
+                            select i.PayrollId).FirstOrDefault();
+
+            ViewBag.PayrollID = PayrollName;
+
+            return View(PayrollEntry);
+        }
+
+
+        // POST: Payroll/Delete/PayrollId
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            // requery the item and  d e l e t e
+            var PayrollEntry = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
+            _context.Payroll.Remove(PayrollEntry);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Owner));
+        }
+
+
+
+
+
 
 
 

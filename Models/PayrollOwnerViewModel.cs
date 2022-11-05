@@ -20,6 +20,8 @@ namespace BaristaHome.Models
         [DisplayName("Full Name")]
         public string? FullName { get; set; }
 
+        public int? PayrollId { get; set; }
+
     }
 
 
