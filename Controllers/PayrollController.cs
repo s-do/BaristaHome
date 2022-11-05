@@ -47,19 +47,6 @@ namespace BaristaHome.Controllers
 
         public async Task<IActionResult> Owner()
         {
-            /*            List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
-                                                               join user in _context.User on payroll.UserId equals user.UserId
-                                                               join store in _context.Store on user.StoreId equals store.StoreId
-                                                               where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                                                               select new PayrollOwnerViewModel
-                                                               {
-                                                                   Hours = payroll.Hours,
-                                                                   Amount = payroll.Amount,
-                                                                   Date = payroll.Date,
-                                                                   UserId = user.UserId,
-                                                                   FullName = user.FirstName + " " + user.LastName,
-                                                               }).ToList();*/
-
             List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
                                                     join user in _context.User on payroll.UserId equals user.UserId
                                                     join store in _context.Store on user.StoreId equals store.StoreId
@@ -71,26 +58,27 @@ namespace BaristaHome.Controllers
                                                         Date = payroll.Date,
                                                         UserId = user.UserId,
                                                         FullName = user.FirstName + " " + user.LastName,
-                                                    }).ToList();
+                                                    }).OrderBy(o => o.FullName).ToList();
 
             ViewBag.Payroll = payrolls;
 
+            /* Pulls list of workers under the same store id for select list  */
+            List<PayrollOwnerViewModel> users  = (from user in _context.User
+                                join store in _context.Store on user.StoreId equals store.StoreId
+                                where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                select new PayrollOwnerViewModel
+                                {
+                                    UserId = user.UserId,
+                                    FullName = user.FirstName + " " + user.LastName,
+                                }).ToList();
 
-
-            /* A list of non duplicate full names, takes the first payroll with that full name.  */
-            List<PayrollOwnerViewModel> diff_name_payrolls = new List<PayrollOwnerViewModel>();
-            diff_name_payrolls = payrolls
-                                .GroupBy(element => element.FullName)
-                                .Select(e => e.First())
-                                .ToList();
-
-
-            ViewData["FullNames"] = new SelectList(diff_name_payrolls, "UserId", "FullName");
+            ViewData["FullNames"] = new SelectList(users, "UserId", "FullName");
 
             return View();
         }
 
 
+        /* Adds a payroll into the database */
         [HttpPost]
         public async Task<IActionResult> Owner(PayrollOwnerViewModel payrollOwnerViewModel)
         {
@@ -105,19 +93,23 @@ namespace BaristaHome.Controllers
                                                         Date = payroll.Date,
                                                         UserId = user.UserId,
                                                         FullName = user.FirstName + " " + user.LastName,
-                                                    }).ToList();
+                                                    }).OrderBy(o => o.FullName).ToList();
             ViewBag.Payroll = payrolls;
 
-/*          To give a selectlist without any duplicate names*/
-            List<PayrollOwnerViewModel> diff_name_payrolls = new List<PayrollOwnerViewModel>();
-            diff_name_payrolls = payrolls
-                                .GroupBy(element => element.FullName)
-                                .Select(e => e.First())
-                                .ToList();
 
-/*            Shows the full name but when selected, it will give the userId as Value so database knows what user is being added*/
-            ViewData["FullNames"] = new SelectList(diff_name_payrolls, "UserId", "FullName");
+            List<PayrollOwnerViewModel> users = (from user in _context.User
+                                                 join store in _context.Store on user.StoreId equals store.StoreId
+                                                 where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                 select new PayrollOwnerViewModel
+                                                 {
+                                                     UserId = user.UserId,
+                                                     FullName = user.FirstName + " " + user.LastName,
 
+                                                 }).ToList();
+
+
+            /* Shows the full name but when selected, it will give the userId as Value so database knows what user is being added */
+            ViewData["FullNames"] = new SelectList(users, "UserId", "FullName");
 
 
             if (ModelState.IsValid)
@@ -137,7 +129,7 @@ namespace BaristaHome.Controllers
 
             }
 
-            ViewData["FullNames"] = new SelectList(diff_name_payrolls, "FullName", "FullName");
+            ViewData["FullNames"] = new SelectList(users, "FullName", "FullName");
             ModelState.AddModelError(string.Empty, "There was an issue adding this item into your Payroll");
             return View();
 

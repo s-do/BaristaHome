@@ -7,7 +7,7 @@ namespace BaristaHome.Models
 {
     public class PayrollOwnerViewModel
     {
-        public int PayrollId { get; set; }
+/*        public int PayrollId { get; set; }*/
         public decimal Hours { get; set; }
         public decimal Amount { get; set; }
 
@@ -15,7 +15,7 @@ namespace BaristaHome.Models
         public DateTime Date { get; set; }
 
         public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
 
         [DisplayName("Full Name")]
         public string? FullName { get; set; }
