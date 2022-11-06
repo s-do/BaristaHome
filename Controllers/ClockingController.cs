@@ -19,8 +19,44 @@ namespace BaristaHome.Controllers
 
         //Displays the admin view for clocking system
         [HttpGet]
-        public IActionResult Clocking()
+        public async Task<IActionResult> Clocking()
         {
+            var lastestStatus = (from s in _context.Store
+                                 join u in _context.User on s.StoreId equals u.StoreId
+                                 join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                 group us by us.UserId into uss
+                                 select new UserShiftStatus()
+                                 {
+                                     UserId = uss.Key,
+                                     ShiftStatusId = uss.First(y => y.Time == uss.Max(x => x.Time)).ShiftStatusId,
+                                     Time = uss.Max(x => x.Time),
+                                 }).ToList();
+
+            List<ClockingViewModel> list = new List<ClockingViewModel>();
+            foreach(var status in lastestStatus)
+            {
+                var statusView = (from s in _context.Store
+                                  join u in _context.User on s.StoreId equals u.StoreId
+                                  join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                  join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                  where us.UserId == status.UserId && us.ShiftStatusId == status.ShiftStatusId
+                                  select new ClockingViewModel()
+                                  {
+                                      User = u.FirstName,
+                                      ShiftStatus = ss.ShiftStatusName,
+                                      Time = status.Time,
+                                  }).FirstOrDefault();
+                list.Add(statusView);
+            }
+            /*from us in _context.UserShiftStatus
+                                 join u in _context.User on us.UserId equals u.UserId
+                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId*/
+
+
+            ViewBag.LatestStatus = list;
+
             return View();
         }
 
