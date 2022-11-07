@@ -44,7 +44,16 @@ namespace BaristaHome.Controllers
                                 where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
                                 select a).FirstOrDefault();
 
-            ViewBag.StoreAnnouncement = announcement.AnnouncementText;
+            if (announcement == null)
+            {
+                Announcement nullAnnouncement = new Announcement();
+                nullAnnouncement.AnnouncementText = "";
+                ViewBag.StoreAnnouncement = nullAnnouncement.AnnouncementText;
+            }
+            else
+            {
+                ViewBag.StoreAnnouncement = announcement.AnnouncementText;
+            }
 
             return View();
         }
