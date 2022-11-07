@@ -40,6 +40,28 @@ namespace BaristaHome.Controllers
 
             ViewBag.NewestShiftStatus = newestShiftStatus;
 
+            var announcement = (from a in _context.Announcements
+                                where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                select a).FirstOrDefault();
+
+            ViewBag.StoreAnnouncement = announcement.AnnouncementText;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index([Bind("AnnouncementText,StoreId")] Announcement newAnnouncement)
+        {
+            Console.WriteLine(newAnnouncement.AnnouncementText);
+            var announcement = (from a in _context.Announcements
+                                where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                select a).FirstOrDefault();
+            announcement.AnnouncementText = newAnnouncement.AnnouncementText;
+            if (ModelState.IsValid)
+            {
+                _context.Add(announcement);
+                await _context.SaveChangesAsync();
+            }
             return View();
         }
 
