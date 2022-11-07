@@ -176,8 +176,65 @@ namespace BaristaHome.Controllers
 
 
 
+        // For Edit
+        private bool PayrollOwnerViewModelExists(int payId)
+        {
+            return _context.Payroll.Any(e => e.PayrollId == payId);
+        }
 
 
+        // GET Edit Payroll
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var editViewModel = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
+
+
+            if (editViewModel == null)
+            {
+                return NotFound();
+            }
+            return View(editViewModel);
+        }
+
+
+        // Edit Value in Payroll
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("PayrollId,Hours,Amount,Date,UserId")] Payroll editViewModel)
+        {
+            if (id != editViewModel.PayrollId)
+            {
+                return NotFound();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(editViewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PayrollOwnerViewModelExists(editViewModel.PayrollId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Owner));
+            }
+            return View(editViewModel);
+        }
 
 
 
