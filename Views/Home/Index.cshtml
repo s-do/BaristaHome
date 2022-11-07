@@ -39,9 +39,13 @@
 
     <div class="container">
         <main role="main" class="pb-3">
+            <!--Store Title-->
+            <div class="text-center">
+                <h2 class="store-name">@ViewBag.StoreName</h2>
+            </div>
             <!--Announcement-->
             <div class="announcement-area">
-                @if (User.FindFirst("RoleId").Value != "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+                @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
                 {
                     <p class="announcement-text">@ViewBag.StoreAnnouncement</p>
                 }
@@ -49,10 +53,6 @@
                 {
                     <p class="announcement-text" data-toggle="modal" data-target="#announcementModal" style="cursor:pointer;">@ViewBag.StoreAnnouncement</p>
                 }
-            </div>
-            <!--Store Title-->
-            <div class="text-center">
-                <h2 class="store-name">@ViewBag.StoreName</h2>
             </div>
             <!--First row of containers-->
             <div class="box-row">

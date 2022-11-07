@@ -47,7 +47,7 @@ namespace BaristaHome.Controllers
             if (announcement == null)
             {
                 Announcement nullAnnouncement = new Announcement();
-                nullAnnouncement.AnnouncementText = "";
+                nullAnnouncement.AnnouncementText = "No Announcement";
                 ViewBag.StoreAnnouncement = nullAnnouncement.AnnouncementText;
             }
             else
@@ -68,10 +68,11 @@ namespace BaristaHome.Controllers
             announcement.AnnouncementText = newAnnouncement.AnnouncementText;
             if (ModelState.IsValid)
             {
-                _context.Add(announcement);
+                _context.Update(announcement);
                 await _context.SaveChangesAsync();
             }
-            return View();
+
+            return Index();
         }
 
         public IActionResult Privacy()
