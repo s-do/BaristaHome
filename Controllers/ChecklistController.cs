@@ -19,11 +19,15 @@ namespace BaristaHome.Controllers
 
         public IActionResult Checklist()
         {
+            var checklist = (from c in _context.Checklist
+                                     select c).ToList();
+
+            ViewBag.Checklist = checklist;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checklist([Bind("ChecklistTitle")] Checklist checklist)
+        public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
         {
             checklist.StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value);
             if (ModelState.IsValid)
