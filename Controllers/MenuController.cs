@@ -544,16 +544,16 @@ namespace BaristaHome.Controllers
         {
             // An anonymous list type that grabs every single sale from the store
             var salesByDate = await (from s in _context.Sale
-                                    join d in _context.Drink on s.DrinkId equals d.DrinkId
-                                    orderby d.DrinkName
-                                    select new
-                                    {
-                                        DrinkName = d.DrinkName,
-                                        UnitsSold = s.UnitsSold,
-                                        Profit = s.Profit,
-                                        TimeSold = s.TimeSold
-                                    }).ToListAsync();
-
+                                     join d in _context.Drink on s.DrinkId equals d.DrinkId
+                                     where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                     orderby d.DrinkName
+                                     select new
+                                     {
+                                         DrinkName = d.DrinkName,
+                                         UnitsSold = s.UnitsSold,
+                                         Profit = s.Profit,
+                                         TimeSold = s.TimeSold
+                                     }).ToListAsync();
             return View();
         }
 
@@ -564,6 +564,7 @@ namespace BaristaHome.Controllers
             var salesQuery = (IEnumerable<SaleViewModel>)
                 await(from s in _context.Sale
                       join d in _context.Drink on s.DrinkId equals d.DrinkId
+                      where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
                       // Group rows by the same drink name
                       group s by new { d.DrinkName } into g
                       // Then use an aggregate function to sum up the profit and units sold
@@ -587,7 +588,7 @@ namespace BaristaHome.Controllers
                 TempData["drinkSold"] = "success";
                 // create a sale to append a record to the db
                 Sale sale = new Sale { UnitsSold = 1,
-                                       Profit = 0,
+                                       Profit = 4.95M,
                                        TimeSold = DateTime.Now,
                                        DrinkId = drink.DrinkId,
                                        StoreId = drink.StoreId,};
