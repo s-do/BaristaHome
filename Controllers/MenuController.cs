@@ -542,7 +542,7 @@ namespace BaristaHome.Controllers
         /* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
         public async Task<IActionResult> Sales()
         {
-            // An anonymous list type that grabs every single sale from the stroe
+            // An anonymous list type that grabs every single sale from the store
             var salesByDate = await (from s in _context.Sale
                                     join d in _context.Drink on s.DrinkId equals d.DrinkId
                                     orderby d.DrinkName
@@ -554,21 +554,7 @@ namespace BaristaHome.Controllers
                                         TimeSold = s.TimeSold
                                     }).ToListAsync();
 
-            // Add all the distinct drinks by id then sum up their count sold & profit
-            var distinctQuery = (IEnumerable<SaleViewModel>)
-                await (from s in _context.Sale
-                       join d in _context.Drink on s.DrinkId equals d.DrinkId
-                       // Group rows by the same drink name
-                       group s by new { d.DrinkName } into g
-                       // Then use an aggregate function to sum up the profit and units sold
-                       select new SaleViewModel
-                       {
-                           DrinkName = g.Key.DrinkName,
-                           UnitsSold = g.Sum(s => s.UnitsSold),
-                           Profit = g.Sum(s => s.Profit)
-                       }).ToListAsync();
-
-            return View(distinctQuery);
+            return View();
         }
 
         [HttpGet]
@@ -588,26 +574,8 @@ namespace BaristaHome.Controllers
                           Profit = g.Sum(s => s.Profit)
                       }).ToListAsync();
 
-            // append the data into a list to populate google chart's data table
-            List<string[]> data = new List<string[]>();
-            data.Add(new[] { "DrinkName", "UnitsSold", "Profit" });
-            foreach (var item in salesQuery)
-            {
-                data.Add(new[] { item.DrinkName, item.UnitsSold.ToString(), item.Profit.ToString() });
-                Console.WriteLine(item.DrinkName + " | " + item.UnitsSold + " | " + item.Profit);
-            }
-
+            // Serialize data to Json to then be able to read and use the data in js
             return Json(salesQuery);
-        }
-
-        public JsonResult GetDataAssets()
-        {
-            List<string[]> data = new List<string[]>();
-            data.Add(new[] { "Day", "Kasse", "Bonds", "Stocks", "Futures", "Options" });
-            data.Add(new[] { "01.03.", "200", "500", "100", "0", "10" });
-            data.Add(new[] { "01.03.", "300", "450", "150", "50", "30" });
-            data.Add(new[] { "01.03.", "350", "200", "180", "80", "40" });
-            return Json(data);
         }
 
         [HttpPost]
@@ -617,6 +585,7 @@ namespace BaristaHome.Controllers
             if (ModelState.IsValid)
             {
                 TempData["drinkSold"] = "success";
+                // create a sale to append a record to the db
                 Sale sale = new Sale { UnitsSold = 1,
                                        Profit = 0,
                                        TimeSold = DateTime.Now,
