@@ -2,6 +2,7 @@
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 
@@ -20,7 +21,7 @@ namespace BaristaHome.Controllers
         public IActionResult Checklist()
         {
             var checklist = (from c in _context.Checklist
-                                     select c).ToList();
+                             select c).ToList();
 
             ViewBag.Checklist = checklist;
             return View();
@@ -48,6 +49,25 @@ namespace BaristaHome.Controllers
                 return RedirectToAction("Checklist", "Checklist");
             }
             ModelState.AddModelError(string.Empty, "There was an issue creating a checklist.");
+            return View(checklist);
+        }
+
+        [HttpGet]
+        // GET: 
+        public async Task<IActionResult> ViewChecklist(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var checklist = await _context.Checklist
+                .FirstOrDefaultAsync(m => m.ChecklistId == id);
+            if (checklist == null)
+            {
+                return NotFound();
+            }
+
             return View(checklist);
         }
     }

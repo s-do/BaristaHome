@@ -88,16 +88,18 @@
                     if(myList.Any()) {
                         foreach(var c in myList)
                         {
-                            <div class="card p-3">
-                                <blockquote class="blockquote mb-0 card-body">
-                                    <p>@c.ChecklistTitle</p>
-                                    <footer class="blockquote-footer">
-                                        <small class="text-muted">
-                                            # of tasks
-                                        </small>
-                                    </footer>
-                                </blockquote>
-                            </div>
+                            <a asp-action="ViewChecklist" asp-route-id="@c.ChecklistId">
+                                <div class="card p-3">
+                                    <blockquote class="blockquote mb-0 card-body">
+                                        <p>@c.ChecklistTitle</p>
+                                        <footer class="blockquote-footer">
+                                            <small class="text-muted">
+                                                # of tasks
+                                            </small>
+                                        </footer>
+                                    </blockquote>
+                                </div>
+                            </a>
                         }
                     }
                 }
