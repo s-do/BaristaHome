@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Shared Calendar";
+    ViewData["Title"] = "Sales";
     Layout = null;
 }
 
@@ -21,7 +21,7 @@
     <script type="text/javascript">
         // Load the Visualization API and the piechart package
         google.charts.load('current', {
-            packages: ['corechart', 'bar']
+            packages: ['corechart', 'bar', 'table']
         });
         // Set a callback to run when the Google Visualization API is loaded
         google.charts.setOnLoadCallback(loadData);
@@ -46,21 +46,28 @@
         }
 
         // Instantiates the chart, passes in the data and draws it.
-        function drawChart(data) {
+        function drawChart(data) { 
             var dataArray = [
                 ['Drink', 'Count', 'Profit']
             ];
-            $.each(data, function (i, item) {
-                // property names have to be CAMEL CASED even if it's not in your viewmodel
-                dataArray.push([item.drinkName, item.unitsSold, item.profit]);
-            });
+
+            if (data.length == 0) {
+                // push in empty data to show a empty chart if no json data was serialized and sent from controller
+                dataArray.push(["", 0, 0]);
+            } else {
+                $.each(data, function (i, item) {
+                    // property names have to be CAMEL CASED even if it's not in your viewmodel
+                    dataArray.push([item.drinkName, item.unitsSold, item.profit]);
+                });
+            }
+
             var data = google.visualization.arrayToDataTable(dataArray);
             var options = {
                 title: 'Sale Records For Each Drink',
                 chartArea: {
                     width: '50%'
                 },
-                colors: ['#ffdcf4', '#ffe4bc'],
+                colors: ['#f2b3de', '#f7cc8d'],
                 hAxis: {
                     title: 'Sales',
                     minValue: 0
@@ -72,6 +79,7 @@
 
             // Instantiate and draw chart, passing in options defined above
             var chart = new google.visualization.BarChart(document.getElementById('barChart'));
+            //chart.draw(data, { showRowNumber: true, width: '100%', height: '100%' });
             chart.draw(data, options);
             return false;
         }
