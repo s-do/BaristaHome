@@ -557,6 +557,11 @@ namespace BaristaHome.Controllers
             return View();
         }
 
+        public IActionResult SalesFilter()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetSales()
         {
