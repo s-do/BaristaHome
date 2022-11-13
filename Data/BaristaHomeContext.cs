@@ -61,6 +61,7 @@ namespace BaristaHome.Data
         }
 
         // Data models to represent the database for querying/data manipulation
+        public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<CategoryTask> CategoryTask { get; set; }
         public DbSet<Checklist> Checklist { get; set; }

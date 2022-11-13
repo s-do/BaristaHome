@@ -21,6 +21,7 @@ namespace BaristaHome.Models
         public virtual ICollection<Shift>? Shifts { get; set; }
         public virtual ICollection<StoreTimer>? StoreTimers { get; set; }
         public virtual ICollection<User>? Users { get; set; }
+        public virtual ICollection<Announcement>? Announcement { get; set; }
 
     }
 }
