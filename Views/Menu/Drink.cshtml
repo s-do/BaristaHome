@@ -27,6 +27,7 @@
                 <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
+            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="CanCreate">Create</a>
 @*            <input type="hidden" asp-for="@Model.DrinkId" />*@
 @*            <form asp-action="Delete">
                 <input type="hidden" asp-for="DrinkId" />
@@ -102,11 +103,10 @@
             </div>
         </div>*@
 
-        @*Drink tags*@
+        @*Drink ingredients*@
         <div class = "drink-ingredients">
             @{
                 var ingredientList = ViewBag.IngredientList == null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
-
                 if(ingredientList.Any()) {
                     foreach(var i in ingredientList) {
                         <div class="instruction">

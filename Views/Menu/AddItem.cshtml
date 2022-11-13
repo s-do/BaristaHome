@@ -171,6 +171,16 @@
                         newIngredient.placeholder = "Enter ingredient";
                         newIngredient.name = "ingredientList";
 
+                        const amount = document.createElement("input");
+                        amount.placeholder = "Enter amount";
+                        amount.type = "text";
+                        amount.name = "amountList";
+
+                        const unit = document.createElement("input");
+                        unit.placeholder = "Enter unit (oz, fl oz, count)";
+                        unit.type = "text";
+                        unit.name = "unitList";
+
                         const btn = document.createElement("a");
                         btn.className = "delete";
                         btn.innerHTML = "&times";
@@ -181,6 +191,8 @@
                         btn.addEventListener("click", removeIngredient);
                             
                         flex.appendChild(newIngredient);
+                        flex.appendChild(amount);
+                        flex.appendChild(unit);
                         flex.appendChild(btn);
                         input2.appendChild(flex);
                     }
