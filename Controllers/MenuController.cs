@@ -299,19 +299,24 @@ namespace BaristaHome.Controllers
 
                 /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
                 //Gets ingredients of drink
-                List<Ingredient> ingredientQuery = (from d in _context.Drink
-                                                    join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
-                                                    join ingredient in _context.Ingredient on drinkIngredient.IngredientId equals ingredient.IngredientId
-                                                    where d.DrinkId == drink.DrinkId
-                                                    select ingredient).ToList();
 
                 List<DrinkIngredient> drinkIngredientQuery = (from d in _context.Drink
                                                          join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
                                                          where d.DrinkId == drink.DrinkId
                                                          select drinkIngredient).ToList();
 
-                ViewBag.IngredientList = ingredientQuery;
-                ViewBag.DrinkIngredientList = drinkIngredientQuery;
+                List<String> viewBag = new List<String>();
+                foreach(var x in drinkIngredientQuery)
+                {
+                    Ingredient ingredient = (from i in _context.Ingredient
+                                             where i.IngredientId == x.IngredientId
+                                             select i).FirstOrDefault();
+                    string item = x.Quantity + " " + x.unit + " " + ingredient.IngredientName;
+                    viewBag.Add(item);
+                }
+
+                /*ViewBag.IngredientList = ingredientQuery;*/
+                ViewBag.IngredientList = viewBag;
                 /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             }
 
@@ -337,11 +342,28 @@ namespace BaristaHome.Controllers
             }
 
             //Gets ingredients of drink
-            List<Ingredient> ingredientQuery = (from d in _context.Drink
+/*            List<Ingredient> ingredientQuery = (from d in _context.Drink
                                                 join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
                                                 join ingredient in _context.Ingredient on drinkIngredient.IngredientId equals ingredient.IngredientId
                                                 where d.DrinkId == drink.DrinkId
                                                 select ingredient).ToList();
+            ViewBag.IngredientList = ingredientQuery;*/
+
+
+            List<DrinkIngredient> drinkIngredientQuery = (from d in _context.Drink
+                                                          join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
+                                                          where d.DrinkId == drink.DrinkId
+                                                          select drinkIngredient).ToList();
+
+            List<Ingredient> ingredientQuery = new List<Ingredient>();
+            foreach (var x in drinkIngredientQuery)
+            {
+                Ingredient ingredient = (from i in _context.Ingredient
+                                         where i.IngredientId == x.IngredientId
+                                         select i).FirstOrDefault();
+                ingredientQuery.Add(ingredient);
+            }
+            ViewBag.DrinkIngredientList = drinkIngredientQuery;
             ViewBag.IngredientList = ingredientQuery;
 
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -386,6 +408,21 @@ namespace BaristaHome.Controllers
                     if (ing == existingIngredient.IngredientName)
                     {
                         found = true;
+                        //Update junction values
+                        Ingredient y = (from i in _context.Ingredient
+                                        where i.IngredientName == ing
+                                        select i).FirstOrDefault();
+                        DrinkIngredient junction = (from i in _context.DrinkIngredient
+                                                    where i.IngredientId == y.IngredientId
+                                                    select i).FirstOrDefault();
+                        for(int i = 0; i < ingredientList.Count; i++)
+                        {
+                            if(ingredientList[i] == ing)
+                            {
+                                junction.Quantity = Convert.ToDecimal(amountList[i]);
+                                junction.unit = unitList[i];
+                            }
+                        }
                     }
                 }
                 //Remove ingredient if not found in ingredient is not found in new list

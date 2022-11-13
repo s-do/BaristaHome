@@ -177,10 +177,14 @@
                 @*Displays drink ingredients*@
                 @{
                     var ingredientList = ViewBag.IngredientList==null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
+                    var drinkIngredientList = ViewBag.DrinkIngredientList==null ? new List<DrinkIngredient>() : (List<DrinkIngredient>)ViewBag.DrinkIngredientList;
                     if(ingredientList.Any()) {
-                        foreach(var i in ingredientList){
+                        for(int j = 0; j < ingredientList.Count; j++)
+                        {
                             <flex class="flex2">
-                                <input type="text" placeholder="@i.IngredientName" name="ingredientList" value="@i.IngredientName"/>
+                                <input type="text" placeholder="@ingredientList[j].IngredientName" name="ingredientList" value="@ingredientList[j].IngredientName"/>
+                                <input type="text" placeholder="@drinkIngredientList[j].Quantity" name="amountList" value="@drinkIngredientList[j].Quantity"/>
+                                <input type="text" placeholder="@drinkIngredientList[j].unit" name="unitList" value="@drinkIngredientList[j].unit"/>
                                 <a href="#" class="delete" onclick="this.parentElement.remove();">&times</a>
                             </flex>
                         }

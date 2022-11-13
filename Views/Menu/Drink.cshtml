@@ -106,11 +106,11 @@
         @*Drink ingredients*@
         <div class = "drink-ingredients">
             @{
-                var ingredientList = ViewBag.IngredientList == null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
+                var ingredientList = ViewBag.IngredientList == null ? new List<String>() : (List<String>)ViewBag.IngredientList;
                 if(ingredientList.Any()) {
                     foreach(var i in ingredientList) {
                         <div class="instruction">
-                            @i.IngredientName
+                            @i
                         </div>
                     }
                 }
