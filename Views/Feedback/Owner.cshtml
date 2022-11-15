@@ -2,14 +2,180 @@
 
 @{
     ViewData["Title"] = "Owner";
+    Layout = null;
 }
 
-<h1>Owner</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .row {
+        display: flex;
+        margin-left: -5px;
+        margin-right: -5px;
+    }
+
+    .column {
+        flex: 50%;
+        padding: 5px;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 16px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+
+    .div2 {
+        width: 300px;
+        height: 400px;
+        padding: 50px;
+        border: 1px solid red;
+        margin-top:100px;
+    }
+</style>
+
+
+
+
+
+<!--Nav bar area-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Feedbacks</h1>
+            </div>
+        </nav>
+    </header>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<body>
+
+    <div class="row">
+        <div class="column">
+            <table style="width:70%; margin-left:200px; margin-top:80px;">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Points</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                    <td>50</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                    <td>94</td>
+                </tr>
+                <tr>
+                    <td>Adam</td>
+                    <td>Johnson</td>
+                    <td>67</td>
+                </tr>
+            </table>
+        </div>
+        <div class="column">
+           <div class="div2"></div>
+        </div>
+    </div>
+
+</body>*@
+
+
+
+
+
+
+
+@*DEFAULT*@
+
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -37,7 +203,7 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Store.StoreId)
+                @Html.DisplayFor(modelItem => item.StoreId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.User.Email)
@@ -50,4 +216,4 @@
         </tr>
 }
     </tbody>
-</table>
+</table>*@
