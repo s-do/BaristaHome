@@ -2,9 +2,41 @@
 
 @{
     ViewData["Title"] = "Delete";
+    Layout = null;
 }
 
-<h1>Delete</h1>
+
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
+
+<!--Nav bar area-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Edit Payroll</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Payroll" asp-action="Owner">Payrolls</a>
+        </nav>
+    </header>
+
+</body>
+</html>
+
+
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -37,9 +69,20 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="PayrollId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Owner">Back to List</a>
-    </form>
 </div>
+
+
+<style>
+    .medium-btn {
+        width: 70px;
+        height: 30px;
+    }
+
+
+</style>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="PayrollId" />
+    <input type="submit" value="Delete" class="medium-btn" /> |
+    <a asp-action="Owner">Back to List</a>
+</form>
