@@ -317,6 +317,7 @@ namespace BaristaHome.Controllers
 
                 /*ViewBag.IngredientList = ingredientQuery;*/
                 ViewBag.IngredientList = viewBag;
+                ViewBag.missingIngredients = null;
                 /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
             }
 
@@ -891,18 +892,26 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var drink = await _context.Drink
-                .FirstOrDefaultAsync(m => m.DrinkId == id);
+            var drink = await _context.Drink.FirstOrDefaultAsync(m => m.DrinkId == id);
             if (drink == null)
             {
                 return NotFound();
             }
-            List<Ingredient> drinkIngredients = (from d in _context.Drink
-                                                join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
-                                                join ingredient in _context.Ingredient on drinkIngredient.IngredientId equals ingredient.IngredientId
-                                                where d.DrinkId == drink.DrinkId
-                                                select ingredient).ToList();
 
+            //Get drink ingredient information
+            List<DrinkIngredientViewModel> ingredients = (from d in _context.Drink
+                                                          join drinkIngredient in _context.DrinkIngredient on d.DrinkId equals drinkIngredient.DrinkId
+                                                          join ingredient in _context.Ingredient on drinkIngredient.IngredientId equals ingredient.IngredientId
+                                                          where d.DrinkId == drink.DrinkId
+                                                          select new DrinkIngredientViewModel
+                                                          {
+                                                              Name = ingredient.IngredientName,
+                                                              Quantity = drinkIngredient.Quantity,
+                                                              IngredientId = ingredient.IngredientId,
+                                                              Unit = drinkIngredient.unit
+                                                          }).ToList();
+
+            //Get inventory information
             List<ItemViewModel> itemQuery = (from store in _context.Store
                                              join inventory in _context.InventoryItem on store.StoreId equals inventory.StoreId // link store and inventoryitem by storeid
                                              join item in _context.Item on inventory.ItemId equals item.ItemId                  // link inventoryitem and item by itemid
@@ -917,30 +926,59 @@ namespace BaristaHome.Controllers
                                                  ItemId = inventory.ItemId
                                              }).ToList();
 
-            List<Ingredient> missing = new List<Ingredient>();
-            foreach(var di in drinkIngredients)
+            List<DrinkIngredientViewModel> missing = new List<DrinkIngredientViewModel>();
+            List<DrinkIngredientViewModel> foundItems = new List<DrinkIngredientViewModel>();
+            foreach (var di in ingredients)
             {
                 bool found = false;
                 //Break up drinkIngredient string
-                di.IngredientName = di.IngredientName.ToLower();
-                string[] ingredients = di.IngredientName.Split(" ");
-                foreach(var i in itemQuery)
+                di.Name = di.Name.ToLower();
+                foreach (var i in itemQuery)
                 {
-                    if (ingredients.Contains(i.Name))
+                    if (di.Name == i.Name.ToLower())
                     {
                         found = true;
+                        foundItems.Add(di);
                         continue;
                     }
                 }
+                //Keep track of missing items
                 if (found == false)
                 {
                     missing.Add(di);
                 }
             }
 
+            //Update inventory based on available items
+            foreach(var item in foundItems)
+            {
+                foreach(var inventoryItem in itemQuery)
+                {
+                    if(item.Name.ToLower() == inventoryItem.Name.ToLower())
+                    {
+                        InventoryItem updateItem = (from ii in _context.InventoryItem
+                                                    join i in _context.Item on ii.ItemId equals i.ItemId
+                                                    where i.ItemName.ToLower().Equals(item.Name.ToLower()) && ii.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) 
+                                                    select ii).FirstOrDefault();
 
-            Console.WriteLine("here");
-            return View();
+                        if (updateItem != null)
+                        {
+                            if (updateItem.Quantity < item.Quantity)
+                            {
+                                updateItem.Quantity = 0;
+                            }
+                            else
+                            {
+                                updateItem.Quantity = updateItem.Quantity - item.Quantity;
+                            }
+                            _context.Update(updateItem);
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                }
+            }
+            return RedirectToAction(nameof(Drink), new {id = drink.DrinkId});
         }
     }
 
