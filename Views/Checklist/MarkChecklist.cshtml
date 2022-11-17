@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.Checklist
 
 @{
-    ViewData["Title"] = "View Checklist";
+    ViewData["Title"] = "Checklist";
     Layout = null;
 }
 
@@ -23,26 +23,12 @@
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Checklist" asp-action="Checklist">Back</a>
                 <div class="center">
-                    <h1 class="title">@Html.DisplayFor(model => model.ChecklistTitle)</h1>
+                    <h1 class="title">Mark @Html.DisplayFor(model => model.ChecklistTitle)</h1>
                 </div>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="EditChecklist">Edit</a>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="MarkChecklist">Mark</a>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="DeleteChecklist">Delete</a>
+                
             </nav>
         </header>
 
-        <div class="checklist info">
-            @{
-                var myList = ViewBag.ChecklistInfo==null ? new Dictionary<string, string>() : (Dictionary<string, string>)ViewBag.ChecklistInfo;
-
-                if(myList.Any()) {
-                    foreach(var c in myList)
-                    {
-                            
-                    }
-                }
-            }
-        </div>
 
 
      </body>

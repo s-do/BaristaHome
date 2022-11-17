@@ -68,7 +68,50 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
+            /*var lastestStatus = (from s in _context.Store
+                                 join u in _context.User on s.StoreId equals u.StoreId
+                                 join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)*/
+
+            var checklistCategory = (from s in _context.Store
+                                 join c in _context.Checklist on s.StoreId equals c.StoreId
+                                 join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
+                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == checklist.ChecklistId
+                                 select cat).ToList();
+
+            Dictionary<string, string> checklistInfo = new Dictionary<string, string>();
+
+            foreach (var cc in checklistCategory)
+            {
+                var checklistTasks = (from s in _context.Store
+                                      join c in _context.Checklist on s.StoreId equals c.StoreId
+                                      join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
+                                      join ct in _context.CategoryTask on cat.CategoryId equals ct.CategoryId
+                                      join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
+                                      where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
+                                      select st).ToList();
+                foreach(var st in checklistTasks)
+                {
+                    checklistInfo.Add(cc.CategoryName, st.TaskName);
+                }
+            }
+
+            ViewBag.ChecklistInfo = checklistInfo;
+
             return View(checklist);
+        }
+
+        [HttpGet]
+        public IActionResult EditChecklist()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult MarkChecklist()
+        {
+            return View();
         }
     }
 }

@@ -81,6 +81,8 @@
                     <button type="submit" class="btn option-button">Remove Checklist</button>
                 </div>
             </div>*@
+
+            @*Shows all the existing checklists in the store*@
             <div class="card-columns">
                 @{
                     var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;
