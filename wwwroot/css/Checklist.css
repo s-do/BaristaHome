@@ -1,51 +1,39 @@
 ﻿/*CSS for Clcoking System*/
+
+/*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 html {
     font-size: 14px;
     background-color: #ffe4bc;
 }
 
 body {
-    margin-bottom: 60px;
     background-color: #ffe4bc;
     font-family: 'Inter', sans-serif;
 }
 
-.option-button {
-    border: 2px solid;
-    background-color: #FFD9F4;
-    font-size: 24px;
-    font-family: Arial;
-    cursor: pointer;
-    border-color: #FFD9F4;
-    color: black;
-    width: 300px;
-    height: 300px;
-    margin: 10px 10px 10px 10px;
-    border-radius: 12px;
-}
-
-.option-top {
-    /*border: 1px solid black;*/
-    height: 350px;
-    width: 850px;
-    margin-top: 50px;
-}
-
-.option-bottom {
-    /*border: 1px solid black;*/
-    height: 350px;
-    width: 850px;
-    margin-top: 50px;
+/*Background for checklist cards*/
+.pb-3 {
+    background-color: #ffe4bc;
 }
 
 .card-columns {
-    background-color: #ffe4bc;
-
-    @include media-breakpoint-only(lg) {
-        column-count: 4;
-    }
-
-    @include media-breakpoint-only(xl) {
-        column-count: 5;
-    }
+    padding-top: 50px;
+    margin: auto;
+    width: 80%;
 }
+
+.header-color {
+    background-color: #ffdcf4 !important;
+}
+
+.btn-function {
+    background-color: mistyrose;
+    color: black;
+    border-color: mistyrose;
+}
+
+.btn-function:hover {
+    background-color: white;
+    color: black;
+}
+/*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/

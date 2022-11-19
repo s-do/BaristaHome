@@ -23,12 +23,16 @@
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Checklist" asp-action="Checklist">Back</a>
                 <div class="center">
-                    <h1 class="title">Edit @Html.DisplayFor(model => model.ChecklistTitle)</h1>
+                    <h1 class="title">Edit Checklist</h1>
                 </div>
                 <a class="nav-link pink-button-right">Save</a>
             </nav>
         </header>
 
+        <div align="center">
+            @*Checklist name*@
+            <h1 class="title">@Html.DisplayFor(model => model.ChecklistTitle)</h1>
+        </div>
 
 
      </body>

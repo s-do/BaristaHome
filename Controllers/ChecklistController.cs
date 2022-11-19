@@ -3,6 +3,7 @@ using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 
@@ -18,12 +19,14 @@ namespace BaristaHome.Controllers
             _context = context;
         }
 
+        /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
         public IActionResult Checklist()
         {
             var checklist = (from c in _context.Checklist
                              select c).ToList();
 
             ViewBag.Checklist = checklist;
+
             return View();
         }
 
@@ -68,19 +71,13 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            /*var lastestStatus = (from s in _context.Store
-                                 join u in _context.User on s.StoreId equals u.StoreId
-                                 join us in _context.UserShiftStatus on u.UserId equals us.UserId
-                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)*/
-
             var checklistCategory = (from s in _context.Store
                                  join c in _context.Checklist on s.StoreId equals c.StoreId
                                  join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
                                  where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == checklist.ChecklistId
                                  select cat).ToList();
 
-            Dictionary<string, string> checklistInfo = new Dictionary<string, string>();
+            Dictionary<string, List<string>> checklistInfo = new Dictionary<string, List<string>>();
 
             foreach (var cc in checklistCategory)
             {
@@ -90,17 +87,25 @@ namespace BaristaHome.Controllers
                                       join ct in _context.CategoryTask on cat.CategoryId equals ct.CategoryId
                                       join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
                                       where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
-                                      select st).ToList();
-                foreach(var st in checklistTasks)
-                {
-                    checklistInfo.Add(cc.CategoryName, st.TaskName);
-                }
+                                      select st.TaskName).ToList();
+
+                checklistInfo[cc.CategoryName] = checklistTasks;
             }
 
             ViewBag.ChecklistInfo = checklistInfo;
 
             return View(checklist);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteChecklist(int id)
+        {
+            var checklist = await _context.Checklist.FindAsync(id);
+            _context.Checklist.Remove(checklist);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Checklist", "Checklist");
+        }
+        /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
         [HttpGet]
         public IActionResult EditChecklist()

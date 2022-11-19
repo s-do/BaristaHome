@@ -16,6 +16,12 @@
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+        <link rel="stylesheet" href="~/css/Checklist.css"/>
+
+        @*Boostrap imports for category and task view*@
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </head>
 
     <body>
@@ -23,26 +29,50 @@
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="Checklist" asp-action="Checklist">Back</a>
                 <div class="center">
-                    <h1 class="title">@Html.DisplayFor(model => model.ChecklistTitle)</h1>
+                    <h1 class="title">View Checklist</h1>
                 </div>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="EditChecklist">Edit</a>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="MarkChecklist">Mark</a>
-                <a class="nav-link pink-button-right" asp-route-id="@Model.ChecklistTitle" asp-action="DeleteChecklist">Delete</a>
+                
             </nav>
         </header>
 
-        <div class="checklist info">
+        <div align="center">
+            @*Checklist name*@
+            <h1 class="title">@Html.DisplayFor(model => model.ChecklistTitle)</h1>
+        </div>
+
+        @*Checklist categories and store tasks*@
+        <div class="checklist-info">
             @{
-                var myList = ViewBag.ChecklistInfo==null ? new Dictionary<string, string>() : (Dictionary<string, string>)ViewBag.ChecklistInfo;
+                var myList = ViewBag.ChecklistInfo==null ? new Dictionary<string, List<string>>() : (Dictionary<string, List<string>>)ViewBag.ChecklistInfo;
 
                 if(myList.Any()) {
                     foreach(var c in myList)
                     {
+                        <div class="list-group">
+                        
+                            <a href="#" class="list-group-item list-group-item-action active">@c.Key</a>
+
+                            @{
+                                foreach(var aa in c.Value){
+                                <a href="#" class="list-group-item list-group-item-action">
+                                @aa
                             
+                                </a>
+                                @*<p>@aa</p>*@
+                                }
+                            }
+                        
+                    
+                            <p>   </p>
+                        </div>
+                            
+                        }
                     }
                 }
-            }
         </div>
+        
+
+        
 
 
      </body>

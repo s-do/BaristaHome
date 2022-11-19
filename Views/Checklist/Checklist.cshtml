@@ -14,13 +14,15 @@
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
-        <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" /> 
+        
 
         <!--Bootstrap Imports-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" /> 
 
     </head>
 
@@ -61,7 +63,7 @@
                           
                           </div>
                           <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="submit" class="btn btn-function">Create</button>
                           </div>
                       </form>
                     </div>
@@ -69,51 +71,34 @@
                 </div>
             </nav>
         </header>
-        <div align="center">
-            @*4 box option*@
-            @*<div class="option-boxes">
-                <div class="option-top">
-                    <button type="submit" class="btn option-button">Create Checklist</button>
-                    <button type="submit" class="btn option-button">Edit Checklist</button>
-                </div>
-                <div class="option-bottom">
-                    <button type="submit" class="btn option-button">Mark Checklist</button>
-                    <button type="submit" class="btn option-button">Remove Checklist</button>
-                </div>
-            </div>*@
 
-            @*Shows all the existing checklists in the store*@
-            <div class="card-columns">
-                @{
-                    var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;
-
-                    if(myList.Any()) {
-                        foreach(var c in myList)
-                        {
+        @*Shows all the existing checklists in the store*@
+        <div class="card-columns">
+            @{
+                var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;
+                if (myList.Any())
+                {
+                    foreach (var c in myList)
+                    {
+                        <div class="card">
+                            @*Name of the checklist*@
                             <a asp-action="ViewChecklist" asp-route-id="@c.ChecklistId">
-                                <div class="card p-3">
-                                    <blockquote class="blockquote mb-0 card-body">
-                                        <p>@c.ChecklistTitle</p>
-                                        <footer class="blockquote-footer">
-                                            <small class="text-muted">
-                                                # of tasks
-                                            </small>
-                                        </footer>
-                                    </blockquote>
-                                </div>
+                                <div class="card-header header-color text-black">@c.ChecklistTitle</div>
                             </a>
-                        }
+                            <div class="card-body">
+                                <p class="card-text"># of Categories: @ViewBag.NumOfCategory</p>
+                                <p class="card-text"># of Task(s): @ViewBag.NumOfTask</p>
+                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                <form method="post">
+                                    <a class="btn btn-function" asp-action="EditChecklist">Edit</a>
+                                    <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
+                                    <button type="submit" class="btn btn-function" asp-route-id="@c.ChecklistId" asp-action="DeleteChecklist">Delete</button>
+                                </form>
+                            </div>
+                        </div>
                     }
                 }
-                
-            
-             </div>
+            }
         </div>
-
-        
-        
-
-
-
     </body>
 </html>
