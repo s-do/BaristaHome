@@ -21,7 +21,7 @@ namespace BaristaHome.Controllers
         [HttpGet]
         public async Task<IActionResult> Clocking()
         {
-            var lastestStatus = (from s in _context.Store
+            var latestStatus = (from s in _context.Store
                                  join u in _context.User on s.StoreId equals u.StoreId
                                  join us in _context.UserShiftStatus on u.UserId equals us.UserId
                                  join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
@@ -35,7 +35,7 @@ namespace BaristaHome.Controllers
                                  }).ToList();
 
             List<ClockingViewModel> list = new List<ClockingViewModel>();
-            foreach(var status in lastestStatus)
+            foreach(var status in latestStatus)
             {
                 var statusView = (from s in _context.Store
                                   join u in _context.User on s.StoreId equals u.StoreId

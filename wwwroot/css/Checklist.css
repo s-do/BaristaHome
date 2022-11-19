@@ -1,0 +1,39 @@
+﻿/*CSS for Clcoking System*/
+
+/*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+html {
+    font-size: 14px;
+    background-color: #ffe4bc;
+}
+
+body {
+    background-color: #ffe4bc;
+    font-family: 'Inter', sans-serif;
+}
+
+/*Background for checklist cards*/
+.pb-3 {
+    background-color: #ffe4bc;
+}
+
+.card-columns {
+    padding-top: 50px;
+    margin: auto;
+    width: 80%;
+}
+
+.header-color {
+    background-color: #ffdcf4 !important;
+}
+
+.btn-function {
+    background-color: mistyrose;
+    color: black;
+    border-color: mistyrose;
+}
+
+.btn-function:hover {
+    background-color: white;
+    color: black;
+}
+/*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
