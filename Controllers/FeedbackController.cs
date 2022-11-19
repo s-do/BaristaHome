@@ -1,8 +1,11 @@
 ﻿using BaristaHome.Data;
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Web.WebPages.Html;
 
 namespace BaristaHome.Controllers
 {
@@ -22,11 +25,6 @@ namespace BaristaHome.Controllers
             _context = context;
         }
 
-        public IActionResult Worker()
-        {
-            return View();
-        }
-
 
         public async Task <IActionResult> Owner()
         {
@@ -42,11 +40,41 @@ namespace BaristaHome.Controllers
                                        orderby feedback.FeedbackId descending
                                        select feedback).ToList();*/
 
+
+            ListDictionary descriptions = new ListDictionary();
+            foreach (var review in reviews)
+            {
+                descriptions.Add(review.Title, review.Description);
+            }
+
+            ViewData["reviews"] = descriptions;
+
             return View(reviews);
         }
 
+        [HttpGet]
+        public IActionResult Worker()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> Worker([Bind("FeedbackId,Title,Description,StoreId,UserId")] Feedback feedback)
+        {  
+            feedback.StoreId = Convert.ToInt16(User.FindFirst("StoreId").Value);
+            feedback.UserId = Convert.ToInt16(User.FindFirst("UserId").Value);
 
+            if (ModelState.IsValid)
+            {
+                _context.Add(feedback);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Worker", "Feedback");
+            }
+                
+         
+         ModelState.AddModelError(string.Empty, "There was an issue creating an account.");
+         return View(feedback);
+        }
 
 
 

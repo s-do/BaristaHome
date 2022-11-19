@@ -63,11 +63,12 @@
 
 <div class="container">
  
-        <form asp-action="Worker">
+@*        <form asp-action="Worker">*@
+        <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="StoreId" />
+@*            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="StoreId" />*@
 
 
             <div class="form-group-title">
