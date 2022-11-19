@@ -25,9 +25,6 @@ namespace BaristaHome.Controllers
             var checklist = (from c in _context.Checklist
                              select c).ToList();
 
-            //ViewBag.Checklist = checklist;
-
-
             Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
 
             foreach (var check in checklist)

@@ -75,7 +75,6 @@
         @*Shows all the existing checklists in the store*@
         <div class="card-columns">
             @{
-                @*var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;*@
                 var myList = ViewBag.Checklist==null ? new Dictionary<Checklist, List<int>>() : (Dictionary<Checklist, List<int>>)ViewBag.Checklist;
                 if (myList.Any())
                 {
