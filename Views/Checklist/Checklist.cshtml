@@ -75,24 +75,25 @@
         @*Shows all the existing checklists in the store*@
         <div class="card-columns">
             @{
-                var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;
+                @*var myList = ViewBag.Checklist==null ? new List<Checklist>() : (List<Checklist>)ViewBag.Checklist;*@
+                var myList = ViewBag.Checklist==null ? new Dictionary<Checklist, List<int>>() : (Dictionary<Checklist, List<int>>)ViewBag.Checklist;
                 if (myList.Any())
                 {
                     foreach (var c in myList)
                     {
                         <div class="card">
                             @*Name of the checklist*@
-                            <a asp-action="ViewChecklist" asp-route-id="@c.ChecklistId">
-                                <div class="card-header header-color text-black">@c.ChecklistTitle</div>
+                            <a asp-action="ViewChecklist" asp-route-id="@c.Key.ChecklistId">
+                                <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
                             </a>
                             <div class="card-body">
-                                <p class="card-text"># of Categories: @ViewBag.NumOfCategory</p>
-                                <p class="card-text"># of Task(s): @ViewBag.NumOfTask</p>
+                                <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
+                                <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
                                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                                 <form method="post">
                                     <a class="btn btn-function" asp-action="EditChecklist">Edit</a>
                                     <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
-                                    <button type="submit" class="btn btn-function" asp-route-id="@c.ChecklistId" asp-action="DeleteChecklist">Delete</button>
+                                    <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
                                 </form>
                             </div>
                         </div>

@@ -25,8 +25,48 @@ namespace BaristaHome.Controllers
             var checklist = (from c in _context.Checklist
                              select c).ToList();
 
-            ViewBag.Checklist = checklist;
+            //ViewBag.Checklist = checklist;
 
+
+            Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
+
+            foreach (var check in checklist)
+            {
+                var numOfCategory = 0;
+                var numOfTask = 0;
+                var checklistCategory = (from s in _context.Store
+                                         join c in _context.Checklist on s.StoreId equals c.StoreId
+                                         join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
+                                         where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == check.ChecklistId
+                                         select cat).ToList();
+
+                if (checklistCategory != null)
+                {
+                    numOfCategory += checklistCategory.Count();
+
+                    foreach (var cc in checklistCategory)
+                    {
+                        var checklistTasks = (from s in _context.Store
+                                              join c in _context.Checklist on s.StoreId equals c.StoreId
+                                              join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
+                                              join ct in _context.CategoryTask on cat.CategoryId equals ct.CategoryId
+                                              join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
+                                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
+                                              select st.TaskName).ToList();
+
+                        if (checklistTasks != null)
+                        {
+                            numOfTask += checklistTasks.Count();
+                        }
+                    }
+                }
+                List<int> count = new List<int>();
+                count.Add(numOfCategory);
+                count.Add(numOfTask);
+                checklistInfo[check] = count;
+            }
+            
+            ViewBag.Checklist = checklistInfo;
             return View();
         }
 
