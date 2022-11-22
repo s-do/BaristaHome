@@ -554,7 +554,20 @@ namespace BaristaHome.Controllers
                                          Profit = s.Profit,
                                          TimeSold = s.TimeSold
                                      }).ToListAsync();
-            return View();
+
+            IEnumerable<SaleViewModel> query = await (from s in _context.Sale
+                               join d in _context.Drink on s.DrinkId equals d.DrinkId
+                               where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                               group s by new { d.DrinkName, Date = new DateTime(s.TimeSold.Year, s.TimeSold.Month, s.TimeSold.Day) } into g
+                               select new SaleViewModel
+                               {
+                                   DrinkName = g.Key.DrinkName,
+                                   TimeSold = g.Key.Date.ToString("MM/dd/yyyy"),
+                                   UnitsSold = g.Sum(x => x.UnitsSold),
+                                   Profit = g.Sum(x => x.Profit)
+                               }).OrderBy(x => x.DrinkName).ToListAsync();
+
+            return View(query);
         }
 
         public IActionResult SalesFilter()
@@ -566,19 +579,19 @@ namespace BaristaHome.Controllers
         public async Task<IActionResult> GetSales()
         {
             // Add all the distinct drinks by id then sum up their count sold & profit
-            var salesQuery = (IEnumerable<SaleViewModel>)
-                await(from s in _context.Sale
-                      join d in _context.Drink on s.DrinkId equals d.DrinkId
-                      where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                      // Group rows by the same drink name
-                      group s by new { d.DrinkName } into g
-                      // Then use an aggregate function to sum up the profit and units sold
-                      select new SaleViewModel
-                      {
-                          DrinkName = g.Key.DrinkName,
-                          UnitsSold = g.Sum(s => s.UnitsSold),
-                          Profit = g.Sum(s => s.Profit)
-                      }).ToListAsync();
+            var salesQuery = await (from s in _context.Sale
+                                    join d in _context.Drink on s.DrinkId equals d.DrinkId
+                                    where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                    // Group rows by the same drink name
+                                    group s by new { d.DrinkName } into g
+                                    // Then use an aggregate function to sum up the profit and units sold
+                                    select new
+                                    {
+                                        DrinkName = g.Key.DrinkName,
+                                        UnitsSold = g.Sum(s => s.UnitsSold),
+                                        Profit = g.Sum(s => s.Profit)
+                                    }).ToListAsync();
+
 
             // Serialize data to Json to then be able to read and use the data in js
             return Json(salesQuery);

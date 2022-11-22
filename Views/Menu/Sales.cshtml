@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<BaristaHome.Models.SaleViewModel>
+@{
     ViewData["Title"] = "Sales";
     Layout = null;
 }
@@ -129,6 +130,45 @@
 
     <!--Holding the bar chart with a div-->
     <div id="barChart" class="container" style="width: 1500px; height: 1000px;"></div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.DrinkName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TimeSold)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UnitsSold)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profit)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.DrinkName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.TimeSold)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.UnitsSold)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Profit)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 </body>
 </html>
