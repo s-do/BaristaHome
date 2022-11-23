@@ -1,0 +1,80 @@
+﻿@model BaristaHome.Models.User
+@{
+    ViewData["Title"] = "View Work Status";
+}
+
+<!DOCTYPE html>
+
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Barista Home</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+        <link rel="stylesheet" href="~/css/Payroll.css" asp-append-version="true" /> <!--Stylesheet-->
+        <link rel="stylesheet" href="~/css/Clocking.css" asp-append-version="true" /> 
+        <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" />
+    </head>
+
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Clocking" asp-action="Clocking">Back</a>
+                <div class="center">
+                    <h1 class="title">View Work Status</h1>
+                </div>
+            </nav>
+        </header>
+
+        <div align="center">
+
+            <h1 class="title">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</h1>
+
+            <div class="all-statuses">
+                <table class="table-payroll" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="background-color:#ffdcf4; height:70px">
+                                Shift Status
+                            </th>
+                            <th style="background-color:#ffdcf4; height:70px">
+                                Time
+                            </th>
+                            <th style="background-color:#ffdcf4; height:70px">
+                            </th>
+                        </tr>      
+                    </thead>
+                    <tbody>
+                        @{
+                            var myList = ViewBag.AllStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.AllStatus;
+
+                            if(myList.Any()) {
+                                foreach(var uss in myList)
+                                {
+                                    <tr>
+                                        <td>@uss.ShiftStatus</td>
+                                        <td>@uss.Time</td>
+                                        <td>
+                                        <form method="post">
+                                            <a class="btn btn-function"  asp-action="EditStatus" asp-route-id="@uss.UserId">Edit</a>
+                                            <button type="submit" class="btn btn-function" asp-action="DeleteStatus" asp-route-userId="@uss.UserId" asp-route-statusId="@uss.ShiftStatusId" asp-route-time="@uss.Time">Delete</button>
+                                        </form>
+                                        
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        
+
+    </body>
+</html>

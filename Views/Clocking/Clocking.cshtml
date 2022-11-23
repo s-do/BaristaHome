@@ -17,6 +17,15 @@
         <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
         <link rel="stylesheet" href="~/css/Payroll.css" asp-append-version="true" /> <!--Stylesheet-->
         <link rel="stylesheet" href="~/css/Clocking.css" asp-append-version="true" /> 
+
+        <!--Bootstrap Imports-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" />
+
     </head>
 
 
@@ -30,12 +39,17 @@
             </nav>
         </header>
         <div align="center">
-            <div class="information">
+
+            @*Table for all works most recent status change*@
+            @*<div class="information">
                 <table class="table-payroll" style="width:100%">
                     <thead>
                         <tr>
                             <th style="background-color:#ffdcf4; height:70px">
-                                @Html.DisplayNameFor(model => model.User)
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th style="background-color:#ffdcf4; height:70px">
+                                @Html.DisplayNameFor(model => model.LastName)
                             </th>
                             <th style="background-color:#ffdcf4; height:70px">
                                 @Html.DisplayNameFor(model => model.ShiftStatus)
@@ -55,7 +69,10 @@
                                 {
                                     <tr>
                                         <td>
-                                            @uss.User
+                                            @uss.FirstName
+                                        </td>
+                                        <td>
+                                            @uss.LastName
                                         </td>
                                         <td>
                                             @uss.ShiftStatus
@@ -73,10 +90,36 @@
                         }
                     </tbody>
                 </table>
-            </div>
+            </div>*@
+        </div>
             
 
+        @*Cards for all users*@
+        <div class="user-cards">
+            <div class="card-columns">
+
+                @{
+                    var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
+                    if(myList.Any()) {
+                        foreach(var uss in myList)
+                        {
+                            <div class="card">
+                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">@uss.FirstName @uss.LastName</h5>
+                                    <p class="card-text"><small class="text-muted">Current Status: @uss.ShiftStatus @uss.Time</small></p>
+                                    <a class="btn btn-function" asp-route-id="@uss.UserId" asp-action="ViewStatus">View Status Changes</a>
+                                </div>
+                            </div>
+                        
+                        }
+                    }
+                }
+                
+
+            </div>
         </div>
+            
         
         
 
