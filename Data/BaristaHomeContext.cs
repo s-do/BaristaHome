@@ -83,5 +83,6 @@ namespace BaristaHome.Data
         public DbSet<Unit> Unit { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserShiftStatus> UserShiftStatus { get; set; }
+        public DbSet<BaristaHome.Models.ShiftSwappingRequest> ShiftSwappingRequest { get; set; }
     }
 }
