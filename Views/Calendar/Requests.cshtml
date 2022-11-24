@@ -2,6 +2,7 @@
     ViewData["Title"] = "Shared Calendar";
     Layout = null;
 }
+@model IEnumerable<ShiftSwappingRequest>
 
 @*This page displays all shift swapping requests that were sent to the current user, which they can accept or deny*@
 <!DOCTYPE html>
@@ -87,6 +88,7 @@
     
     </head>
 
+    
     <body>
 
         <!--Nav bar area-->
@@ -103,6 +105,7 @@
 
         @*Display a table with columns: Request From, Offered shift, Your shift*@
         <div class="background">
+
         <table class="table">
             <thead>
                 <tr>
@@ -122,48 +125,36 @@
                 @*First example row*@
                 @*@foreach (var item in Model)
                 {*@
-                <tr>
-                    <td>
-                        John Do
-                    </td>
-                    <td>
-                        Nov 2, 11:00am - 4:00pm
-                    </td>
-                    <td>
-                        Nov 3, 4:00pm - 11:00pm
-                    </td>
-                    <td>
-                        <button class="green-button">
-                            <a asp-action="Edit">Accept</a> 
-                        </button>
+
+                @foreach(var k in ViewBag.ShiftRequests) {
+                    <tr>
+                        <td>
+                            @k.SenderUser.FirstName
+                            @k.SenderUser.LastName
+                        </td>
+                        <td>
+                            @k.SenderShift.StartShift
+                            <div> To </div>
+                            @k.SenderShift.EndShift
+                        </td>
+                        <td>
+                            @k.RecipientShift.StartShift
+                            <div> To </div>
+                            @k.RecipientShift.EndShift
+                        </td>
+                        <td>
+                            <button class="green-button">
+                                <a asp-action="Edit">Accept</a> 
+                            </button>
                         
-                        <button class="red-button">
-                            <a asp-action="Details">Decline</a>
+                            <button class="red-button">
+                                <a asp-action="Details">Decline</a>
                         </button>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                }
 
-                @*Second example row*@
-                <tr>
-                    <td>
-                        Jane Do
-                    </td>
-                    <td>
-                        Nov 10, 12:00pm - 6:00pm
-                    </td>
-                    <td>
-                        Nov 11, 9:00pm -3:00pm
-                    </td>
-                    <td>
-                        <button class="green-button">
-                            <a asp-action="Accept">Accept</a>
-                        </button>
-
-                        <button class="red-button">
-                            <a asp-action="Decline">Decline</a>
-                        </button>
-                    </td>
-                </tr>
+               
                 @*}*@
             </tbody>
         </table>
