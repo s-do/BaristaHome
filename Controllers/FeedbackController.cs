@@ -7,6 +7,8 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Web.WebPages.Html;
 
+
+
 namespace BaristaHome.Controllers
 {
     public class FeedbackController : Controller
@@ -52,6 +54,100 @@ namespace BaristaHome.Controllers
             return View(reviews);
         }
 
+        [HttpPost]
+        public JsonResult SearchDescription(string topic)
+        {
+
+            var reviews = (from f in _context.Feedback
+                           join store in _context.Store on f.StoreId equals store.StoreId
+                           where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) 
+                           select f).ToList();
+
+
+            return Json(reviews);
+
+        }
+
+
+        /*        // POST: Resolve Feedback
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                public ActionResult Delete(string descript)
+                {
+                    // requery item then delete
+                    *//*var feedbackItem = await _context.Feedback.FindAsync(id, Convert.ToInt32(User.FindFirst("StoreId").Value));*//*
+
+                    var feedbackItem = (from f in _context.Feedback
+                                        join store in _context.Store on f.StoreId equals store.StoreId
+                                        where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                        select f).Where(i => i.Description.Contains(descript));
+
+
+
+                    if (feedbackItem == null)
+                    {
+                        return new EmptyResult();
+                    }
+
+                    _context.Feedback.Remove((Feedback)feedbackItem);
+                    _context.SaveChanges();
+                    //await _context.SaveChangesAsync();
+                    return Json(feedbackItem);
+                }*/
+
+
+
+        // POST: Resolve Feedback
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            // requery item then delete
+            var feedbackItem = await _context.Feedback.FindAsync(id);                   
+
+            if (feedbackItem == null)
+            {
+                return View("Error");
+            }
+
+            _context.Feedback.Remove(feedbackItem);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Owner));
+        }
+
+
+
+
+
+
+        // Get: Test Delete Page
+        public async Task<IActionResult> Delete(int? id) 
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+         
+            var feedbackItem = await _context.Feedback.FirstOrDefaultAsync(m => m.FeedbackId == id);
+
+
+
+
+            return View(feedbackItem);
+        }
+
+
+
+
+
+
+
+
+
+
+
+        // Views that the worker will see
         [HttpGet]
         public IActionResult Worker()
         {
