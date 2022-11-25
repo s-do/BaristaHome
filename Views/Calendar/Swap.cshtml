@@ -81,6 +81,22 @@
 
     <body>
 
+         <!--Testing-->
+        @foreach(var k in ViewBag.UserShifts ){
+            @k.ShiftId
+            <p> </p>
+            @k.StartShift
+            <div> </div>
+        }
+
+        <div>
+            USER ID
+            @ViewData["userId"]
+
+            STORE ID
+            @ViewData["storeId"]
+        </div>
+
         <!--Nav bar area-->
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
@@ -92,55 +108,59 @@
         </header>
 
         <div class="background">
-
             @*Page title and sentence instruction*@
             <p class="page-title">Shift Swapping Request</p>
             <p>Fill out the information below to send a shift-swapping request to a coworker.</p>
 
             @*User selects their own shift that they'd like to swap out*@
             <p class="instructions">Select a shift that you would like to swap out:</p>
+
             @*Dropdown for selecting a worker*@
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select your shift
+                    @ViewData["selectedShift"]
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Nov 7 9:00 am - 3:00pm</a>
-                    <a class="dropdown-item" href="#">Nov 9 6:00pm - 10:30pm</a>
-                    <a class="dropdown-item" href="#">Nov 10 12:00pm - 7:00pm</a>
+                    @foreach(var k in ViewBag.UserShifts ){
+                        <button type ="submit" class="dropdown-item" href="#" asp-action="UpdateSwapForm" asp-route-SenderShift = "1"> @k.StartShift to @k.EndShift</button>
+                    }
+
                 </div>
             </div>
-
+            <input type ="submit" asp-controller="Calendar" asp-action="UpdateSwapForm" > 
+            @ViewData["selectedShift"]
             @*User selects a coworker who has a shift they want to switch with*@
             <p class="instructions">Select a worker:</p>
+
             @*Dropdown for selecting a worker*@
             <div class="dropdown ">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select worker
                 </button>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">John Do</a>
-                    <a class="dropdown-item" href="#">Jane Do</a>
-                    <a class="dropdown-item" href="#">Jack Nguyen</a>
+                    @foreach(var k in ViewBag.Users ){
+                        <input class="dropdown-item" placeholder = "@k.FirstName @k.LastName">
+                    }
                 </div>
             </div>
 
             @*User selects the coworker's shift that they want to switch with*@
             <p class="instructions">Select one of this worker's shifts to request for:</p>
+
             @*Dropdown for selecting a worker*@
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select coworker's shift
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Nov 8 10:30am - 5:00pm</a>
-                    <a class="dropdown-item" href="#">Nov 10 12:00pm - 7:00pm</a>
-                    <a class="dropdown-item" href="#">Nov 7 9:00 am - 3:00pm</a>
+                    @foreach(var k in ViewBag.UserShifts ){
+                        <a class="dropdown-item" href="#">@k.StartShift to @k.EndShift</a>
+                    }
                 </div>
             </div>
 
             @*Send button*@
-            <button class="send-button">Send</button>
+            <button class="send-button" asp-action="Results">Send</button>
         </div>
 
     </body>
