@@ -43,8 +43,7 @@ namespace BaristaHome.Controllers
             var announcement = (from a in _context.Announcements
                                 where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
                                 select a).FirstOrDefault();
-
-            if (announcement == null)
+            if (announcement == null || string.IsNullOrWhiteSpace(announcement.AnnouncementText))
             {
                 Announcement nullAnnouncement = new Announcement();
                 nullAnnouncement.AnnouncementText = "No Announcement";
