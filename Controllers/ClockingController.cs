@@ -338,10 +338,25 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteStatus(int userId, int statusId, DateTime time)
         {
-            var userShiftStatus = await _context.UserShiftStatus.FindAsync(userId, statusId, time);
-            _context.UserShiftStatus.Remove(userShiftStatus);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("ViewStatus", "Clocking");
+            
+            /*var userShiftStatus = await _context.UserShiftStatus.FindAsync(userId, statusId, time);*/
+            var userShiftStatus = (from s in _context.Store
+                                   join u in _context.User on s.StoreId equals u.StoreId
+                                   join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                   join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == userId
+                                        && us.ShiftStatusId == statusId /*&& us.Time == time*/
+                                   select us).ToList();
+
+            foreach (var s in userShiftStatus)
+            {
+                if (s.Time.ToString() == time.ToString())
+                {
+                    _context.UserShiftStatus.Remove(s);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction(nameof(ViewStatus), new { id = userId });
         }
     }
 }
