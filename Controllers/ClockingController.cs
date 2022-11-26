@@ -22,20 +22,20 @@ namespace BaristaHome.Controllers
         public async Task<IActionResult> Clocking()
         {
             var latestStatus = (from s in _context.Store
-                                 join u in _context.User on s.StoreId equals u.StoreId
-                                 join us in _context.UserShiftStatus on u.UserId equals us.UserId
-                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                                 group us by us.UserId into uss
-                                 select new UserShiftStatus()
-                                 {
-                                     UserId = uss.Key,
-                                     ShiftStatusId = uss.First(y => y.Time == uss.Max(x => x.Time)).ShiftStatusId,
-                                     Time = uss.Max(x => x.Time),
-                                 }).ToList();
+                                join u in _context.User on s.StoreId equals u.StoreId
+                                join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                group us by us.UserId into uss
+                                select new UserShiftStatus()
+                                {
+                                    UserId = uss.Key,
+                                    ShiftStatusId = uss.First(y => y.Time == uss.Max(x => x.Time)).ShiftStatusId,
+                                    Time = uss.Max(x => x.Time),
+                                }).ToList();
 
             List<ClockingViewModel> list = new List<ClockingViewModel>();
-            foreach(var status in latestStatus)
+            foreach (var status in latestStatus)
             {
                 var statusView = (from s in _context.Store
                                   join u in _context.User on s.StoreId equals u.StoreId
@@ -209,10 +209,10 @@ namespace BaristaHome.Controllers
                 var userID = Convert.ToInt16(User.FindFirst("UserId").Value);
                 //Start of shift
                 var shiftstart = (from uss in _context.UserShiftStatus
-                             where uss.UserId == userID
-                             where uss.ShiftStatus.ShiftStatusId == 1
-                             orderby uss.Time
-                             select uss).Last();
+                                  where uss.UserId == userID
+                                  where uss.ShiftStatus.ShiftStatusId == 1
+                                  orderby uss.Time
+                                  select uss).Last();
                 //End of shift
                 var shiftend = userSS;
 
@@ -277,16 +277,16 @@ namespace BaristaHome.Controllers
                 double hours = totalTime.Hours;
                 double minHours = totalTime.Minutes / 60.00;
                 double secHours = totalTime.Seconds / 3600.00;
-/*              //Testing  
-                double hours = 2.00;
-                double minHours = 30.00 / 60.00;
-                double secHours = 0.00 / 3600.00;*/
+                /*              //Testing  
+                                double hours = 2.00;
+                                double minHours = 30.00 / 60.00;
+                                double secHours = 0.00 / 3600.00;*/
                 double totalTimeWorked = Math.Round(hours + minHours + secHours, 2);
                 double totalPay = Math.Round((Convert.ToDouble(wage) * totalTimeWorked), 2);
                 var dateWorked = startTime.Date;
 
 
-                
+
                 Payroll payroll = new Payroll();
                 payroll.UserId = Convert.ToInt16(User.FindFirst("UserId").Value);
                 payroll.Amount = Convert.ToDecimal(totalPay);
@@ -321,28 +321,31 @@ namespace BaristaHome.Controllers
             }
 
             var allStatus = (from s in _context.Store
-                                join u in _context.User on s.StoreId equals u.StoreId
-                                join us in _context.UserShiftStatus on u.UserId equals us.UserId
-                                join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == user.UserId
-                                select new ClockingViewModel
-                                {
-                                    UserId = u.UserId,
-                                    FirstName = u.FirstName,
-                                    LastName = u.LastName,
-                                    ShiftStatusId = us.ShiftStatusId,
-                                    ShiftStatus = ss.ShiftStatusName,
-                                    Time = us.Time,
-                                }).ToList();
+                             join u in _context.User on s.StoreId equals u.StoreId
+                             join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                             join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                             where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == user.UserId
+                             select new ClockingViewModel
+                             {
+                                 UserId = u.UserId,
+                                 FirstName = u.FirstName,
+                                 LastName = u.LastName,
+                                 ShiftStatusId = us.ShiftStatusId,
+                                 ShiftStatus = ss.ShiftStatusName,
+                                 Time = us.Time,
+                             }).ToList();
             ViewBag.AllStatus = allStatus;
 
-            return View(user);
+
+            ViewData["StatusOptions"] = new SelectList(_context.ShiftStatus, "ShiftStatusId", "ShiftStatusName");
+
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteStatus(int userId, int statusId, DateTime time)
         {
-            
+
             /*var userShiftStatus = await _context.UserShiftStatus.FindAsync(userId, statusId, time);*/
             var userShiftStatus = (from s in _context.Store
                                    join u in _context.User on s.StoreId equals u.StoreId
@@ -361,6 +364,31 @@ namespace BaristaHome.Controllers
                 }
             }
             return RedirectToAction(nameof(ViewStatus), new { id = userId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")])
+        {
+            var userShiftStatus = (from s in _context.Store
+                                   join u in _context.User on s.StoreId equals u.StoreId
+                                   join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                   join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == userId
+                                        && us.ShiftStatusId == statusId /*&& us.Time == time*/
+                                   select us).ToList();
+
+            foreach (var s in userShiftStatus)
+            {
+                var a = s;
+                Console.WriteLine(a);
+                if (s.Time.ToString() == time.ToString())
+                {
+                    _context.UserShiftStatus.Update(s);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });
         }
     }
 }
