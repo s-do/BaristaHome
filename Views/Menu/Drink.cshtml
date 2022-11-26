@@ -32,6 +32,7 @@
                 <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
+            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="CanCreate">Create</a>
 @*            <input type="hidden" asp-for="@Model.DrinkId" />*@
 @*            <form asp-action="Delete">
                 <input type="hidden" asp-for="DrinkId" />
@@ -188,24 +189,49 @@
     @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
-    @*Drink instrunctions and ingredients*@
+    @*Drink instrunctions and ingredients*@"
+
     <div class = "add-drink-bottom">
+
         <div class = "drink-instructions">
             <a>Instructions</a>
             <div class="text-display" style="height: 150px">
                 @Html.DisplayFor(model => model.Instructions)
             </div>
-
         </div>
 
-        <div class = "drink-ingredients">
+@*        <div class = "drink-ingredients">
             <a>Ingredients</a>
             <div class="text-display" style="height: 150px;">
             </div>
+        </div>*@
 
+        @*Drink ingredients*@
+        <div class = "drink-ingredients">
+            @{
+                var ingredientList = ViewBag.IngredientList == null ? new List<String>() : (List<String>)ViewBag.IngredientList;
+                if(ingredientList.Any()) {
+                    foreach(var i in ingredientList) {
+                        <div class="instruction">
+                            @i
+                        </div>
+                    }
+                }
+            }
         </div>
 
     </div>
+
+    @if(Model.DrinkVideo != null)
+    {
+        <div class="drink-video">
+            <iframe
+                src= "@Html.DisplayFor(model => model.DrinkVideo)">
+            </iframe>
+        </div>
+    }
+
+
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     <footer class="border-top footer text-muted">
@@ -218,5 +244,3 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>
-
-

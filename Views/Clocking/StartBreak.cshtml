@@ -19,6 +19,7 @@
 
 
     <body>
+        <!--Nav bar for back button and title-->
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
                 <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Back</a>
@@ -28,6 +29,7 @@
             </nav>
         </header>
 
+        <!--Displays the view for when a user is on break-->
         <div class="text-center">
             
             <h1>Hello <i>@ViewBag.FirstName @ViewBag.LastName</i>, current shift status is:</h1>
@@ -44,7 +46,7 @@
 
                     if(myList.Any()) {
                         foreach(var ss in myList) {
-                            //End Break
+                            //Goes to the Clock In View after user clicks on the End Break button
                             if (ss.ShiftStatusId == 4)
                             {
                                 <button type="submit" class="btn shift-button" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ss.ShiftStatusId">@ss.ShiftStatusName</button>

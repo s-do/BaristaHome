@@ -1,6 +1,7 @@
-﻿.shift-statuses {
-/*    border: 1px solid black;
-*/    height: 550px;
+﻿/*CSS for Clcoking System*/
+.shift-statuses {
+/*    border: 1px solid black;*/    
+    height: 550px;
     width: 350px;
     margin-top: 50px;
 }
@@ -23,19 +24,4 @@
 .shift-button:hover {
     background-color: #EF9CD8;
     color: black;
-}
-
-.not-option-button {
-    border: 2px solid;
-    background-color: #CF9FC2;
-    font-size: 24px;
-    font-family: Arial;
-    cursor: pointer;
-    border-color: #FFD9F4;
-    color: ##858585;
-    display: block;
-    width: 100%;
-    margin-bottom: 50px;
-    padding: 32px 16px;
-    border-radius: 12px;
 }

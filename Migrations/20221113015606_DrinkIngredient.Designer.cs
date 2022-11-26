@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20221113015606_DrinkIngredient")]
+    partial class DrinkIngredient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,27 +340,26 @@ namespace BaristaHome.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"), 1L, 1);
 
-                    b.Property<int?>("DrinkId")
+                    b.Property<int>("InventoryItemItemId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Profit")
+                    b.Property<int>("InventoryItemStoreId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Profit")
                         .HasPrecision(16, 2)
                         .HasColumnType("decimal(16,2)");
-
-                    b.Property<int?>("StoreId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeSold")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UnitsSold")
-                        .HasColumnType("int");
+                    b.Property<decimal>("UnitsSold")
+                        .HasPrecision(16, 2)
+                        .HasColumnType("decimal(16,2)");
 
                     b.HasKey("SaleId");
 
-                    b.HasIndex("DrinkId");
-
-                    b.HasIndex("StoreId");
+                    b.HasIndex("InventoryItemItemId", "InventoryItemStoreId");
 
                     b.ToTable("Sale");
                 });
@@ -758,17 +759,13 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.Sale", b =>
                 {
-                    b.HasOne("BaristaHome.Models.Drink", "Drink")
-                        .WithMany("Sales")
-                        .HasForeignKey("DrinkId");
+                    b.HasOne("BaristaHome.Models.InventoryItem", "InventoryItem")
+                        .WithMany("Sale")
+                        .HasForeignKey("InventoryItemItemId", "InventoryItemStoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("Sales")
-                        .HasForeignKey("StoreId");
-
-                    b.Navigation("Drink");
-
-                    b.Navigation("Store");
+                    b.Navigation("InventoryItem");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Shift", b =>
@@ -845,13 +842,16 @@ namespace BaristaHome.Migrations
                     b.Navigation("DrinkIngredients");
 
                     b.Navigation("DrinkTags");
-
-                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Ingredient", b =>
                 {
                     b.Navigation("DrinkIngredients");
+                });
+
+            modelBuilder.Entity("BaristaHome.Models.InventoryItem", b =>
+                {
+                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("BaristaHome.Models.Item", b =>
@@ -880,8 +880,6 @@ namespace BaristaHome.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("InventoryItems");
-
-                    b.Navigation("Sales");
 
                     b.Navigation("Shifts");
 

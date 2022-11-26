@@ -2,12 +2,12 @@
 
 namespace BaristaHome.Models
 {
-    public class Checklist
+    public class Announcement
     {
-        public int ChecklistId { get; set; }
+        public int AnnouncementId { get; set; }
 
-        [StringLength(32)]
-        public string ChecklistTitle { get; set; }
+        [StringLength(512)]
+        public string AnnouncementText { get; set; }
 
         // Relationships 
         public int StoreId { get; set; }
