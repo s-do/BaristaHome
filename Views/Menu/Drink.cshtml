@@ -32,14 +32,9 @@
                 <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
-@*            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="CanCreate">Create</a>*@
+            <button type="button" class="pink-button-right" data-toggle="modal" data-target="#deleteDrinkModal" style="outline:none; border:none">Delete</button>
             <!-- Trigger the modal with a button -->
             <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal" style="outline:none; border:none">Sell Drink</button>
-@*            <input type="hidden" asp-for="@Model.DrinkId" />*@
-@*            <form asp-action="Delete">
-                <input type="hidden" asp-for="DrinkId" />
-                <input type="submit" value="Delete" class="pink-button-right" />
-            </form>*@
         </nav>
     </header>
 
@@ -259,3 +254,33 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteDrinkModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title">@Model.DrinkName</h2>
+            </div>
+
+            <div class="modal-body">
+                <h5>Delete this drink?</h5>
+                            
+                <form asp-action="DeleteDrink">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="DrinkId" />
+                    <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" value="Yes" class="btn btn-outline-dark m-1" />
+                            <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

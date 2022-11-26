@@ -89,14 +89,14 @@ namespace BaristaHome.Controllers
                 _context.Add(drink);
                 await _context.SaveChangesAsync();
 
-                for(int j = 0; j < ingredientList.Capacity; j++) 
+                for(int j = 0; j < ingredientList.Count; j++) 
                 {
                     //Check for null values
-                    if (ingredientList[j] == null || amountList[j] == null || unitList[j] == null)
+                    if ((ingredientList.ElementAt(j) == null || amountList.ElementAt(j) == null) || unitList.ElementAt(j) == null)
                     {
                         return View(Additem());
                     }
-                    var ing = ingredientList[j];
+                    var ing = ingredientList.ElementAt(j);
                     //Check for existing ingredients
                     var existingIng = (from i in _context.Ingredient
                                        where i.IngredientName == ing
@@ -118,6 +118,7 @@ namespace BaristaHome.Controllers
                             DrinkId = drink.DrinkId,
                             IngredientId = id
                         };
+                        drinkIngredient.unit = unitList[j];
                         _context.Add(drinkIngredient);
                         await _context.SaveChangesAsync();
                     }
@@ -197,8 +198,8 @@ namespace BaristaHome.Controllers
 
                 return RedirectToAction("Menu", "Menu");
             }
-            ModelState.AddModelError(string.Empty, drink.DrinkName);
-            return View(drink);
+/*            ModelState.AddModelError(string.Empty, drink.DrinkName);*/
+            return RedirectToAction("Menu", "Menu");
 
         }
 
@@ -1061,7 +1062,17 @@ namespace BaristaHome.Controllers
         }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDrink([Bind("DrinkId,DrinkName,Instructions,Description,StoreId")] Drink drink)
+        {
+            //Delete/Clean up tags
+            //Delete Drink
+            var d = await _context.Drink.FindAsync(drink.DrinkId);
+            _context.Drink.Remove(d);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Menu", "Menu");
+        }
 
     }
 }
