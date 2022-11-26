@@ -177,10 +177,14 @@
                 @*Displays drink ingredients*@
                 @{
                     var ingredientList = ViewBag.IngredientList==null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
+                    var drinkIngredientList = ViewBag.DrinkIngredientList==null ? new List<DrinkIngredient>() : (List<DrinkIngredient>)ViewBag.DrinkIngredientList;
                     if(ingredientList.Any()) {
-                        foreach(var i in ingredientList){
+                        for(int j = 0; j < ingredientList.Count; j++)
+                        {
                             <flex class="flex2">
-                                <input type="text" placeholder="@i.IngredientName" name="ingredientList" value="@i.IngredientName"/>
+                                <input type="text" placeholder="@ingredientList[j].IngredientName" name="ingredientList" value="@ingredientList[j].IngredientName"/>
+                                <input type="text" placeholder="@drinkIngredientList[j].Quantity" name="amountList" value="@drinkIngredientList[j].Quantity"/>
+                                <input type="text" placeholder="@drinkIngredientList[j].unit" name="unitList" value="@drinkIngredientList[j].unit"/>
                                 <a href="#" class="delete" onclick="this.parentElement.remove();">&times</a>
                             </flex>
                         }
@@ -208,6 +212,16 @@
                         newIngredient.placeholder = "Enter ingredient";
                         newIngredient.name = "ingredientList";
 
+                        const amount = document.createElement("input");
+                        amount.placeholder = "Enter amount";
+                        amount.type = "text";
+                        amount.name = "amountList";
+
+                        const unit = document.createElement("input");
+                        unit.placeholder = "Enter unit (oz, fl oz, count)";
+                        unit.type = "text";
+                        unit.name = "unitList";
+
                         const btn = document.createElement("a");
                         btn.className = "delete";
                         btn.innerHTML = "&times";
@@ -218,6 +232,8 @@
                         btn.addEventListener("click", removeIngredient);
                             
                         flex.appendChild(newIngredient);
+                        flex.appendChild(amount);
+                        flex.appendChild(unit);
                         flex.appendChild(btn);
                         input2.appendChild(flex);
                     }
