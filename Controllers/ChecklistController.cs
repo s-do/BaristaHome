@@ -23,6 +23,7 @@ namespace BaristaHome.Controllers
         public IActionResult Checklist()
         {
             var checklist = (from c in _context.Checklist
+                             where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
                              select c).ToList();
 
             Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
@@ -75,7 +76,7 @@ namespace BaristaHome.Controllers
             {
                 //checks if entered in checklist name already exists or not
                 var existingChecklist = (from c in _context.Checklist
-                                         where c.ChecklistTitle.Equals(checklist.ChecklistTitle)
+                                         where c.ChecklistTitle.Equals(checklist.ChecklistTitle) && c.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))
                                          select c).FirstOrDefault();
 
                 if (existingChecklist != null)
@@ -101,8 +102,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var checklist = await _context.Checklist
-                .FirstOrDefaultAsync(m => m.ChecklistId == id);
+            var checklist = await _context.Checklist.FirstOrDefaultAsync(m => m.ChecklistId == id);
             if (checklist == null)
             {
                 return NotFound();
@@ -144,11 +144,55 @@ namespace BaristaHome.Controllers
         }
         /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+        /* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
         [HttpGet]
-        public IActionResult EditChecklist()
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> EditChecklist(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var checklist = await _context.Checklist.FirstOrDefaultAsync(m => m.ChecklistId == id);
+            if (checklist == null)
+            {
+                return NotFound();
+            }
+            string title = checklist.ChecklistTitle;
+            ViewBag.Title = title;
+            TempData["Title"] = checklist.ChecklistTitle;
+
             return View();
         }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> AddCategory([Bind("CategoryName,ChecklistId")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                // checking for existing cateogry only for those in the same store AND same checklist (dupes are therefore allowed outside these parameters)
+                var existingCategory = await (from cat in _context.Category
+                                              join c in _context.Checklist on cat.ChecklistId equals c.ChecklistId
+                                              where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && cat.CategoryName == category.CategoryName && cat.ChecklistId == category.ChecklistId
+                                              select cat).FirstOrDefaultAsync();
+                if (existingCategory != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Category name already exists! Please use a different one.");
+                    return View(category);
+                }
+
+                // reopen the edit page with the new category for that checklist
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EditChecklist", new { id = category.ChecklistId });
+            }
+            ModelState.AddModelError(string.Empty, "There was an issue creating a category.");
+            return View(category);
+        }
+        /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
 
         [HttpGet]
         public IActionResult MarkChecklist()

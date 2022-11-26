@@ -9,7 +9,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - Barista Home</title>
+        <title>@ViewData["Title"] • Barista Home</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
@@ -57,7 +57,7 @@
                       <form method="post">
                           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                           <div class="modal-body">
-                              <label asp-for="ChecklistTitle"></label>
+                              <label>Title</label>
                               <input asp-for="ChecklistTitle" class="form-control" />
                               <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
                           
@@ -90,7 +90,7 @@
                                 <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
                                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                                 <form method="post">
-                                    <a class="btn btn-function" asp-action="EditChecklist">Edit</a>
+                                    <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
                                     <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
                                     <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
                                 </form>
