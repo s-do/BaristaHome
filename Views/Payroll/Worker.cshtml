@@ -29,7 +29,6 @@
         </nav>
     </header>
 
-
     <div align="center">
         <div class="worker">
             <div class="picture">
@@ -39,11 +38,12 @@
                     @*Display default icon if drink has no image*@
                     @if(Model.UserImageData ==null)
                     {
-                        <img class="user-icon image" src=".../images/calendar.png"> //Default image display
+                        <img class="user-icon image" src="@Url.Content("~/images/calendar.png")"> //Default image display
+                       
                     }
                     else
                     {
-                        <img class="drink-icon image" src="@Url.Action("RenderImage", new { id = Model.UserId})" />
+                        <img class="user-icon image" src="@Url.Action("RenderImage", new { id = Model.UserId})" />
                     }
                 </div>
             </div>

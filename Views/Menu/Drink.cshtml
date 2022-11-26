@@ -32,7 +32,9 @@
                 <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
-            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="CanCreate">Create</a>
+@*            <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="CanCreate">Create</a>*@
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal" style="outline:none; border:none">Sell Drink</button>
 @*            <input type="hidden" asp-for="@Model.DrinkId" />*@
 @*            <form asp-action="Delete">
                 <input type="hidden" asp-for="DrinkId" />
@@ -50,7 +52,7 @@
             <label class="img-container">
                 @if(Model.DrinkImageData == null)
                 {
-                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
+                    <img class="img-container" src="@Url.Content("~/images/calendar.png")" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
                 }
                 else
                 {
@@ -73,8 +75,8 @@
 
     @* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ *@
 
-        <!-- Trigger the modal with a button -->
-        <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal">Sell Drink!</button>
+@*        <!-- Trigger the modal with a button -->
+        <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal">Sell Drink!</button>*@
 
         <!-- Sell Modal -->
         <div class="modal fade" id="sellDrinkModal">
@@ -87,6 +89,19 @@
 
                     <div class="modal-body">
                         <h5>Sell this drink?</h5>
+                            @if(ViewBag.missingIngredients != null)
+                            {
+                                <p>Not enough/missing from inventory:</p>
+                                var missing = ViewBag.missingIngredients == null ? new List<String>() : (List<String>)ViewBag.missingIngredients;
+                                if(missing.Any()) {
+                                    foreach(var i in missing) {
+                                        <div class="ingr">
+                                            @i
+                                        </div>
+                                    }
+                                }
+                            }
+                            
                         <form asp-action="SellDrink">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" asp-for="DrinkId" />

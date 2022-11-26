@@ -55,11 +55,11 @@
                 <label class="img-container" for="file-input">
                         @if(Model.DrinkImageData == null)
                         {
-                            <img class="img-container" for="file-input" src="../images/plus.png" asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3">
+                            <img class="img-container" for="file-input" src="@Url.Content("~/images/plus.png")" asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3; cursor:pointer">
                         }
                         else
                         {
-                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3"/>
+                            <img class="img-container" src="@Url.Action("RenderImage", new { id = Model.DrinkId})" for="file-input"asp-for="DrinkImageData" id="output", style="background-color: white; border: 3px solid #DFB3D3; cursor:pointer"/>
                         }
                 </label>
                 @*Script for the dynamic image*@
