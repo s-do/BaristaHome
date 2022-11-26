@@ -236,6 +236,15 @@ namespace BaristaHome.Controllers
         [HttpPost]
         public async Task<IActionResult> Menu(string tagLine)
         {
+            // Recreating viewbag to display store's filters/tags again
+            var tags = (IEnumerable<Tag>)(from s in _context.Store
+                                          join d in _context.Drink on s.StoreId equals d.StoreId
+                                          join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
+                                          join t in _context.Tag on dt.TagId equals t.TagId
+                                          where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                          select t);
+            ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
+
             if (tagLine != null)
             {
                 // Converting the x,y,z,... string to an int list
@@ -246,15 +255,6 @@ namespace BaristaHome.Controllers
                                       join d in _context.Drink on dt.DrinkId equals d.DrinkId  // then joining with drink to return the drink obj
                                       select d).Distinct(); // ensure distinct drinks to prevent multiple same objs
 
-                // Recreating viewbag to display store's filters/tags again
-                var tags = (IEnumerable<Tag>)(from s in _context.Store
-                                              join d in _context.Drink on s.StoreId equals d.StoreId
-                                              join dt in _context.DrinkTag on d.DrinkId equals dt.DrinkId
-                                              join t in _context.Tag on dt.TagId equals t.TagId
-                                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                                              select t);
-                ViewData["Tags"] = new SelectList(tags.Distinct(), "TagId", "TagName");
-
                 return View(filteredDrinks);
             }
 
@@ -264,6 +264,7 @@ namespace BaristaHome.Controllers
                                                 where d.StoreId == storeId
                                                 orderby d.DrinkId descending
                                                 select d;
+
             return View(drinkList);
         }
         /*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -961,7 +962,6 @@ namespace BaristaHome.Controllers
                                         UnitsSold = g.Sum(s => s.UnitsSold),
                                         Profit = g.Sum(s => s.Profit)
                                     }).ToListAsync();
-
 
             // Serialize data to Json to then be able to read and use the data in js
             return Json(salesQuery);

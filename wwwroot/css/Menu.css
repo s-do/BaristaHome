@@ -416,3 +416,31 @@ iframe {
     display: block;
     text-align: center;
 }
+
+/* CSS below are changes for Table view in Shift Analytics */
+.custom-font {
+    font-family: 'Inter';
+    font-size: 25px;
+}
+
+.large-font {
+    font-size: 30px;
+}
+
+.header-row {
+    font-style: italic;
+    font-weight: bold;
+    background-color: #ffc4ee
+}
+
+.table-row {
+    background-color: #ffd9f4;
+}
+
+.odd-table-row {
+    background-color: #ffc4ee;
+}
+
+.pink-background {
+    background-color: lightpink;
+}

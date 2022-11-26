@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!-- probably add custom css changes on this css file -->
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> 
     <!--csscript imports for filter-->
     <link rel="stylesheet" type="text/css" href="~/css/virtual-select.min.css" />
     
@@ -80,8 +80,7 @@
             };
 
             // Instantiate and draw chart, passing in options defined above
-            var chart = new google.visualization.ColumnChart(document.getElementById('barChart'));
-            //chart.draw(data, { showRowNumber: true, width: '100%', height: '100%' });
+            var chart = new google.visualization.ColumnChart(document.getElementById('columnChart'));
             chart.draw(data, options);
             return false;
         }
@@ -94,11 +93,12 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
             <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Back</a>
             <div class="center">
-                <h1 class="title">Sales Tracker</h1>
+                <h1 class="text-black title">Sales Tracker</h1>
             </div>
         </nav>
     </header>
 
+    <!--Filter sales by drink name-->
     <form asp-action="SalesFilter">
         <div class="wrapper">
             <!--Sales filter-->
@@ -112,8 +112,8 @@
                 </div>
             </div>
 
-            <!--Holding the bar chart with a div-->
-            <div id="barChart" class="container-fluid" style="width: 1500px; height: 1000px;"></div>
+            <!--Holding the column chart with a div-->
+            <div id="columnChart" class="container-fluid" style="width: 1500px; height: 1000px;"></div>
         </div>
     </form>
 

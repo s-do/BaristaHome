@@ -171,9 +171,33 @@ namespace BaristaHome.Controllers
           return _context.Shift.Any(e => e.ShiftId == id);
         }
 
-        public IActionResult Analytics()
+        public IActionResult AnalyticsColumn()
         {
             return View();
+        }
+
+        public IActionResult AnalyticsTable()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetHours()
+        {
+            // Add all the distinct drinks by id then sum up their count sold & profit
+            var hoursQuery = await (from p in _context.Payroll
+                                    join u in _context.User on p.UserId equals u.UserId
+                                    where u.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                    // Group rows by same user id
+                                    group p by new { u.FirstName, u.LastName } into g
+                                    select new ShiftAnalyticsViewModel
+                                    {
+                                        Name = g.Key.FirstName + " " + g.Key.LastName,
+                                        Hours = g.Sum(x => x.Hours)
+                                    }).OrderBy(x => x.Name).ToListAsync();
+
+            // Serialize data to Json to then be able to read and use the data in js
+            return Json(hoursQuery);
         }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 

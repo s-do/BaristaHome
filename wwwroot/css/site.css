@@ -36,3 +36,7 @@ body {
 .btn-primary, .btn-outline-dark {
     background-color: #ffdcf4 !important;
 }
+
+.title {
+    margin: auto;
+}

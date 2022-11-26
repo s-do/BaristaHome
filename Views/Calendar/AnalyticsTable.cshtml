@@ -1,6 +1,5 @@
-﻿@model BaristaHome.Models.Drink
-@{
-    ViewData["Title"] = "Sales:" + Model.DrinkName;
+﻿@{
+    ViewData["Title"] = "Shift Analytics •";
     Layout = null;
 }
 
@@ -9,11 +8,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] • Barista Home</title>
+    <title>@ViewData["Title"] Barista Home</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!-- probably add custom css changes on this css file -->
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" />
     <!--csscript imports for filter-->
     <link rel="stylesheet" type="text/css" href="~/css/virtual-select.min.css" />
 
@@ -33,8 +32,7 @@
         function loadData() {
             $.ajax({
 
-                url: '/Menu/GetSalesFilter',
-                data: 'drinkId=' + @Model.DrinkId,
+                url: '/Calendar/GetHours',
                 dataType: "json",
                 type: "GET",
                 error: function (xhr, status, error) {
@@ -52,86 +50,90 @@
         // Instantiates the chart, passes in the data and draws it.
         function drawChart(data) {
             var dataArray = [
-                ['Date', 'Count', 'Profit']
+                ['Name', 'Hours']
             ];
 
             if (data.length == 0) {
                 // push in empty data to show a empty chart if no json data was serialized and sent from controller
-                dataArray.push(["", 0, 0]);
+                dataArray.push(["", 0]);
             } else {
                 $.each(data, function (i, item) {
                     // property names have to be CAMEL CASED even if it's not in your viewmodel
-                    dataArray.push([item.timeSold, item.unitsSold, item.profit]);
+                    dataArray.push([item.name, item.hours]);
                 });
             }
-
-            var data = google.visualization.arrayToDataTable(dataArray);
-            // var oneDay = (24 * 60 * 60 * 1000);
-            // var dateRange = data.getColumnRange(0); <-- timeSold isn't technically a Date object so this won't work
-            // must set the date range 1 day before and after the singular data if only 1 sale
-            @*if (data.getNumberOfRows() == 1) {
-                dateRange.min = new Date(dateRange.min.getTime() - oneDay); 
-                dateRange.max = new Date(dateRange.max.getTime() + oneDay);
-            }*@
-            var options = {
-                title: 'Timeline Sales For @Model.DrinkName',
-                pointSize: 10,
-                chartArea: {
-                    width: '50%'
-                },
-                colors: ['#f2b3de', '#f7cc8d'],
-                hAxis: {
-                    title: 'Date',
-                    //viewWindow: dateRange
-                },
-                vAxis: {
-                    title: 'Sales'
-                },
+            var customCss = {
+                'headerRow': 'header-row custom-font',
+                'tableRow': 'table-row custom-font',
+                'oddTableRow': 'odd-table-row custom-font',
+                'selectedTableRow': 'pink-background large-font',
+                'hoverTableRow': '',
+                'headerCell': 'gold-border',
+                'tableCell': '',
+                'rowNumberCell': ''
             };
 
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var options = { showRowNumber: true, alternatingRowStyle: true, cssClassNames: customCss, width: '100%', height: '100%' };
+
             // Instantiate and draw chart, passing in options defined above
-            var chart = new google.visualization.LineChart(document.getElementById('lineChart'));
+            var chart = new google.visualization.Table(document.getElementById('tableChart'));
             chart.draw(data, options);
             return false;
         }
     </script>
 </head>
 <body>
+
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Sales">Back</a>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Calendar" asp-action="Shifts">Back</a>
             <div class="center">
-                <h1 class="title">Sales Tracker</h1>
+                <h1 class="title">Shift Analytics</h1>
             </div>
         </nav>
     </header>
 
-    <form asp-action="SalesFilter">
+    <!--Filter shifts by table or column-->
+    <form name="filterSelect">
         <div class="wrapper">
-            <!--Sales filter-->
+            <!--Shifts filter-->
             <div class="searchFilter">
-                <div class="search" style="width:65%">
-                    <h5>See sales for</h5>
-                    <select id="salesFilter" placeholder="Filter Sales" name="drinkName" asp-items="ViewBag.DrinkNames">
-                        <option selected disabled>Filter Sales</option>
+                <div class="search" style="width:65%; height: 80px;">
+                    <h5>Change Chart Filter</h5>
+                    <select id="shiftFilter">
+                        <option selected disabled>Filter Shifts</option>
+                        <option value="/Calendar/AnalyticsTable">Table</option>
+                        <option value="/Calendar/AnalyticsColumn">Column</option>
                     </select>
-                    <input type="submit" class="btn newTag" value="Filter" style="width:10%;">
                 </div>
             </div>
 
-            <!--Holding the bar chart with a div-->
-            <div id="lineChart" class="container-fluid" style="width: 1500px; height: 1000px;"></div>
+            <!--Holding the column chart with a div-->
+            <div id="tableChart" class="container-fluid" style="width: 1500px; height: 1000px;"></div>
         </div>
     </form>
+
+    <script>
+        $(function () {
+            // bind change event to select
+            $('#shiftFilter').on('change', function () {
+                var url = $(this).val(); // get selected value
+                if (url) { // require a URL
+                    window.location = url; // redirect
+                }
+                return false;
+            });
+        });
+    </script>
 
     <!--csscript imports for filter (must be placed after body)-->
     <script type="text/javascript" src="~/js/virtual-select.min.js"></script>
     <script type="text/javascript">
         VirtualSelect.init({
-            ele: '#salesFilter',
-            placeholder: 'Filter Sales',
-            search: true
+            ele: '#shiftFilter',
+            placeholder: 'Filter Shifts',
         });
     </script>
 </body>
