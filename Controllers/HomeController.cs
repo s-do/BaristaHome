@@ -65,7 +65,28 @@ namespace BaristaHome.Controllers
             var announcement = (from a in _context.Announcements
                                 where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
                                 select a).FirstOrDefault();
-            announcement.AnnouncementText = newAnnouncement.AnnouncementText;
+            //If store is missing announcement id db
+            if (announcement == null)
+            {
+                var id = Convert.ToInt16(User.FindFirst("StoreId").Value);
+                Announcement nullAnnouncement = new Announcement
+                {
+                    AnnouncementText = newAnnouncement.AnnouncementText,
+                    StoreId = id
+
+                };
+                if (ModelState.IsValid)
+                {
+                    _context.Add(nullAnnouncement);
+                    await _context.SaveChangesAsync();
+                    return Index();
+                }
+            }
+            else
+            {
+                announcement.AnnouncementText = newAnnouncement.AnnouncementText;
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Update(announcement);
