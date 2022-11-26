@@ -74,7 +74,7 @@ namespace BaristaHome.Controllers
 
 
         // POST: Resolve Feedback
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Resolve")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -124,7 +124,7 @@ namespace BaristaHome.Controllers
 
 
         // Get: Test Delete Page
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Resolve(int? id)
         {
             if (id == null)
             {
