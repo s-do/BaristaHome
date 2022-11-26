@@ -56,7 +56,11 @@ namespace BaristaHome.Controllers
                                  join u in _context.User on us.UserId equals u.UserId
                                  join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId*/
 
-
+            var listOfUsers = (from s in _context.Store
+                               join u in _context.User on s.StoreId equals u.StoreId
+                               where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                               select u).ToList();
+            ViewBag.ListOfUsers = listOfUsers;
             ViewBag.LatestStatus = list;
 
             return View();
