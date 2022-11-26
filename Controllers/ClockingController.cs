@@ -367,8 +367,14 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")])
+        public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")] ClockingViewModel c)
         {
+            UserShiftStatus uss = new UserShiftStatus
+            {
+                UserId = userId,
+                ShiftStatusId = statusId,
+                Time = c.Time
+            };
             var userShiftStatus = (from s in _context.Store
                                    join u in _context.User on s.StoreId equals u.StoreId
                                    join us in _context.UserShiftStatus on u.UserId equals us.UserId
