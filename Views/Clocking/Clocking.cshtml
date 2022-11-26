@@ -98,19 +98,31 @@
         <div class="user-cards">
             <div class="card-columns">
 
-                @{
-                    var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
-                    if(myList.Any()) {
+            @{
+                var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
+                var myList2 = ViewBag.ListOfUsers==null ? new List<User>() : (List<User>)ViewBag.ListOfUsers;
+                var count = 0;
+                if(myList.Any()) {
                         foreach(var uss in myList)
                         {
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
+                            <div class="card" style="width:320px;">
+                                @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                                    @if(myList2.ElementAt(count).UserImageData == null)
+                                    {
+                                        <img class="user-img" src="~/images/calendar.png"> //Default image display
+                                    }
+                                    else
+                                    {
+         
+                                        <img class="user-img" src="@Url.Action("RenderImage", new { id = myList2.ElementAt(count).UserId})" />
+                                    }
                                 <div class="card-body">
                                     <h5 class="card-title">@uss.FirstName @uss.LastName</h5>
                                     <p class="card-text"><small class="text-muted">Current Status: @uss.ShiftStatus @uss.Time</small></p>
                                     <a class="btn btn-function" asp-route-id="@uss.UserId" asp-action="ViewStatus">View Status Changes</a>
                                 </div>
                             </div>
+                            count++;
                         
                         }
                     }

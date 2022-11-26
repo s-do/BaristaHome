@@ -30,3 +30,14 @@
     margin-top: 50px;
     width: 80%;
 }
+
+.user-img {
+    width:inherit;
+    height: 160px;
+    object-fit: contain;
+}
+
+.card {
+    width: 320px;
+    border-radius:5px;
+}
