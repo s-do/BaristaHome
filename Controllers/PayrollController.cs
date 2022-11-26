@@ -63,6 +63,8 @@ namespace BaristaHome.Controllers
 
             ViewBag.Payroll = payrolls;
 
+            ViewData["FullNames"] = new SelectList(payrolls, "UserId", "FullName");
+
             /* Pulls list of workers under the same store id for select list  */
             List<PayrollOwnerViewModel> users  = (from user in _context.User
                                 join store in _context.Store on user.StoreId equals store.StoreId
@@ -98,6 +100,7 @@ namespace BaristaHome.Controllers
                                                     }).OrderBy(o => o.FullName).ToList();
             ViewBag.Payroll = payrolls;
 
+            ViewData["FullNames"] = new SelectList(payrolls, "UserId", "FullName");
 
             List<PayrollOwnerViewModel> users = (from user in _context.User
                                                  join store in _context.Store on user.StoreId equals store.StoreId
@@ -238,7 +241,61 @@ namespace BaristaHome.Controllers
 
 
 
+        // SEARCH BAR FEATURE
+        // Shows the page again after searching the user wanted
+        public async Task<IActionResult> SearchBarResults(int userId)
+        {
+              //var userId = Convert.ToInt32(userIdS);
 
+            /*            List<ItemViewModel> itemQuery = (from store in _context.Store
+                                                         join inventory in _context.InventoryItem on store.StoreId equals inventory.StoreId // link store and inventoryitem by storeid
+                                                         join item in _context.Item on inventory.ItemId equals item.ItemId                  // link inventoryitem and item by itemid
+                                                         join unit in _context.Unit on item.UnitId equals unit.UnitId                       // link item and unit by unitid
+                                                         where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))       // filter items by user's store
+                                                         select new ItemViewModel
+                                                         {
+                                                             Name = item.ItemName,                  // now we can send a 
+                                                             Quantity = inventory.Quantity,         // ItemViewModel object
+                                                             PricePerUnit = inventory.PricePerUnit, // to the view
+                                                             UnitName = unit.UnitName,
+                                                             ItemId = inventory.ItemId
+                                                         }).Where(i => i.Name.Contains(searchPhrase)).ToList();
+                        ViewBag.Inventory = itemQuery;
+            */
+
+            List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
+                                                    join user in _context.User on payroll.UserId equals user.UserId
+                                                    join store in _context.Store on user.StoreId equals store.StoreId
+                                                    where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                    && payroll.UserId.Equals(userId)
+                                                    select new PayrollOwnerViewModel
+                                                    {
+                                                        Hours = payroll.Hours,
+                                                        Amount = payroll.Amount,
+                                                        Date = payroll.Date,
+                                                        UserId = user.UserId,
+                                                        FullName = user.FirstName + " " + user.LastName,
+                                                        PayrollId = payroll.PayrollId,
+                                                    }).ToList();
+            ViewBag.Payroll = payrolls;
+            ViewData["FullNames"] = new SelectList(payrolls, "UserId", "FullName");
+
+            /* Pulls list of workers under the same store id for select list  */
+            List<PayrollOwnerViewModel> users = (from user in _context.User
+                                                 join store in _context.Store on user.StoreId equals store.StoreId
+                                                 where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                 select new PayrollOwnerViewModel
+                                                 {
+                                                     UserId = user.UserId,
+                                                     FullName = user.FirstName + " " + user.LastName,
+                                                 }).ToList();
+
+            
+
+
+            return View();
+
+        }
 
 
 
