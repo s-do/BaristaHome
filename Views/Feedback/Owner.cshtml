@@ -125,6 +125,7 @@
             <thead>
                 <tr>
                     <th>Topics</th>
+                    <th style="width:10%"></th>
                 </tr>
             </thead>
             <tbody>
@@ -133,7 +134,9 @@
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Title)
-                            @*<a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.FeedbackId">Delete</a>*@
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-dark" style="background-color:#8cff66" asp-action="Delete" asp-route-id="@item.FeedbackId">&#10004</a>
                         </td>
                     </tr>
                 }
@@ -184,6 +187,8 @@
     for (var i = 0; i < elements.length; i++) {
         let element = (elements)[i];
 
+
+
         element.addEventListener("click", function () {
             let title = element.innerHTML.trim();
             let description;
@@ -191,8 +196,9 @@
                 $.ajax({
                     type: "POST",
                     url: "/Feedback/SearchDescription",
-                    data: '{}',
-                    contentType: "application/json; charset=utf-8",
+                    //data: '{}',
+                    data: {topic: 'apple'},
+                    //contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: OnSuccess,
                     failure: function (response) {
@@ -211,14 +217,14 @@
                     // console.log(response[i].title == title) USE THIS TO PRINT TO DEBUG
                     if (response[i].title == title) {
                         description = response[i].description
-                        currId = response[i].feedbackId
                         savedDescription = response[i].description
                         savedID = response[i].feedbackId
+                        //console.log(savedDescription)
                     }
                 }
 
                 document.getElementById("description").innerHTML = description;
-
+                console.log(JSON.stringify(savedID))
             };
         });
     }
@@ -229,7 +235,10 @@
             $.ajax({
                 type: "POST",
                 url: "/Feedback/Delete",
-                data: JSON.stringify(savedID),
+               
+                //data: {id: savedID},
+                data: { id:'savedID' },
+                //data: JSON.stringify(savedID),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: console.log("WORKED"),

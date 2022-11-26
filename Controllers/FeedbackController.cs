@@ -69,31 +69,7 @@ namespace BaristaHome.Controllers
         }
 
 
-        /*        // POST: Resolve Feedback
-                [HttpPost]
-                [ValidateAntiForgeryToken]
-                public ActionResult Delete(string descript)
-                {
-                    // requery item then delete
-                    *//*var feedbackItem = await _context.Feedback.FindAsync(id, Convert.ToInt32(User.FindFirst("StoreId").Value));*//*
 
-                    var feedbackItem = (from f in _context.Feedback
-                                        join store in _context.Store on f.StoreId equals store.StoreId
-                                        where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                                        select f).Where(i => i.Description.Contains(descript));
-
-
-
-                    if (feedbackItem == null)
-                    {
-                        return new EmptyResult();
-                    }
-
-                    _context.Feedback.Remove((Feedback)feedbackItem);
-                    _context.SaveChanges();
-                    //await _context.SaveChangesAsync();
-                    return Json(feedbackItem);
-                }*/
 
 
 
@@ -103,7 +79,7 @@ namespace BaristaHome.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             // requery item then delete
-            var feedbackItem = await _context.Feedback.FindAsync(id);                   
+            var feedbackItem = await _context.Feedback.FindAsync(id);
 
             if (feedbackItem == null)
             {
@@ -119,16 +95,43 @@ namespace BaristaHome.Controllers
 
 
 
+        /*        // POST: Trying with convert from string to int
+                [HttpPost, ActionName("Delete")]
+                [ValidateAntiForgeryToken]
+                public async JsonResult DeleteConfirmed(string id)
+                {
+
+                    var intId = Convert.ToInt32(id);
+
+                    // requery item then delete
+                    //var feedbackItem = await _context.Feedback.FindAsync(intId);
+                    var feedbackItem = _context.Feedback.FirstOrDefault(x => x.FeedbackId == intId);
+
+        *//*            if (feedbackItem == null)
+                    {
+                        return View("Error");
+                    }*//*
+
+                    _context.Feedback.Remove(feedbackItem);
+                    await _context.SaveChangesAsync();
+                    return Json(new { id });
+                    //return RedirectToAction(nameof(Owner));
+                }
+        */
+
+
+
+
 
         // Get: Test Delete Page
-        public async Task<IActionResult> Delete(int? id) 
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-         
+
             var feedbackItem = await _context.Feedback.FirstOrDefaultAsync(m => m.FeedbackId == id);
 
 
