@@ -171,17 +171,20 @@ namespace BaristaHome.Controllers
           return _context.Shift.Any(e => e.ShiftId == id);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult AnalyticsColumn()
         {
             return View();
         }
 
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult AnalyticsTable()
         {
             return View();
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetHours()
         {
             // Add all the distinct drinks by id then sum up their count sold & profit
