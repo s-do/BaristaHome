@@ -113,13 +113,13 @@
             <thead>
                 <tr>
                     <th>
-                        Request From
+                        Request To
                     </th>
                     <th>
-                        Offered shift
+                        Your Shift
                     </th>
                     <th>
-                        Your shift
+                        Requested shift
                     </th>
                     <th>Status</th>
                     <th></th>
@@ -129,53 +129,47 @@
                 @*First example row*@
                 @*@foreach (var item in Model)
                 {*@
-                <tr>
-                    <td>
-                        Jane Do
-                    </td>
-                    <td>
-                        Nov 10, 12:00pm - 6:00pm
-                    </td>
-                    <td>
-                        Nov 11, 9:00pm -3:00pm
-                    </td>
-                    <td>
-                        <p class="gray-button">Pending</p>
-                    </td>
-                </tr>
+                
+                    
+                @foreach(var k in ViewBag.ShiftRequests) {
+                    <tr>
+                        <td>
+                            @k.RecipientUser.FirstName
+                            @k.RecipientUser.LastName
+                        </td>
+                        <td>
+                            @k.SenderShift.StartShift
+                            <div> To </div>
+                            @k.SenderShift.EndShift
+                        </td>
+                        <td>
+                            @k.RecipientShift.StartShift
+                            <div> To </div>
+                            @k.RecipientShift.EndShift
+                        </td>
+                        <td>
+                            @if(k.Response == true) {
+                                <button class="green-button">
+                                    Accepted
+                                </button>
+                            }
 
-                @*Second example row*@
-                <tr>
-                    <td>
-                        John Do
-                    </td>
-                    <td>
-                        Nov 2, 11:00am - 4:00pm
-                    </td>
-                    <td>
-                        Nov 3, 4:00pm - 11:00pm
-                    </td>
-                    <td>
-                        <p class="green-button">Accepted</p>
-                        
-                    </td>
-                </tr>
+                             @if(k.Response == false) {
+                                <button class="red-button">
+                                    Declined
+                                </button>
+                            }
 
-                @*Third example row*@
-                <tr>
-                    <td>
-                        John Nguyen
-                    </td>
-                    <td>
-                        Nov 5, 9:00am - 4:00pm
-                    </td>
-                    <td>
-                        Nov 6, 5:00pm - 11:00pm
-                    </td>
-                    <td>
-                        <p class="red-button">Denied</p>
-                    </td>
-                </tr>
+                            @if(k.Response == null) {
+                                <button class="gray-button">
+                                    Pending
+                                </button>
+                            }
+
+                        </td>
+                    </tr>
+                }
+                
                 @*}*@
             </tbody>
         </table>

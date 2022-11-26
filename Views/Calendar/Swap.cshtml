@@ -1,7 +1,10 @@
-﻿@{
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+@{
     ViewData["Title"] = "Shared Calendar";
     Layout = null;
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -115,6 +118,7 @@
             @*User selects their own shift that they'd like to swap out*@
             <p class="instructions">Select a shift that you would like to swap out:</p>
 
+
             @*Dropdown for selecting a worker*@
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -122,7 +126,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     @foreach(var k in ViewBag.UserShifts ){
-                        <button type ="submit" class="dropdown-item" href="#" asp-action="UpdateSwapForm" asp-route-SenderShift = "1"> @k.StartShift to @k.EndShift</button>
+                        <a class="dropdown-item" href="#">@k.StartShift to @k.EndShift</a>
                     }
 
                 </div>

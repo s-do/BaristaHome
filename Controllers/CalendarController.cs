@@ -177,7 +177,40 @@ namespace BaristaHome.Controllers
 
         public async Task<IActionResult> WorkerRequests()
         {
-            return View();
+
+            //Get a list of shift swapping requests to send to the worker requests view
+            List<ShiftSwappingRequest> shiftRequests = (from store in _context.Store
+                                        join user in _context.User on store.StoreId equals user.StoreId
+                                        join shift in _context.Shift on user.UserId equals shift.UserId
+                                        join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.SenderShiftId
+                                        where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                        where shiftRequest.SenderUserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value)) //Get shift swap requests where the sender is the current user
+                                        let senderUser = (from store in _context.Store
+                                                        join user in _context.User on store.StoreId equals user.StoreId
+                                                        where user.UserId.Equals(Convert.ToInt16(shiftRequest.SenderUserId))
+                                                        select user).FirstOrDefault()
+                                        let senderShift = (from store in _context.Store
+                                                            join shift in _context.Shift on store.StoreId equals shift.StoreId
+                                                            where shift.ShiftId.Equals(Convert.ToInt16(shiftRequest.SenderShiftId))
+                                                            select shift).FirstOrDefault()
+                                        select new ShiftSwappingRequest()
+                                        {
+                                            RequestId = shiftRequest.RequestId,
+                                            SenderUserId = shiftRequest.SenderUserId,
+                                            RecipientUserId = shiftRequest.RecipientUserId,
+                                            SenderUser = shiftRequest.SenderUser,
+                                            RecipientUser = shiftRequest.RecipientUser,
+                                            SenderShift = shiftRequest.SenderShift,
+                                            RecipientShift = shiftRequest.RecipientShift,
+                                            Response = shiftRequest.Response
+
+                                        }).ToList();
+            ViewBag.ShiftRequests = shiftRequests;
+
+            //Set the status to either accepted, pending or declined
+
+            ViewData["Status"] = "Accepted";
+            return View(shiftRequests);
         }
 
         public async Task<IActionResult> Results(Shift shift, User user, Shift shift2)
@@ -191,17 +224,16 @@ namespace BaristaHome.Controllers
 
 
         //Form for submitting a swap request
-        // note: couldn't find the a element that connects this to the view via method name, so i could not change this to a more desciprtive name
         public IActionResult Swap()
         {
             //User Shifts
-            List<Shift> shifts = (from store in _context.Store
+            var shifts = (IEnumerable<Shift>) (from store in _context.Store
                                   join user in _context.User on store.StoreId equals user.StoreId
                                   join shift in _context.Shift on user.UserId equals shift.UserId
                                   where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
                                   select shift).ToList();
 
-            ViewBag.UserShifts = shifts;
+            ViewBag.UserShifts = new SelectList(shifts.Distinct(), "StartShift", "EndShift");
             ViewData["userId"] = User.FindFirst("UserId").Value;
             ViewData["storeId"] = (User.FindFirst("StoreId").Value);
 
@@ -214,15 +246,77 @@ namespace BaristaHome.Controllers
 
             ViewBag.Users = users;
 
-            //List of selected workers shift
 
             return View();
         }
-
-        [HttpPost]
-        public IActionResult UpdateSwapForm(int SenderShift)
+        //Switches shifts between users based on request ID
+        public async Task<IActionResult> SwapShifts(int RequestId)
         {
-            ViewData["selectedShift"] = 12;
+
+            //Anna Do 600 ID: 145
+            //Will Do ID: 147
+            // TODO: query current user's shifts to display and select the one they want to swap with their other same role workers in the store 
+
+            //Get the shift swapping request based on request ID
+            var ShiftSwappingRequest = await _context.ShiftSwappingRequest.FindAsync(RequestId);
+
+            //Get the Sender's and Recipient's shift id
+            var SenderShiftId = ShiftSwappingRequest.SenderShiftId;
+            var RecipientShiftId = ShiftSwappingRequest.RecipientShiftId;
+
+            //Use the shift ids to find the shifts
+            var SenderShift = await _context.Shift.FindAsync(SenderShiftId);
+            var RecipientShift = await _context.Shift.FindAsync(RecipientShiftId);
+
+            //Get the Sender's and Recipient's user ids
+            var SenderUserId = ShiftSwappingRequest.SenderUserId;
+            var RecipientUserId = ShiftSwappingRequest.RecipientUserId;
+
+            //Swap both shifts' user id's
+            SenderShift.UserId = RecipientUserId;
+            RecipientShift.UserId = SenderUserId;
+
+            //Set the request's response to True (to show that the request is accepted and completed)
+            ShiftSwappingRequest.Response = true;
+
+            //Set any other request's reponse to False, if they have the same recipient shift ID 
+            var shifts = (IEnumerable<ShiftSwappingRequest>)(from store in _context.Store
+                                              join user in _context.User on store.StoreId equals user.StoreId
+                                              join shift in _context.Shift on user.UserId equals shift.UserId
+                                              join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.RecipientShiftId
+                                              where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                              where shiftRequest.RecipientShiftId.Equals(RecipientShiftId)
+                                              where (!shiftRequest.RequestId.Equals(RequestId))
+                                              select shiftRequest).ToList();
+
+            foreach (ShiftSwappingRequest r in shifts)
+            {
+                r.Response = false;
+                _context.ShiftSwappingRequest.Update(r);
+                await _context.SaveChangesAsync();
+
+            }
+
+            //Update the database
+            _context.Shift.Update(SenderShift);
+            _context.Shift.Update(RecipientShift);
+            _context.ShiftSwappingRequest.Update(ShiftSwappingRequest);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Requests");
+        }
+
+        public async Task<IActionResult> DeclineSwapRequest(int RequestId)
+        {
+            var ShiftSwappingRequest = await _context.ShiftSwappingRequest.FindAsync(RequestId);
+            ShiftSwappingRequest.Response = false;
+            _context.ShiftSwappingRequest.Update(ShiftSwappingRequest);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Requests");
+
+        }
+        public IActionResult GetSwapForm(Shift SenderShift, Shift RequestedShift)
+        {
             return Swap();
         }
 
@@ -230,13 +324,13 @@ namespace BaristaHome.Controllers
         {
             // TODO: display current user's swap requests from other workers (might have to create a table in the db to keep track of this)
 
-            // https://stackoverflow.com/questions/57727635/how-to-pass-selected-query-list-using-viewbag 
             List<ShiftSwappingRequest> shiftRequests = (from store in _context.Store
                                                     join user in _context.User on store.StoreId equals user.StoreId
                                                     join shift in _context.Shift on user.UserId equals shift.UserId
                                                     join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.RecipientShiftId
                                                     where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                                                    where user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                                    where shiftRequest.RecipientUserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                                    where shiftRequest.Response.Equals(null)
                                                     let senderUser = (from store in _context.Store
                                                                  join user in _context.User on store.StoreId equals user.StoreId
                                                                  where user.UserId.Equals(Convert.ToInt16(shiftRequest.SenderUserId))
