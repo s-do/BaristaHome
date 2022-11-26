@@ -935,36 +935,13 @@ namespace BaristaHome.Controllers
         /* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
         public async Task<IActionResult> Sales()
         {
-            // An anonymous list type that grabs every single sale from the store
-            var salesByDate = await (from s in _context.Sale
-                                     join d in _context.Drink on s.DrinkId equals d.DrinkId
-                                     where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                                     orderby d.DrinkName
-                                     select new
-                                     {
-                                         DrinkName = d.DrinkName,
-                                         UnitsSold = s.UnitsSold,
-                                         Profit = s.Profit,
-                                         TimeSold = s.TimeSold
-                                     }).ToListAsync();
+            // Displaying list of store's drinks to filter sales
+            IEnumerable<Drink> drinks = await (from d in _context.Drink
+                                               where d.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                               orderby d.DrinkName
+                                               select d).ToListAsync();
+            ViewData["DrinkNames"] = new SelectList(drinks, "DrinkName", "DrinkName");
 
-            IEnumerable<SaleViewModel> query = await (from s in _context.Sale
-                               join d in _context.Drink on s.DrinkId equals d.DrinkId
-                               where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                               group s by new { d.DrinkName, Date = new DateTime(s.TimeSold.Year, s.TimeSold.Month, s.TimeSold.Day) } into g
-                               select new SaleViewModel
-                               {
-                                   DrinkName = g.Key.DrinkName,
-                                   TimeSold = g.Key.Date.ToString("MM/dd/yyyy"),
-                                   UnitsSold = g.Sum(x => x.UnitsSold),
-                                   Profit = g.Sum(x => x.Profit)
-                               }).OrderBy(x => x.DrinkName).ToListAsync();
-
-            return View(query);
-        }
-
-        public IActionResult SalesFilter()
-        {
             return View();
         }
 
@@ -989,6 +966,44 @@ namespace BaristaHome.Controllers
             // Serialize data to Json to then be able to read and use the data in js
             return Json(salesQuery);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SalesFilter(string drinkName)
+        {
+            IEnumerable<Drink> drinks = await (from d in _context.Drink
+                                               where d.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                               orderby d.DrinkName
+                                               select d).ToListAsync();
+            ViewData["DrinkNames"] = new SelectList(drinks, "DrinkName", "DrinkName");
+            if (drinkName != null)
+            {
+                var filteredDrink = await (from d in _context.Drink
+                                           where d.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && d.DrinkName == drinkName
+                                           select d).FirstOrDefaultAsync();
+                return View(filteredDrink);
+            }
+            // Display sales for all drinks when filter is cleared
+            return RedirectToAction(nameof(Sales));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesFilter(int drinkId)
+        {
+            // displaying daily sales of filtered drink
+            IEnumerable<SaleViewModel> filterQuery = await (from s in _context.Sale
+                                                            join d in _context.Drink on s.DrinkId equals d.DrinkId
+                                                            where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && d.DrinkId == drinkId
+                                                            group s by new { d.DrinkName, Date = new DateTime(s.TimeSold.Year, s.TimeSold.Month, s.TimeSold.Day) } into g
+                                                            select new SaleViewModel
+                                                            {
+                                                                DrinkName = g.Key.DrinkName,
+                                                                TimeSold = g.Key.Date.ToString("MM/dd/yyyy"),
+                                                                UnitsSold = g.Sum(x => x.UnitsSold),
+                                                                Profit = g.Sum(x => x.Profit)
+                                                            }).OrderBy(x => x.DrinkName).ToListAsync();
+            return Json(filterQuery);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

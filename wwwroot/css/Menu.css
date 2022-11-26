@@ -406,8 +406,13 @@ iframe {
     border-color: #DFB3D3
 }
 
-    .btn-primary:hover {
-        background-color: #b082a3;
-        color: black;
-        border-color: #b082a3
-    }
+.btn-primary:hover {
+    background-color: #b082a3;
+    color: black;
+    border-color: #b082a3
+}
+
+.wrapper {
+    display: block;
+    text-align: center;
+}
