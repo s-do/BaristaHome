@@ -1062,17 +1062,40 @@ namespace BaristaHome.Controllers
         }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
+        /*Alex vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteDrink([Bind("DrinkId,DrinkName,Instructions,Description,StoreId")] Drink drink)
         {
-            //Delete/Clean up tags
-            //Delete Drink
             var d = await _context.Drink.FindAsync(drink.DrinkId);
+            //Delete/Clean up tags
+            //Get
+            var tags = (from dr in _context.Drink
+                        join dt in _context.DrinkTag on dr.DrinkId equals dt.DrinkId
+                        join t in _context.Tag on dt.TagId equals t.TagId
+                        where dr.DrinkId == drink.DrinkId
+                        select t).ToList();
+            foreach(var t in tags)
+            {
+                //Check if more than 1 drink is using tag
+                var count = (from dt in _context.DrinkTag
+                             where dt.TagId == t.TagId
+                             select dt).Count();
+                //if there is only 1 drink with the tag, delete the tag. DB will automatically delete junction if just drink is deleted
+                if (count == 1)
+                {
+                    _context.Tag.Remove(t);
+                    await _context.SaveChangesAsync();
+                }
+
+            }
+            //Delete Drink
             _context.Drink.Remove(d);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Menu", "Menu");
         }
+        /*Alex^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
     }
 }
