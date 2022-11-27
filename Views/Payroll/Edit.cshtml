@@ -35,7 +35,14 @@
 </body>
 </html>
 
-<h4>Payroll</h4>
+@*<h4>@ViewBag.PayrollName</h4>*@
+
+<h4> @* Looks disgusting but will come back to find a cleaner way *@
+    @ViewBag.PayrollName.ToString().Substring(0,
+    1).ToUpper()@ViewBag.PayrollName.ToString().Substring(1,
+    @ViewBag.PayrollName.ToString().Length - 1)
+</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">

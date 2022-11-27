@@ -22,17 +22,6 @@ namespace BaristaHome.Controllers
             //_logger = (ILogger<PayrollController>?)logger;
         }
 
-
-/*        public PayrollController(ILogger<PayrollController> logger)
-        {
-            _logger = logger;
-        }*/
-
-/*        public IActionResult Owner()
-        {
-            return View();
-        }
-*/
         public IActionResult Worker()
         {
             return View();
@@ -198,6 +187,14 @@ namespace BaristaHome.Controllers
 
             var editViewModel = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
 
+            // Query to get Worker Name as Viewbag to display, since can't call Payroll.User.FirstName
+            var PayrollName = (from pr in _context.Payroll
+                               join user in _context.User on pr.UserId equals user.UserId
+                               where pr.PayrollId == id
+                               select user.FirstName).FirstOrDefault();
+
+            ViewBag.PayrollName = PayrollName;
+
 
             if (editViewModel == null)
             {
@@ -247,24 +244,6 @@ namespace BaristaHome.Controllers
         // Shows the page again after searching the user wanted
         public async Task<IActionResult> SearchBarResults(int userId)
         {
-              //var userId = Convert.ToInt32(userIdS);
-
-            /*            List<ItemViewModel> itemQuery = (from store in _context.Store
-                                                         join inventory in _context.InventoryItem on store.StoreId equals inventory.StoreId // link store and inventoryitem by storeid
-                                                         join item in _context.Item on inventory.ItemId equals item.ItemId                  // link inventoryitem and item by itemid
-                                                         join unit in _context.Unit on item.UnitId equals unit.UnitId                       // link item and unit by unitid
-                                                         where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))       // filter items by user's store
-                                                         select new ItemViewModel
-                                                         {
-                                                             Name = item.ItemName,                  // now we can send a 
-                                                             Quantity = inventory.Quantity,         // ItemViewModel object
-                                                             PricePerUnit = inventory.PricePerUnit, // to the view
-                                                             UnitName = unit.UnitName,
-                                                             ItemId = inventory.ItemId
-                                                         }).Where(i => i.Name.Contains(searchPhrase)).ToList();
-                        ViewBag.Inventory = itemQuery;
-            */
-
             List<PayrollOwnerViewModel> payrolls = (from payroll in _context.Payroll
                                                     join user in _context.User on payroll.UserId equals user.UserId
                                                     join store in _context.Store on user.StoreId equals store.StoreId
@@ -292,11 +271,7 @@ namespace BaristaHome.Controllers
                                                      FullName = user.FirstName + " " + user.LastName,
                                                  }).ToList();
 
-            
-
-
             return View();
-
         }
 
 
