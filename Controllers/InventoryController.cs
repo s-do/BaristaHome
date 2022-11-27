@@ -85,8 +85,8 @@ namespace BaristaHome.Controllers
                 if (existingItem != null)
                 {
                     // Okay the item exists in our Item table, now we check if this item is already in THIS STORE
-                    var existingInventoryItem = (from inv in _context.InventoryItem
-                                                 where inv.ItemId.Equals(existingItem.ItemId)
+                    var existingInventoryItem = (from inv in _context.InventoryItem             // makes it so other stores can add the same inventoryItem 
+                                                 where inv.ItemId.Equals(existingItem.ItemId) && inv.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))
                                                  select inv).FirstOrDefault();
 
                     if (existingInventoryItem != null)
@@ -231,7 +231,13 @@ namespace BaristaHome.Controllers
 
             var editViewModel = await _context.InventoryItem.FirstOrDefaultAsync(m => m.ItemId == id);
 
-  
+
+            var itemName = (from i in _context.Item
+                            where i.ItemId == id
+                            select i.ItemName).FirstOrDefault();
+            ViewBag.ItemName = itemName;
+
+
             if (editViewModel == null)
             {
                 return NotFound();
