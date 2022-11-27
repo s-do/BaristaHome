@@ -19,15 +19,21 @@ namespace BaristaHome.Controllers
             _context = context;
         }
 
+        //Displays all the checklists in a store
+        [HttpGet]
         /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
         public IActionResult Checklist()
         {
+            //List of a store's checklists
             var checklist = (from c in _context.Checklist
                              where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
                              select c).ToList();
 
+            //checklistInfo = { {Checklist, {# of categorys, # of tasks}},..., }
             Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
 
+            //Calculates the total number of categories and tasks a checklist has
+            //The calculated number gets added to a list where the Checklist object is the key
             foreach (var check in checklist)
             {
                 var numOfCategory = 0;
@@ -68,13 +74,14 @@ namespace BaristaHome.Controllers
             return View();
         }
 
+        //Creates a new checklist
         [HttpPost]
         public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
         {
             checklist.StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value);
             if (ModelState.IsValid)
             {
-                //checks if entered in checklist name already exists or not
+                //Checks if entered in checklist name already exists or not
                 var existingChecklist = (from c in _context.Checklist
                                          where c.ChecklistTitle.Equals(checklist.ChecklistTitle) && c.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))
                                          select c).FirstOrDefault();
@@ -94,7 +101,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpGet]
-        // GET: 
+        // GET:  Gets a checklist's categories and tasks
         public async Task<IActionResult> ViewChecklist(int? id)
         {
             if (id == null)
@@ -108,14 +115,17 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
+            //List of a checklist's categories
             var checklistCategory = (from s in _context.Store
                                  join c in _context.Checklist on s.StoreId equals c.StoreId
                                  join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
                                  where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == checklist.ChecklistId
                                  select cat).ToList();
 
+            //checklistInfo = { {categoryName, {list of tasks in category}}, ...}
             Dictionary<string, List<string>> checklistInfo = new Dictionary<string, List<string>>();
 
+            //Finds tasks in a category and adds it to a list where the category is the key
             foreach (var cc in checklistCategory)
             {
                 var checklistTasks = (from s in _context.Store
@@ -134,6 +144,7 @@ namespace BaristaHome.Controllers
             return View(checklist);
         }
 
+        //Deletes a checklist from the db
         [HttpPost]
         public async Task<IActionResult> DeleteChecklist(int id)
         {

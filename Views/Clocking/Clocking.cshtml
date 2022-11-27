@@ -1,4 +1,5 @@
-﻿@model BaristaHome.Models.ClockingViewModel
+﻿@*Selina*@
+@model BaristaHome.Models.ClockingViewModel
 @{
     ViewData["Title"] = "Clocking";
     Layout = null;
@@ -28,7 +29,7 @@
 
     </head>
 
-
+    @*Admin view for clocking system*@
     <body>
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
@@ -38,75 +39,21 @@
                 </div>
             </nav>
         </header>
-        <div align="center">
 
-            @*Table for all works most recent status change*@
-            @*<div class="information">
-                <table class="table-payroll" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th style="background-color:#ffdcf4; height:70px">
-                                @Html.DisplayNameFor(model => model.FirstName)
-                            </th>
-                            <th style="background-color:#ffdcf4; height:70px">
-                                @Html.DisplayNameFor(model => model.LastName)
-                            </th>
-                            <th style="background-color:#ffdcf4; height:70px">
-                                @Html.DisplayNameFor(model => model.ShiftStatus)
-                            </th>
-                            <th style="background-color:#ffdcf4; height:70px">
-                                @Html.DisplayNameFor(model => model.Time)
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
-
-                            if(myList.Any()) {
-                                foreach(var uss in myList)
-                                {
-                                    <tr>
-                                        <td>
-                                            @uss.FirstName
-                                        </td>
-                                        <td>
-                                            @uss.LastName
-                                        </td>
-                                        <td>
-                                            @uss.ShiftStatus
-                                        </td>
-                                        <td>
-                                            @uss.Time
-                                        </td>
-                                        <td>
-                                            <a asp-action="Edit" asp-route-id="@uss">Edit</a> |
-                                            <a asp-action="Delete" asp-route-id="@uss">Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>*@
-        </div>
-            
-
-        @*Cards for all users*@
+        @*Cards for all users in a store*@
         <div class="user-cards">
             <div class="card-columns">
-
-            @{
-                var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
-                var myList2 = ViewBag.ListOfUsers==null ? new List<User>() : (List<User>)ViewBag.ListOfUsers;
-                var count = 0;
-                if(myList.Any()) {
+                @{
+                    var myList = ViewBag.LatestStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.LatestStatus;
+                    var myList2 = ViewBag.ListOfUsers==null ? new List<User>() : (List<User>)ViewBag.ListOfUsers;
+                    var count = 0;
+                    if(myList.Any()) {
                         foreach(var uss in myList)
                         {
+                            
                             <div class="card" style="width:320px;">
                                 @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                                    @*User profile picture*@
                                     @if(myList2.ElementAt(count).UserImageData == null)
                                     {
                                         <img class="user-img" src="~/images/calendar.png"> //Default image display
@@ -116,6 +63,7 @@
          
                                         <img class="user-img" src="@Url.Action("RenderImage", new { id = myList2.ElementAt(count).UserId})" />
                                     }
+                                @*User information*@
                                 <div class="card-body">
                                     <h5 class="card-title">@uss.FirstName @uss.LastName</h5>
                                     <p class="card-text"><small class="text-muted">Current Status: @uss.ShiftStatus @uss.Time</small></p>
@@ -123,17 +71,10 @@
                                 </div>
                             </div>
                             count++;
-                        
                         }
                     }
                 }
-                
-
             </div>
         </div>
-            
-        
-        
-
     </body>
 </html>
