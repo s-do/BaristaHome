@@ -155,11 +155,13 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var PayrollName = (from i in _context.Payroll
-                            where i.PayrollId == id
-                            select i.PayrollId).FirstOrDefault();
+            var PayrollName = (from pr in _context.Payroll
+                               join user in _context.User on pr.UserId equals user.UserId
+                               where pr.PayrollId == id
+                               select user.FirstName).FirstOrDefault();
 
-            ViewBag.PayrollID = PayrollName;
+            ViewBag.PayrollName = PayrollName;
+            /*ViewData["PayrollName"] = PayrollName;*/
 
             return View(PayrollEntry);
         }
