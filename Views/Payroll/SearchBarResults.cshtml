@@ -62,24 +62,10 @@
 
 
 
-<div class="flex-container">
+<div class="" style=" margin-left: 58px">
 
-    <form asp-action="SearchBarResults">
-        <div style="width: 700px;" class="input-group mb-3">
-            <label for="searchPhrase" class="control-label"></label>
-            <select asp-for="UserId" class="form-control" asp-items="ViewBag.FullNames"></select>
-            @*<input type="text" name="searchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username">*@
 
-            <div class="input-group-append">
-                <button style="background-color: lightpink;
-                                         border-color:lightpink;
-                                         color:black;" class="btn btn-outline-secondary" type="submit">
-                   Filter By Name
-                </button>
-            </div>
-        </div>
-    </form>
-
+    <a class="btn btn-outline-dark m-1" asp-area="" asp-controller="Payroll" asp-action="Owner">Back to All Payrolls</a>
 
 </div>
 
@@ -108,7 +94,7 @@
     </thead>
     <tbody>
         @{
-           
+
             var payrollList = ViewBag.Payroll == null ? new List<PayrollOwnerViewModel>() : (List<PayrollOwnerViewModel>)ViewBag.Payroll;
             if (payrollList.Any())
             {
@@ -131,8 +117,8 @@
                             @item.Date.ToShortDateString()
                         </td>
                         <td>
-                            <a class="img-size" >
-                                <img src="../images/editButton.png"  data-toggle= "modal" data-target="@dataTargetEdit">
+                            <a class="img-size">
+                                <img src="../images/editButton.png" data-toggle="modal" data-target="@dataTargetEdit">
                             </a>
 
 
@@ -159,8 +145,8 @@
 
 
                             @*<a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.PayrollId">Delete</a>
-                            <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId">Edit</a> *@
-                            
+                <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId">Edit</a> *@
+
                         </td>
                     </tr>
                 }
@@ -215,7 +201,7 @@
 
                     <div class="form-group">
                         <label class="control-label">Date</label>
-                        <input asp-for ="Date" type="datetime-local" class="form-control" />
+                        <input asp-for="Date" type="datetime-local" class="form-control" />
                         <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
 
