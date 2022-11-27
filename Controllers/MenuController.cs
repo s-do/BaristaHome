@@ -1066,6 +1066,35 @@ namespace BaristaHome.Controllers
                         }
                     }
                 }
+                //Update inventory based on available items
+                foreach (var item in foundItems)
+                {
+                    foreach (var inventoryItem in itemQuery)
+                    {
+                        if (item.Name.ToLower() == inventoryItem.Name.ToLower())
+                        {
+                            InventoryItem updateItem = (from ii in _context.InventoryItem
+                                                        join i in _context.Item on ii.ItemId equals i.ItemId
+                                                        where i.ItemName.ToLower().Equals(item.Name.ToLower()) && ii.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                        select ii).FirstOrDefault();
+
+                            if (updateItem != null)
+                            {
+                                if (updateItem.Quantity < item.Quantity)
+                                {
+                                    updateItem.Quantity = 0;
+                                }
+                                else
+                                {
+                                    updateItem.Quantity = updateItem.Quantity - item.Quantity;
+                                }
+                                _context.Update(updateItem);
+                                await _context.SaveChangesAsync();
+                            }
+
+                        }
+                    }
+                }
                 /*Alex^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
