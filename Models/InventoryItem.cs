@@ -12,7 +12,6 @@ namespace BaristaHome.Models
         public decimal PricePerUnit { get; set; }
 
         // Relationships
-        public virtual ICollection<Sale>? Sale { get; set; }
 
         // Always set virtual properties when referencing navigation properties to utilize lazy loading (loading data when it's actually used)
         public virtual Item? Item { get; set; }

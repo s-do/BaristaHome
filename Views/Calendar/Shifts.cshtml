@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.Shift
 
 @{
-    ViewData["Title"] = "Shared Calendar";
+    ViewData["Title"] = "Shared Calendar •";
 }
 
 <!DOCTYPE html>
@@ -48,6 +48,10 @@
             <div class="center">
                 <h1 class="title">Shared Calendar</h1>
             </div>
+            @if (User.FindFirst("RoleId").Value != "1") // only allow managers/owners to view accumulated hours
+            {
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Calendar" asp-action="AnalyticsColumn">Analytics</a>
+            }
             <a class="nav-link pink-button-right" asp-area="" asp-controller="Calendar" asp-action="Requests">Requests</a>
         </nav>
     </header>

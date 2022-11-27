@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Sales";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] • Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> 
+    <!--csscript imports for filter-->
+    <link rel="stylesheet" type="text/css" href="~/css/virtual-select.min.css" />
+    
+    <!--Load the AJAX API-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        // Load the Visualization API and the piechart package
+        google.charts.load('current', {
+            packages: ['corechart', 'bar', 'table']
+        });
+        // Set a callback to run when the Google Visualization API is loaded
+        google.charts.setOnLoadCallback(loadData);
+
+        // Loads the data from the controller that was queried from the db
+        function loadData() {
+            $.ajax({
+
+                url: '/Menu/GetSales',
+                dataType: "json",
+                type: "GET",
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    toastr.error(err.message);
+                },
+                success: function (data) {
+                    drawChart(data);
+                    return false;
+                }
+            });
+            return false;
+        }
+
+        // Instantiates the chart, passes in the data and draws it.
+        function drawChart(data) { 
+            var dataArray = [
+                ['Drink', 'Count', 'Profit']
+            ];
+
+            if (data.length == 0) {
+                // push in empty data to show a empty chart if no json data was serialized and sent from controller
+                dataArray.push(["", 0, 0]);
+            } else {
+                $.each(data, function (i, item) {
+                    // property names have to be CAMEL CASED even if it's not in your viewmodel
+                    dataArray.push([item.drinkName, item.unitsSold, item.profit]);
+                });
+            }
+
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var options = {
+                title: 'Sale Records For Each Drink',
+                chartArea: {
+                    width: '50%'
+                },
+                colors: ['#f2b3de', '#f7cc8d'],
+                hAxis: {
+                    title: 'Sales',
+                    minValue: 0
+                },
+                vAxis: {
+                    title: 'Drink'
+                }
+            };
+
+            // Instantiate and draw chart, passing in options defined above
+            var chart = new google.visualization.ColumnChart(document.getElementById('columnChart'));
+            chart.draw(data, options);
+            return false;
+        }
+    </script>
+</head>
+<body>
+
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Menu" asp-action="Menu">Back</a>
+            <div class="center">
+                <h1 class="text-black title">Sales Tracker</h1>
+            </div>
+        </nav>
+    </header>
+
+    <!--Filter sales by drink name-->
+    <form asp-action="SalesFilter">
+        <div class="wrapper">
+            <!--Sales filter-->
+            <div class="searchFilter">
+                <div class="search" style="width:65%">
+                    <h5>See sales for</h5>
+                    <select id="salesFilter" placeholder="Filter Sales" name="drinkName" asp-items="ViewBag.DrinkNames">
+                        <option selected disabled>Filter Sales</option>
+                    </select>
+                    <input type="submit" class="btn newTag" value="Filter" style="width:10%;">
+                </div>
+            </div>
+
+            <!--Holding the column chart with a div-->
+            <div id="columnChart" class="container-fluid" style="width: 1500px; height: 1000px;"></div>
+        </div>
+    </form>
+
+    <!--csscript imports for filter (must be placed after body)-->
+    <script type="text/javascript" src="~/js/virtual-select.min.js"></script>
+    <script type="text/javascript">
+        VirtualSelect.init({
+            ele: '#salesFilter',
+            placeholder: 'Filter Sales',
+            search: true
+        });
+    </script>
+</body>
+</html>

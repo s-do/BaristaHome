@@ -40,7 +40,59 @@ namespace BaristaHome.Controllers
 
             ViewBag.NewestShiftStatus = newestShiftStatus;
 
+            var announcement = (from a in _context.Announcements
+                                where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                select a).FirstOrDefault();
+            if (announcement == null || string.IsNullOrWhiteSpace(announcement.AnnouncementText))
+            {
+                Announcement nullAnnouncement = new Announcement();
+                nullAnnouncement.AnnouncementText = "No Announcement";
+                ViewBag.StoreAnnouncement = nullAnnouncement.AnnouncementText;
+            }
+            else
+            {
+                ViewBag.StoreAnnouncement = announcement.AnnouncementText;
+            }
+
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index([Bind("AnnouncementText,StoreId")] Announcement newAnnouncement)
+        {
+            Console.WriteLine(newAnnouncement.AnnouncementText);
+            var announcement = (from a in _context.Announcements
+                                where a.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                select a).FirstOrDefault();
+            //If store is missing announcement id db
+            if (announcement == null)
+            {
+                var id = Convert.ToInt16(User.FindFirst("StoreId").Value);
+                Announcement nullAnnouncement = new Announcement
+                {
+                    AnnouncementText = newAnnouncement.AnnouncementText,
+                    StoreId = id
+
+                };
+                if (ModelState.IsValid)
+                {
+                    _context.Add(nullAnnouncement);
+                    await _context.SaveChangesAsync();
+                    return Index();
+                }
+            }
+            else
+            {
+                announcement.AnnouncementText = newAnnouncement.AnnouncementText;
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(announcement);
+                await _context.SaveChangesAsync();
+            }
+
+            return Index();
         }
 
         public IActionResult Privacy()

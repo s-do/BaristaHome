@@ -35,7 +35,7 @@
 }
 
 .worker {
-    outline: 5px dotted blue;
+/*    outline: 5px dotted blue;*/
     height: 150px;
     width: 75%;
     /*align-self: center;*/
@@ -43,7 +43,7 @@
 }
 
 .information {
-    outline: 5px dotted red;
+/*    outline: 5px dotted red;*/
     width: 75%;
     min-height: auto;
     overflow: auto;
@@ -60,24 +60,11 @@
 
 .picture {
     float: left;
-    outline: 5px dotted red;
+/*    outline: 5px dotted red;*/
     height: inherit;
     width: 40%;
 }
 
-/*.user-img {
-    height: 150px;
-    width: 150px;
-    object-fit: contain;
-}
-
-user-img .image {
-    width: calc(100% - 15px);
-    height: calc(100% - 15px);
-    object-fit: contain;
-    align-self: normal;
-
-}*/
 
 .user-icon {
     width: 170px;
@@ -91,13 +78,14 @@ user-img .image {
         height: calc(100% - 15px);
         object-fit: contain;
         position: unset;
+        border-radius: 200px;
     }
 
 .name-area {
     font-family: 'Inter', sans-serif;
     font-size: 50px;
     float: left;
-    outline: 5px dotted green;
+/*    outline: 5px dotted green;*/
     height: inherit;
     width: 60%;
     position: relative;

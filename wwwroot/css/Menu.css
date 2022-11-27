@@ -80,6 +80,7 @@
 
 .add-drink-bottom {
     /*outline: 5px dotted red;*/
+    height: 600px;
     height: fit-content;
     min-height: 300px;
     padding-left: 50px;
@@ -389,4 +390,57 @@ iframe {
     padding-right: 10px;
     padding-bottom: 10px;
     margin-bottom: 15px;
+}
+
+.modal-body {
+    background-color: #ffe4bc;
+}
+
+.modal-header {
+    background-color: #ffdcf4;
+}
+
+.btn-primary {
+    background-color: #DFB3D3;
+    color: black;
+    border-color: #DFB3D3
+}
+
+.btn-primary:hover {
+    background-color: #b082a3;
+    color: black;
+    border-color: #b082a3
+}
+
+.wrapper {
+    display: block;
+    text-align: center;
+}
+
+/* CSS below are changes for Table view in Shift Analytics */
+.custom-font {
+    font-family: 'Inter';
+    font-size: 25px;
+}
+
+.large-font {
+    font-size: 30px;
+}
+
+.header-row {
+    font-style: italic;
+    font-weight: bold;
+    background-color: #ffc4ee
+}
+
+.table-row {
+    background-color: #ffd9f4;
+}
+
+.odd-table-row {
+    background-color: #ffc4ee;
+}
+
+.pink-background {
+    background-color: lightpink;
 }

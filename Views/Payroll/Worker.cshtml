@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Barista Home</title>
+    <title>@ViewData["Title"] • Barista Home</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
@@ -29,21 +29,20 @@
         </nav>
     </header>
 
-
     <div align="center">
         <div class="worker">
             <div class="picture">
-                @*-----------------Fix this image thing----------------*@
                 @*Drink image*@
                 <div class="user-icon">
                     @*Display default icon if drink has no image*@
                     @if(Model.UserImageData ==null)
                     {
-                        <img class="user-icon image" src=".../images/calendar.png"> //Default image display
+                        <img class="user-icon image" src="@Url.Content("~/images/calendar.png")"> //Default image display
+                       
                     }
                     else
                     {
-                        <img class="drink-icon image" src="@Url.Action("RenderImage", new { id = Model.UserId})" />
+                        <img class="user-icon image" src="@Url.Action("RenderImage", new { id = Model.UserId})" />
                     }
                 </div>
             </div>

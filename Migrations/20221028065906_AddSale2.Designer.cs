@@ -4,6 +4,7 @@ using BaristaHome.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaristaHome.Migrations
 {
     [DbContext(typeof(BaristaHomeContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20221028065906_AddSale2")]
+    partial class AddSale2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +23,6 @@ namespace BaristaHome.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("BaristaHome.Models.Announcement", b =>
-                {
-                    b.Property<int>("AnnouncementId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnnouncementId"), 1L, 1);
-
-                    b.Property<string>("AnnouncementText")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<int>("StoreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnnouncementId");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("Announcements");
-                });
 
             modelBuilder.Entity("BaristaHome.Models.Category", b =>
                 {
@@ -155,14 +134,6 @@ namespace BaristaHome.Migrations
 
                     b.Property<int>("IngredientId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("unit")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
 
                     b.HasKey("DrinkId", "IngredientId");
 
@@ -595,17 +566,6 @@ namespace BaristaHome.Migrations
                     b.ToTable("UserShiftStatus");
                 });
 
-            modelBuilder.Entity("BaristaHome.Models.Announcement", b =>
-                {
-                    b.HasOne("BaristaHome.Models.Store", "Store")
-                        .WithMany("Announcement")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-                });
-
             modelBuilder.Entity("BaristaHome.Models.Category", b =>
                 {
                     b.HasOne("BaristaHome.Models.Checklist", "Checklist")
@@ -871,8 +831,6 @@ namespace BaristaHome.Migrations
 
             modelBuilder.Entity("BaristaHome.Models.Store", b =>
                 {
-                    b.Navigation("Announcement");
-
                     b.Navigation("Checklists");
 
                     b.Navigation("Drinks");

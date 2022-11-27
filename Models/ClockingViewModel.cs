@@ -5,7 +5,10 @@ namespace BaristaHome.Models
 {
     public class ClockingViewModel
     {
-        public string User { get; set; }
+        public int UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int ShiftStatusId { get; set; }
         public string ShiftStatus { get; set; }
         public DateTime Time { get; set; }
     }

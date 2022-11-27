@@ -54,13 +54,13 @@ namespace BaristaHome.Data
             builder.Entity<Payroll>().Property(table => table.Hours).HasPrecision(16, 2);
             builder.Entity<Payroll>().Property(table => table.Amount).HasPrecision(16, 2);
 
-            builder.Entity<Sale>().Property(table => table.UnitsSold).HasPrecision(16, 2);
             builder.Entity<Sale>().Property(table => table.Profit).HasPrecision(16, 2);
 
             builder.Entity<User>().Property(table => table.Wage).HasPrecision(16, 2);
         }
 
         // Data models to represent the database for querying/data manipulation
+        public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<CategoryTask> CategoryTask { get; set; }
         public DbSet<Checklist> Checklist { get; set; }

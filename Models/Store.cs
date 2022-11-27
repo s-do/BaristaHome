@@ -18,9 +18,11 @@ namespace BaristaHome.Models
         public virtual ICollection<Drink>? Drinks { get; set; }
         public virtual ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<InventoryItem>? InventoryItems { get; set; }
+        public virtual ICollection<Sale>? Sales { get; set; }
         public virtual ICollection<Shift>? Shifts { get; set; }
         public virtual ICollection<StoreTimer>? StoreTimers { get; set; }
         public virtual ICollection<User>? Users { get; set; }
+        public virtual ICollection<Announcement>? Announcement { get; set; }
 
     }
 }

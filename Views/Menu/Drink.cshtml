@@ -11,11 +11,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Barista Home</title>
+    <title>@ViewData["Title"] • Barista Home</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+    <!-- import scripts for modal -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -27,11 +32,9 @@
                 <h1 class="title">@Html.DisplayFor(model => model.DrinkName)</h1>
             </div>
             <a class="nav-link pink-button-right" asp-route-id="@Model.DrinkId" asp-action="EditItem">Edit</a>
-@*            <input type="hidden" asp-for="@Model.DrinkId" />*@
-@*            <form asp-action="Delete">
-                <input type="hidden" asp-for="DrinkId" />
-                <input type="submit" value="Delete" class="pink-button-right" />
-            </form>*@
+            <button type="button" class="pink-button-right" data-toggle="modal" data-target="#deleteDrinkModal" style="outline:none; border:none">Delete</button>
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal" style="outline:none; border:none">Sell Drink</button>
         </nav>
     </header>
 
@@ -44,7 +47,7 @@
             <label class="img-container">
                 @if(Model.DrinkImageData == null)
                 {
-                    <img class="img-container" src="../images/calendar.png" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
+                    <img class="img-container" src="@Url.Content("~/images/calendar.png")" style="background-color: white; border: 3px solid #DFB3D3"> //Display default image if no image is chosen
                 }
                 else
                 {
@@ -65,6 +68,117 @@
             </div>
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
+    @* PETER ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ *@
+
+@*        <!-- Trigger the modal with a button -->
+        <button type="button" class="pink-button-right" data-toggle="modal" data-target="#sellDrinkModal">Sell Drink!</button>*@
+
+        <!-- Sell Modal -->
+        <div class="modal fade" id="sellDrinkModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">@Model.DrinkName</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <h5>Sell this drink?</h5>
+                            @if(ViewBag.missingIngredients != null)
+                            {
+                                <p>Not enough/missing from inventory:</p>
+                                var missing = ViewBag.missingIngredients == null ? new List<String>() : (List<String>)ViewBag.missingIngredients;
+                                if(missing.Any()) {
+                                    foreach(var i in missing) {
+                                        <div class="ingr">
+                                            @i
+                                        </div>
+                                    }
+                                }
+                            }
+                            
+                        <form asp-action="SellDrink">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="DrinkId" />
+                            <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+                            <input type="hidden" asp-for="DrinkName" />
+                            <input type="hidden" asp-for="Instructions" />
+                            <input type="hidden" asp-for="Description" />
+
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    <input type="submit" value="Yes" class="btn btn-outline-dark m-1" />
+                                    <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Displaying modal if selling the drink succeeded/failed -->
+        @if (TempData["drinkSold"] != null)
+        {
+            @if ((string)TempData["drinkSold"] == "success")
+            {
+                <script>
+                    $(function () {
+                        $('#successModal').modal('show');
+                    });
+                </script>
+            }
+            @if ((string)TempData["drinkSold"] == "failed")
+            {
+                <script>
+                    $(function () {
+                        $('#failedModal').modal('show');
+                    });
+                </script>
+            }
+        }
+
+
+        <div class="modal fade" id="successModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Success!</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <h5>One unit has been sold and recorded!</h5>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark m-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="failedModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Uh oh!</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <h5>Looks like there was an issue selling the drink...</h5>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark m-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ *@
+
     @*SELINA vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
             @*Drink tags*@
             <a>Tags</a>
@@ -75,7 +189,7 @@
 
                     if(myList.Any()) {
                         foreach(var t in myList) {
-                            <button type="button" class="btn newTag">@t.TagName</button>
+                                <button type="button" class="btn newTag">@t.TagName</button>
                         }
                     }
                 }
@@ -102,20 +216,20 @@
             </div>
         </div>*@
 
-        @*Drink tags*@
+        @*Drink ingredients*@
         <div class = "drink-ingredients">
             @{
-                var ingredientList = ViewBag.IngredientList == null ? new List<Ingredient>() : (List<Ingredient>)ViewBag.IngredientList;
-
+                var ingredientList = ViewBag.IngredientList == null ? new List<String>() : (List<String>)ViewBag.IngredientList;
                 if(ingredientList.Any()) {
                     foreach(var i in ingredientList) {
                         <div class="instruction">
-                            @i.IngredientName
+                            @i
                         </div>
                     }
                 }
             }
         </div>
+
     </div>
 
     @if(Model.DrinkVideo != null)
@@ -141,4 +255,32 @@
 </body>
 </html>
 
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteDrinkModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h2 class="modal-title">@Model.DrinkName</h2>
+            </div>
+
+            <div class="modal-body">
+                <h5>Delete this drink?</h5>
+                            
+                <form asp-action="DeleteDrink">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="DrinkId" />
+                    <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" value="Yes" class="btn btn-outline-dark m-1" />
+                            <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
