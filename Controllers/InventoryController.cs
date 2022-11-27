@@ -231,7 +231,13 @@ namespace BaristaHome.Controllers
 
             var editViewModel = await _context.InventoryItem.FirstOrDefaultAsync(m => m.ItemId == id);
 
-  
+
+            var itemName = (from i in _context.Item
+                            where i.ItemId == id
+                            select i.ItemName).FirstOrDefault();
+            ViewBag.ItemName = itemName;
+
+
             if (editViewModel == null)
             {
                 return NotFound();
