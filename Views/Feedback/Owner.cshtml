@@ -55,14 +55,16 @@
         cursor: pointer;
     }
 
-    /*#resolve{
+    /*
+    commented this out since your specific styling of the resolve id will make the checkmark button look scuffed
+    #resolve{
             float: right;
             margin-top: 20px;
             margin-right: 80px;
             position: relative;
             border: 1px solid;
 
-        }*/
+        }
 
     #resolve {
         position: relative;
@@ -70,18 +72,14 @@
         left: 64%;
         width: 120px;
         margin-top: 20px;
-    }
+    } */
 
 </style>
 
-
-
-
-<!--Nav bar area-->
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
+    <!--Try to place Metadata in <head> tag (document title, character set, styles, scripts, and other meta information)-->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Barista Home</title>
@@ -89,8 +87,19 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript"></script>
 </head>
+
 <body>
+    <!--Try to place contents of the HTML doc in <body> tag (headings, paragraphs, images, hyperlinks, tables, lists, etc.)-->
+
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
@@ -100,212 +109,159 @@
             </div>
         </nav>
     </header>
+
+    <div class="row">
+        <!--Topics box-->
+        <div class="column">
+            <table style="width:50%; margin-left:200px; margin-top:80px" ;>
+                <thead>
+                    <tr>
+                        <th>Topics</th>
+                        <th style="width:10%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                <a onclick="resolveFeedback(@item.FeedbackId)" class="btn btn-outline-dark" style="background-color:#8cff66">&#10004</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!--Description box-->
+        <div class="column">
+            @*<input type="text" id="Name" name="Name" style="width:80%; margin-right:100px; margin-top:80px; height:400px" ;>*@
+            <table class="table-feedback" table id="tblFeedbacks" style="width:80%; margin-right:100px; margin-top:80px; height:400px">
+                <thead>
+                    <tr>
+                        <th>
+                            Description
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tr>
+                    <td id="description">Click on a topic to display</td>
+                </tr>
+
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</body>
-</html>
 
+    @* generally put scripts either at the end of a body, or in the head tag: https://stackoverflow.com/questions/13842685/js-code-works-only-if-placed-in-body *@
+    @* When table row is clicked, it will display its description on the right side *@
+    <script>
+        var elements = document.getElementsByTagName('td');  // gets all elements with td
+        //btnResolve = document.getElementById("resolve");
+        console.log("length of elements is: " + elements.length);
+        let savedDescription;
+        let savedID;
 
-
-
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<div class="row">
-    <div class="column">
-        <table style="width:50%; margin-left:200px; margin-top:80px" ;>
-            <thead>
-                <tr>
-                    <th>Topics</th>
-                    <th style="width:10%"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Title)
-                        </td>
-                        <td>
-                            <a class="btn btn-outline-dark" style="background-color:#8cff66" asp-action="Resolve" asp-route-id="@item.FeedbackId">&#10004</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div class="column">
-        @*<input type="text" id="Name" name="Name" style="width:80%; margin-right:100px; margin-top:80px; height:400px" ;>*@
-        <table class="table-feedback" table id="tblFeedbacks" style="width:80%; margin-right:100px; margin-top:80px; height:400px">
-            <thead>
-                <tr>
-                    <th>
-                        Description
-                    </th>
-
-                </tr>
-            </thead>
-
-            <tr>
-                <td id="description">Click on a topic to display</td>
-            </tr>
-
-            <tbody></tbody>
-        </table>
-
-        <button id="resolve" style="background-color:#FFDCF4">
-            Resolve
-        </button>
-
-    </div>
-
-
-</div>
-
-
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script type="text/javascript"></script>
-
-@* When table row is clicked, it will display its description on the right side  *@
-<script>
-    var elements = document.getElementsByTagName('td');  // gets all elements with td
-    btnResolve = document.getElementById("resolve");
-    
-    let savedDescription;
-    let savedID;
-
-    for (var i = 0; i < elements.length; i++) {
-        let element = (elements)[i];
-
-
-
-        element.addEventListener("click", function () {
-            let title = element.innerHTML.trim();
-            let description;
-            $(function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/Feedback/SearchDescription",
-                    //data: '{}',
-                    data: {topic: 'apple'},
-                    //contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: OnSuccess,
-                    failure: function (response) {
-                        alert(response.d);
-                    },
-                    error: function (response) {
-                        alert(response.d);
-                    }
+        for (var i = 0; i < elements.length; i++) {
+            let element = (elements)[i];
+            element.addEventListener("click", function () {
+                let title = element.innerHTML.trim();
+                let description;
+                $(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Feedback/SearchDescription",
+                        //data: '{}',
+                        data: { topic: 'apple' },
+                        //contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: OnSuccess,
+                        failure: function (response) {
+                            alert(response.d);
+                        },
+                        error: function (response) {
+                            alert(response.d);
+                        }
+                    });
                 });
-            });
 
-            function OnSuccess(response) {
+                function OnSuccess(response) {
 
-                let currId;
-                for (var i = 0; i < response.length; i++) {
-                    // console.log(response[i].title == title) USE THIS TO PRINT TO DEBUG
-                    if (response[i].title == title) {
-                        description = response[i].description
-                        savedDescription = response[i].description
-                        savedID = response[i].feedbackId
-                        //console.log(savedDescription)
+                    let currId;
+                    for (var i = 0; i < response.length; i++) {
+                        // console.log(response[i].title == title) USE THIS TO PRINT TO DEBUG
+                        if (response[i].title == title) {
+                            description = response[i].description
+                            savedDescription = response[i].description
+                            savedID = response[i].feedbackId
+                            //console.log(savedDescription)
+                        }
                     }
-                }
 
-                document.getElementById("description").innerHTML = description;
-                console.log(JSON.stringify(savedID))
-            };
-        });
-    }
+                    document.getElementById("description").innerHTML = description;
+                    console.log(JSON.stringify(savedID))
+                };
+            });
+        }
 
-    btnResolve.addEventListener("click", function () {
-        console.log("SAVEDID IN BTN: " + savedID)
-        $(function () {
+        function gettoken() {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
+
+        // passes in the ID of the specified feedback on the list and deletes it
+        function resolveFeedback(savedID) {
+            console.log("SAVED ID IN BTN: " + savedID);
             $.ajax({
                 type: "POST",
                 url: "/Feedback/Delete",
-               
-                //data: {id: savedID},
-                data: { id:'savedID' },
-                //data: JSON.stringify(savedID),
-                contentType: "application/json; charset=utf-8",
+                // pass in token for action methods using [Validate]
+                data: { __RequestVerificationToken: gettoken(), id: savedID },
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                 dataType: "json",
-                success: console.log("WORKED"),
-                failure: function (response) {
-                    alert(response.d);
-                },
-                error: function (response) {
-                    alert(response.d);
+                success: function (response) {
+                    window.location = response.redirectToUrl;
+                    return false;
                 }
             });
-        });
-    });
-    
+        }
 
-</script>
-
-
-
-
-
-
-
-
-@* When table row is clicked, it will display its description on the right side  *@
-
-@*
-<script>
-    var elements = document.getElementsByTagName('td');  // gets al elements with td
-    for (var i = 0; i < elements.length; i++) {
-        let element = (elements)[i]
-
-        element.addEventListener("click", function () {
-            let title = element.innerHTML.trim();
-            let description;
+        // unfortunately this causes a BUG if you click on the checkmark button BEFORE clicking on the feedback item itself to get its ID
+        @*btnResolve.addEventListener("click", function () {
+            console.log("SAVEDID IN BTN: " + savedID)
             $(function () {
                 $.ajax({
                     type: "POST",
-                    url: "/Feedback/SearchDescription",
-                    data: '{}',
-                    contentType: "application/json; charset=utf-8",
+                    url: "/Feedback/Delete",
+                    // pass in token for action methods using [Validate]
+                    data: { __RequestVerificationToken: gettoken(), id: savedID },
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                     dataType: "json",
-                    success: OnSuccess,
+                    success: function (response) {
+                        console.log("WORKED");
+                        window.location = response.redirectToUrl;
+                    },
                     failure: function (response) {
                         alert(response.d);
                     },
                     error: function (response) {
-                        alert(response.d);
+                        window.location = response.redirectToUrl;
                     }
                 });
             });
-
-            function OnSuccess(response) {
-
-
-                for (var i = 0; i < response.length; i++) {
-
-                    // console.log(response[i].title == title) USE THIS TO PRINT TO DEBUG
-
-                    if (response[i].title == title) {
-                        description = response[i].description
-                    }
-                }
-
-                document.getElementById("description").innerHTML = description;
-            };
-        });
-    }
-</script>
-
-*@
+        });*@
+    </script>
+</body>
+</html>
