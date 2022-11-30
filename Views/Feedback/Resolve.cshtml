@@ -1,0 +1,78 @@
+﻿@model BaristaHome.Models.Feedback
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = null;
+}
+
+
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
+
+<!--Nav bar area-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Feedback</h1>
+            </div>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Feedback" asp-action="Owner">All</a>
+        </nav>
+    </header>
+
+</body>
+</html>
+
+
+
+
+<div>
+    <h4>Resolve a Feedback</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+@*        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Store)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Store.StoreId)
+            @ViewBag.StoreName
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>*@
+    </dl>
+    
+    <form asp-action="Resolve">
+        <input type="hidden" asp-for="FeedbackId" />
+        <input type="submit" value="Resolve" class="btn btn-success" style="background-color:#8cff66; color:black; " /> |
+        <a asp-action="Owner">Back to List</a>
+    </form>
+</div>

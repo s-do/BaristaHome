@@ -14,9 +14,9 @@ namespace BaristaHome.Models
 
         // Relationships
         public int StoreId { get; set; }
-        public virtual Store Store { get; set; }
+        public virtual Store? Store { get; set; }
 
         public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
     }
 }
