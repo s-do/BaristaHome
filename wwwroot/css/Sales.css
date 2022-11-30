@@ -1,0 +1,8 @@
+﻿.search {
+    /*outline: 5px dotted blue;*/
+    height: 100px;
+    width: 70%;
+    align-self: center;
+    margin-bottom: 50px;
+    float: right;
+}

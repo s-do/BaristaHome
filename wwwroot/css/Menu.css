@@ -136,6 +136,14 @@
 /*    margin-bottom: 30px;*/
 }
 
+.searchSales {
+    /*outline: 5px dotted blue;*/
+    height: 50px;
+    width: 75%;
+    align-self: center;
+    margin-bottom: 30px;
+}
+
 .filter {
     /*outline: 5px dotted blue;*/
     height: 100px;
@@ -152,6 +160,15 @@
     width: 70%;
     align-self: center;
 /*    margin-bottom: 50px;*/
+    float: right;
+}
+
+.sales {
+    /*outline: 5px dotted blue;*/
+    height: 100px;
+    width: 70%;
+    align-self: center;
+    margin-bottom: 50px;
     float: right;
 }
 
