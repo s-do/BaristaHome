@@ -1,0 +1,101 @@
+﻿@model BaristaHome.Models.Feedback
+
+@{
+    ViewData["Title"] = "Worker";
+    Layout = null;
+}
+
+<style>
+    .container {
+        margin-top: 100px;
+        text-align: center;
+    }
+
+    .left {
+        float: left;
+        width: 300px;
+        border: 3px solid #73AD21;
+        padding: 10px;
+    }
+
+    .form-group-title{
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    .form-group-submit{
+        text-align:right;
+        margin-top: 20px;
+    }
+</style>
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+
+
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Worker Feedback</h1>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>
+
+
+
+
+<div class="container">
+ 
+@*        <form asp-action="Worker">*@
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+@*            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="StoreId" />*@
+
+
+            <div class="form-group-title">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group-title">
+                <label asp-for="Description"></label>
+                <textarea type="input" rows="8" asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger" ></span>
+            </div>
+
+            <div class="form-group-submit">
+            <input type="submit" value="Submit" button style=" background-color: lightpink;
+                   border-color:lightpink;
+                   color:black;" class="btn btn-outline-secondary"  />
+            </div>
+        </form>
+
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
