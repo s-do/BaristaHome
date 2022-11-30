@@ -24,26 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
-@*<p>@ViewBag.missingAmount</p>
-@if (ViewBag.missing != null)
-{
 
-    if(ViewBag.missingAmount == 0)
-    {
-        <script type="text/javascript">
-            window.onload = function(){
-            alert("Drink successfully made");
-            };
-        </script>
-    }
-    if(ViewBag.missingAmount > 0){
-        <script type="text/javascript">
-            window.onload = function(){
-            alert("Missing Ingredients");
-            };
-        </script>
-    }
-}*@
 <body>
 
     @*ALEX vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*@
@@ -61,7 +42,7 @@
 @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
     @*Cindie ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-    <div style="margin-top: 200px;" align="center">
+    <div style="margin-top: 50px" align="center">
 
         @*For search bar and filters button*@
         <form asp-action="ShowSearchResults">
@@ -84,10 +65,10 @@
 
                     <div style="width: 700px;" class="input-group mb-3">
                         <label for="SearchPhrase" class="control-label"></label>
-                        <input type="text" name="SearchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input type="text" name="SearchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2" style="width:300px">
                         <div class="input-group-append">
-                            <button style="background-color: lightpink;
-                                    border-color:lightpink;
+                            <button style="background-color: #FFD9F4;
+                                    border-color:#FFD9F4;
                                     color:black;" class="btn btn-outline-secondary" type="submit" asp-action="ShowSearchResults" asp-route-SearchPhrase=SearchPhrase asp-route-tagLine="ViewBag.Tags">
                                 Search
                             </button>
@@ -111,7 +92,7 @@
                         @*Display default icon if drink has no image*@
                         @if (item.DrinkImageData == null)
                         {
-                            <img class="drink-icon image" src="../images/calendar.png">
+                            <img class="drink-icon image" src="../images/default_drink.png">
                             //Default image display
                         }
                         else
