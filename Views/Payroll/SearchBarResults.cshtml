@@ -1,0 +1,220 @@
+﻿@*@model IEnumerable<BaristaHome.Models.PayrollOwnerViewModel>*@
+
+@model BaristaHome.Models.PayrollOwnerViewModel
+
+
+@{
+    ViewData["Title"] = "Owner";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Payroll Management</h1>
+            </div>
+            @*<a class="nav-link pink-button-right" asp-area="" asp-controller="" asp-action="">Add Payroll</a>*@
+            <a class="nav-link pink-button-right" data-toggle="modal" data-target="#payrollModal">Add Payroll</a>
+        </nav>
+    </header>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
+<style>
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+        margin-right: auto;
+        margin-left: auto;
+        width: 92%;
+        height: 70px;
+    }
+</style>
+
+
+
+<div class="" style=" margin-left: 58px">
+
+
+    <a class="btn btn-outline-dark m-1" asp-area="" asp-controller="Payroll" asp-action="Owner">Back to All Payrolls</a>
+
+</div>
+
+
+
+
+
+
+<table class="table-inventory">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hours)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+
+            var payrollList = ViewBag.Payroll == null ? new List<PayrollOwnerViewModel>() : (List<PayrollOwnerViewModel>)ViewBag.Payroll;
+            if (payrollList.Any())
+            {
+                foreach (var item in payrollList)
+                {
+                    var dataTargetEdit = "#ModalEdit" + item.PayrollId;
+                    var modalID = "ModalEdit" + item.PayrollId;
+
+                    <tr>
+                        <td>
+                            @item.FullName
+                        </td>
+                        <td>
+                            @item.Hours
+                        </td>
+                        <td>
+                            @item.Amount
+                        </td>
+                        <td>
+                            @item.Date.ToShortDateString()
+                        </td>
+                        <td>
+                            <a class="img-size">
+                                <img src="../images/editButton.png" data-toggle="modal" data-target="@dataTargetEdit">
+                            </a>
+
+
+                            <div class="modal fade" id="@modalID" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Select Action</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="center">
+                                                <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId">Edit</a>
+                                                <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.PayrollId">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            @*<a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.PayrollId">Delete</a>
+                <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId">Edit</a> *@
+
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+@* Import bootstrap for modal (Need more research on why these ones are used)*@
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+@* Background and color for buttons in pop up window*@
+<style>
+    .modal-content {
+        background: #ffe4b4;
+    }
+
+    .btn-primary, .btn-outline-dark {
+        background-color: #ffdcf4 !important;
+    }
+</style>
+
+@* Code for the modal pop up of New Payroll *@
+<div class="modal fade" id="payrollModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Item</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                    <label class="control-label"> Name</label>
+                    <select asp-for="UserId" class="form-control" style="text-transform:capitalize" asp-items="ViewBag.FullNames"></select>
+
+                    <div class="form-group">
+                        <label asp-for="Hours"></label>
+                        <input asp-for="Hours" class="form-control" />
+                        <span asp-validation-for="Hours" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Amount"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Date</label>
+                        <input asp-for="Date" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" value="Save" class="btn btn-outline-dark m-1" />
+                            <a class="btn btn-outline-dark m-1" asp-area="" asp-controller="Payroll" asp-action="Owner">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
