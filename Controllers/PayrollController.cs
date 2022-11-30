@@ -226,8 +226,11 @@ namespace BaristaHome.Controllers
                                where pr.PayrollId == id
                                select user.FirstName).FirstOrDefault();
 
-            ViewBag.PayrollName = PayrollName;
-            /*ViewData["PayrollName"] = PayrollName;*/
+            // Capitalizing first letter of name
+            if (PayrollName.Length == 1)
+                ViewBag.PayrollName = char.ToUpper(PayrollName[0]);
+            else
+                ViewBag.PayrollName = char.ToUpper(PayrollName[0]) + PayrollName.Substring(1);
 
             return View(PayrollEntry);
         }
@@ -257,12 +260,11 @@ namespace BaristaHome.Controllers
         // GET Edit Payroll
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var editViewModel = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
+            if (id == null || editViewModel == null)
             {
                 return NotFound();
             }
-
-            var editViewModel = await _context.Payroll.FirstOrDefaultAsync(m => m.PayrollId == id);
 
             // Query to get Worker Name as Viewbag to display, since can't call Payroll.User.FirstName
             var PayrollName = (from pr in _context.Payroll
@@ -270,13 +272,12 @@ namespace BaristaHome.Controllers
                                where pr.PayrollId == id
                                select user.FirstName).FirstOrDefault();
 
-            ViewBag.PayrollName = PayrollName;
+            // Capitalizing first letter of name
+            if (PayrollName.Length == 1)
+                ViewBag.PayrollName = char.ToUpper(PayrollName[0]);
+            else
+                ViewBag.PayrollName = char.ToUpper(PayrollName[0]) + PayrollName.Substring(1);
 
-
-            if (editViewModel == null)
-            {
-                return NotFound();
-            }
             return View(editViewModel);
         }
 
@@ -315,8 +316,6 @@ namespace BaristaHome.Controllers
             return View(editViewModel);
         }
 
-
-
         // SEARCH BAR FEATURE
         // Shows the page again after searching the user wanted
         public async Task<IActionResult> SearchBarResults(int userId)
@@ -347,7 +346,6 @@ namespace BaristaHome.Controllers
                                                      UserId = user.UserId,
                                                      FullName = user.FirstName + " " + user.LastName,
                                                  }).ToList();
-
             return View();
         }
     }

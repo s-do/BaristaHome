@@ -7,8 +7,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Web.WebPages.Html;
 
-
-
 namespace BaristaHome.Controllers
 {
     public class FeedbackController : Controller

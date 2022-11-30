@@ -1,63 +1,77 @@
-﻿@model BaristaHome.Models.User
+﻿@model BaristaHome.Models.Payroll
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = null;
 }
 
-<h1>Edit</h1>
+<link rel="stylesheet" href="~/css/Inventory.css" asp-append-version="true" />
 
-<h4>RegisterViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <!-- Must input ALL columns for any Model table or else when posting, these unchanged columns (that have data in them) turn NULL-->
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="Color" />
-            <input type="hidden" asp-for="InviteCode" />
-            <input type="hidden" asp-for="RoleId" />
-            <input type="hidden" asp-for="StoreId" />
-            <input type="hidden" asp-for="UserImageData" />
-            <input type="hidden" asp-for="UserImage" />
-            <input type="hidden" asp-for="Wage" />
-            <input type="hidden" asp-for="UserDescription" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+<!--Nav bar area-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Barista Home</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
+</head>
+<body>
+    <!--Nav bar area-->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <div class="center">
+                <h1 class="title">Edit Payroll</h1>
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+            <a class="nav-link pink-button-right" asp-area="" asp-controller="Payroll" asp-action="Owner">Payrolls</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h4>@ViewBag.PayrollName</h4>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="PayrollId" />
+                    <input type="hidden" asp-for="UserId" />
+                    <div class="form-group">
+                        <label asp-for="Hours" class="control-label"></label>
+                        <input asp-for="Hours" class="form-control" />
+                        <span asp-validation-for="Hours" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label"></label>
+                        <input asp-for="Date" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <div>
+            <a asp-action="Owner">Back to List</a>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>
