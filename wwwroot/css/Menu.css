@@ -130,27 +130,28 @@
 
 .searchFilter {
     /*outline: 5px dotted blue;*/
-    height: 100px;
+    height: 50px;
     width: 75%;
     /*align-self: center;*/
-    margin-bottom: 30px;
+/*    margin-bottom: 30px;*/
 }
 
 .filter {
     /*outline: 5px dotted blue;*/
-    height: 200px;
+    height: 100px;
     width: 25%;
-    /*align-self:center;*/
-    margin-bottom:50px;
+    align-self:center;
+/*    margin-bottom:50px;*/
     float:left;
+    margin-left:50px
 }
 
 .search {
     /*outline: 5px dotted blue;*/
-    height: 200px;
-    width: 75%;
+    height: 100px;
+    width: 70%;
     align-self: center;
-    margin-bottom: 50px;
+/*    margin-bottom: 50px;*/
     float: right;
 }
 
