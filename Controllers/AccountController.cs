@@ -195,7 +195,7 @@ namespace BaristaHome.Controllers
 
             admin.InviteCode = code;
             admin.Color = "#000000";
-            admin.RoleId = 2;
+            admin.RoleId = 3;
             
             if (ModelState.IsValid)
             {
