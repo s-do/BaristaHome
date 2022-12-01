@@ -76,6 +76,7 @@ namespace BaristaHome.Controllers
 
         //Creates a new checklist
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
         {
             checklist.StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value);
@@ -97,7 +98,7 @@ namespace BaristaHome.Controllers
                 return RedirectToAction("Checklist", "Checklist");
             }
             ModelState.AddModelError(string.Empty, "There was an issue creating a checklist.");
-            return View(checklist);
+            return RedirectToAction(nameof(Checklist));
         }
 
         [HttpGet]
@@ -115,12 +116,19 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
+            ViewBag.ChecklistInfo = GetCategoryTasks(checklist);
+            return View(checklist);
+        }
+
+        // Helper function to get a checklist's respective categories and tasks
+        public Dictionary<string, List<string>> GetCategoryTasks(Checklist checklist)
+        {
             //List of a checklist's categories
             var checklistCategory = (from s in _context.Store
-                                 join c in _context.Checklist on s.StoreId equals c.StoreId
-                                 join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
-                                 where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == checklist.ChecklistId
-                                 select cat).ToList();
+                                     join c in _context.Checklist on s.StoreId equals c.StoreId
+                                     join cat in _context.Category on c.ChecklistId equals cat.ChecklistId
+                                     where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && c.ChecklistId == checklist.ChecklistId
+                                     select cat).ToList();
 
             //checklistInfo = { {categoryName, {list of tasks in category}}, ...}
             Dictionary<string, List<string>> checklistInfo = new Dictionary<string, List<string>>();
@@ -138,10 +146,9 @@ namespace BaristaHome.Controllers
 
                 checklistInfo[cc.CategoryName] = checklistTasks;
             }
-
-            ViewBag.ChecklistInfo = checklistInfo;
-
-            return View(checklist);
+            
+            // a dictionary of key-value pairs of the category name and their list of tasks
+            return checklistInfo;
         }
 
         //Deletes a checklist from the db
@@ -170,11 +177,9 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
-            string title = checklist.ChecklistTitle;
-            ViewBag.Title = title;
-            TempData["Title"] = checklist.ChecklistTitle;
 
-            return View();
+            ViewBag.ChecklistInfo = GetCategoryTasks(checklist);
+            return View(checklist);
         }
 
         [HttpPost]

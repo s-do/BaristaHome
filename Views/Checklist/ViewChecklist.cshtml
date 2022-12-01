@@ -41,7 +41,7 @@
         </div>
 
         @*Checklist categories and store tasks*@
-        <div class="checklist-info">
+        <div class="checklist-info container">
             @{
                 var myList = ViewBag.ChecklistInfo==null ? new Dictionary<string, List<string>>() : (Dictionary<string, List<string>>)ViewBag.ChecklistInfo;
 
@@ -49,8 +49,8 @@
                     foreach(var c in myList)
                     {
                         <div class="list-group">
-                        
-                            <a href="#" class="list-group-item list-group-item-action active">@c.Key</a>
+
+                        <a href="#" class="list-group-item list-group-item-action header-color text-black">@c.Key</a>
 
                             @{
                                 foreach(var aa in c.Value){

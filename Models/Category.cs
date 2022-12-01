@@ -6,7 +6,7 @@ namespace BaristaHome.Models
     {
         public int CategoryId { get; set; }
 
-        [StringLength(32)]
+        [Required(ErrorMessage = "You can't add a blank name."), StringLength(32)]
         public string CategoryName { get; set; }
 
         // Relationships

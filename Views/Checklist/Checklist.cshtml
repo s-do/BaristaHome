@@ -44,28 +44,28 @@
 
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create Checklist</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <form method="post">
-                          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                          <div class="modal-body">
-                              <label>Title</label>
-                              <input asp-for="ChecklistTitle" class="form-control" />
-                              <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
-                          
-                          </div>
-                          <div class="modal-footer">
-                            <button type="submit" class="btn btn-function">Create</button>
-                          </div>
-                      </form>
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Create Checklist</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form method="post">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="modal-body">
+                                    <label>Title</label>
+                                    <input asp-for="ChecklistTitle" class="form-control" />
+                                    <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-function">Create</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                  </div>
                 </div>
             </nav>
         </header>
@@ -78,27 +78,34 @@
                 {
                     foreach (var c in myList)
                     {
-                        <div class="card">
-                            @*Name of the checklist*@
-                            <a asp-action="ViewChecklist" asp-route-id="@c.Key.ChecklistId">
-                                <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
-                            </a>
-                            <div class="card-body">
-                                @*Shows the # of categories and tasks in a checklist*@
-                                <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
-                                <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
-                                @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
+                                <div class="card">
+                                    @*Name of the checklist*@
+                                    <a asp-action="ViewChecklist" asp-route-id="@c.Key.ChecklistId">
+                                        <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
+                                    </a>
+                                    <div class="card-body">
+                                        @*Shows the # of categories and tasks in a checklist*@
+                                        <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
+                                        <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
+                                        @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
 
-                                <form method="post">
-                                    <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
-                                    <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
-                                    <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
-                                </form>
-                            </div>
-                        </div>
+                                        <form method="post">
+                                            <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
+                                            <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
+                                            <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
                     }
                 }
             }
         </div>
+
+        <!--Pretty import one liner that prevents POSTing from happening upon invalid inputs-->
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+        }
     </body>
 </html>
