@@ -24,11 +24,10 @@
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="Payroll" asp-action="Owner">Back</a>
             <div class="center">
                 <h1 class="title">Edit Payroll</h1>
             </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="Payroll" asp-action="Owner">Payrolls</a>
         </nav>
     </header>
 
@@ -38,39 +37,36 @@
 </html>
 
 <div class="container">
-    <h4>@ViewBag.PayrollName</h4>
-
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="PayrollId" />
-                <input type="hidden" asp-for="UserId" />
-                <div class="form-group">
-                    <label asp-for="Hours" class="control-label"></label>
-                    <input asp-for="Hours" class="form-control" />
-                    <span asp-validation-for="Hours" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Amount" class="control-label"></label>
-                    <input asp-for="Amount" class="form-control" />
-                    <span asp-validation-for="Amount" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Date" class="control-label"></label>
-                    <input asp-for="Date" type="datetime-local" class="form-control" />
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
+    <div class="col-md-4" style="margin: 0 auto;">
+        <h4>@ViewBag.PayrollName</h4>
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PayrollId" />
+            <input type="hidden" asp-for="UserId" />
+            <div class="form-group">
+                <label asp-for="Hours" class="control-label"></label>
+                <input asp-for="Hours" class="form-control" />
+                <span asp-validation-for="Hours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" type="datetime-local" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" style="width: 100px; margin-top: 50px"/>
+            </div>
+        </form>
     </div>
 
-    <div>
+@*    <div>
         <a asp-action="Owner">Back to List</a>
-    </div>
+    </div>*@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

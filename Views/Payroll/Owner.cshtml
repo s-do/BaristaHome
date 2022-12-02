@@ -39,7 +39,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+-webkit-align-items      &copy; 2022 - Barista Home - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -71,8 +71,8 @@
             @*<input type="text" name="searchPhrase" class="form-control" placeholder="Search" aria-label="Recipient's username">*@
 
             <div class="input-group-append">
-                <button style="background-color: lightpink;
-                                         border-color:lightpink;
+                <button style="background-color: #ffdcf4;
+                                         border-color:#ffdcf4;
                                          color:black;" class="btn btn-outline-secondary" type="submit">
                    Filter By Name
                 </button>
@@ -132,13 +132,13 @@
                         </td>
                         <td>
                             <a class="img-size" >
-                                <img src="../images/editButton.png"  data-toggle= "modal" data-target="@dataTargetEdit">
+                                <img src="../images/editButton.png"  data-toggle= "modal" data-target="@dataTargetEdit" style="cursor: pointer">
                             </a>
 
 
                             <div class="modal fade" id="@modalID" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm" role="document">
-                                    <div class="modal-content">
+                                    <div class="modal-content" style="margin-top: 300px;">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editModalLabel">Select Action</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -146,9 +146,9 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="center">
-                                                <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId">Edit</a>
-                                                <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.PayrollId">Delete</a>
+                                            <div class="center" style="align-items: center">
+                                                <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.PayrollId" style="width:80px">Edit</a>
+                                                <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.PayrollId" style="width:80px">Delete</a>
                                             </div>
                                         </div>
                                     </div>

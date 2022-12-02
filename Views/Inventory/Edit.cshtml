@@ -18,18 +18,17 @@
     <title>@ViewData["Title"] - Barista Home</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" /> <!--Stylesheet-->
 </head>
 <body>
     <!--Nav bar area-->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-            <a class="nav-link pink-button-left" asp-area="" asp-controller="" asp-action="">Home</a>
+            <a class="nav-link pink-button-left" asp-area="" asp-controller="inventory" asp-action="index">Back</a>
             <div class="center">
                 <h1 class="title">Edit Item</h1>
             </div>
-            <a class="nav-link pink-button-right" asp-area="" asp-controller="Payroll" asp-action="Owner">Payrolls</a>
         </nav>
     </header>
 
@@ -44,13 +43,14 @@
 </style>
 
 
-<h1>Confirm changes for @ViewBag.ItemName </h1>
 
 @*<h4>@ViewBag.ItemName</h4>*@
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="container">
+    <div class="col-md-4" style="margin: 0 auto; width: 50%;">
+        <h1 style="text-align=:center">Confirm changes for @ViewBag.ItemName </h1>
+     </div>
+    <div class="col-md-4" style="margin: 0 auto;">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ItemId" />
@@ -67,15 +67,15 @@
             </div>
             <div class="form-group">
                 
-                <input type="submit" value="Save" class="btn btn-primary" style="margin-top:20px; "/>
+                <input type="submit" value="Save" class="btn btn-primary" style="margin-top:20px; width:100px"/>
             </div>
         </form>
     </div>
 </div>
 
-<div>
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
