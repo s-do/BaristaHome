@@ -1,4 +1,4 @@
-﻿@model BaristaHome.Models.Checklist
+﻿@model BaristaHome.Models.ChecklistViewModel
 
 @{
     ViewData["Title"] = "Edit Checklist";
@@ -33,7 +33,6 @@
             <div class="center">
                 <h1 class="title">Edit Checklist</h1>
             </div>
-            <!-- Button trigger modal -->
             <a class="nav-link pink-button-right" data-toggle="modal" data-target="#newModal">Add Category</a>
         </nav>
     </header>
@@ -46,23 +45,54 @@
     @*Checklist categories and store tasks*@
     <div class="checklist-info container">
         @{
-            var myList = ViewBag.ChecklistInfo == null ? new Dictionary<string, List<string>>() : (Dictionary<string, List<string>>)ViewBag.ChecklistInfo;
-
-            if (myList.Any())
+            var categoryTasks = Model.CategoryTasks == null ? new Dictionary<Category, List<StoreTask>>() : (Dictionary<Category, List<StoreTask>>)Model.CategoryTasks;
+            if (categoryTasks.Any())
             {
-                foreach (var c in myList)
+                foreach (var c in categoryTasks)
                 {
                     <div class="list-group">
-
-                        <a data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action header-color text-black">@c.Key</a>
+                        <a id="@c.Key.CategoryId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action header-color text-black">@c.Key.CategoryName ID: @c.Key.CategoryId</a>
 
                         @{
-                            foreach (var aa in c.Value)
+                            foreach (var t in c.Value)
                             {
-                                <a data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action">@aa</a>
+                                <a id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal-@c.Key.CategoryId-@t.StoreTaskId" href="#" class="list-group-item list-group-item-action">@t.TaskName ID: @t.StoreTaskId</a>
+
+                                <!-- Edit Task Modal (Ensure id's for modal button and modal form are unique in order to display each categories' respective tasks)-->
+                                <div class="modal fade" id="editModal-@c.Key.CategoryId-@t.StoreTaskId" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form asp-action="Edit" autocomplete="off">
+                                                <div class="modal-body">
+
+                                                    <!--Binding  for Checklist-->
+                                                    <input name="checklistId" type="hidden" value="@Html.DisplayFor(model => model.ChecklistId)" />
+
+                                                    <!--Binding for CategoryTask-->
+                                                    <input name="categoryId" type="hidden" value="@c.Key.CategoryId" />
+                                                    <input name="taskId" type="hidden" value="@t.StoreTaskId" />
+
+                                                    <!--Binding for StoreTask-->
+                                                    <label>Description</label>
+                                                    <input name="taskName" value="@t.TaskName" class="form-control" />
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-function">Create</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                         }
-                        <a data-toggle="modal" data-target="#addModal" href="#" class="list-group-item list-group-item-action">+ Add a new task...</a>
+                        <a id="@c.Key.CategoryId" data-toggle="modal" data-target="#addModal" href="#" class="list-group-item list-group-item-action">+ Add a new task...</a>
 
                         <p> </p>
                     </div>
@@ -71,34 +101,8 @@
         }
     </div>
 
-    @*Creates a checklist*@
+    @*Modals for editing/adding categories and tasks*@
     
-
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form asp-action="">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="modal-body">
-                        <label>Title</label>
-                        <input asp-for="ChecklistTitle" class="form-control" />
-                        <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-function">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Add Task Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">

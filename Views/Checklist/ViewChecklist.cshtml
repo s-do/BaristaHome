@@ -1,4 +1,4 @@
-﻿@model BaristaHome.Models.Checklist
+﻿@model BaristaHome.Models.ChecklistViewModel
 
 @{
     ViewData["Title"] = "View Checklist";
@@ -43,32 +43,28 @@
         @*Checklist categories and store tasks*@
         <div class="checklist-info container">
             @{
-                var myList = ViewBag.ChecklistInfo==null ? new Dictionary<string, List<string>>() : (Dictionary<string, List<string>>)ViewBag.ChecklistInfo;
-
-                if(myList.Any()) {
-                    foreach(var c in myList)
+                // Quick null check if checklist has no categories or tasks
+                var categoryTasks = Model.CategoryTasks == null ? new Dictionary<Category, List<StoreTask>>() : (Dictionary<Category, List<StoreTask>>)Model.CategoryTasks;
+                if (categoryTasks.Any())
+                {
+                    // Displaying category names from the dictionary and their respective tasks
+                    foreach (var c in categoryTasks)
                     {
                         <div class="list-group">
-
-                        <a href="#" class="list-group-item list-group-item-action header-color text-black">@c.Key</a>
+                            <a id="@c.Key.CategoryId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action header-color text-black">@c.Key.CategoryName</a>
 
                             @{
-                                foreach(var aa in c.Value){
-                                <a href="#" class="list-group-item list-group-item-action">
-                                @aa
-                            
-                                </a>
-                                @*<p>@aa</p>*@
+                                foreach (var t in c.Value)
+                                {
+                                    <a id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action">@t.TaskName</a>
                                 }
                             }
-                        
-                    
-                            <p>   </p>
+
+                            <p> </p>
                         </div>
-                            
-                        }
                     }
                 }
+            }
         </div>
      </body>
 </html>

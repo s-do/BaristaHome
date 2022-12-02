@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.Dynamic;
 
 namespace BaristaHome.Controllers
 {
@@ -116,12 +116,13 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            ViewBag.ChecklistInfo = GetCategoryTasks(checklist);
-            return View(checklist);
+            // Call helper function to get a ViewModel of a Checklist an a dictionary of their categories and respective tasks
+            ChecklistViewModel checklistViewModel = GetCategoryTasks(checklist);
+            return View(checklistViewModel);
         }
 
         // Helper function to get a checklist's respective categories and tasks
-        public Dictionary<string, List<string>> GetCategoryTasks(Checklist checklist)
+        public ChecklistViewModel GetCategoryTasks(Checklist checklist)
         {
             //List of a checklist's categories
             var checklistCategory = (from s in _context.Store
@@ -131,7 +132,7 @@ namespace BaristaHome.Controllers
                                      select cat).ToList();
 
             //checklistInfo = { {categoryName, {list of tasks in category}}, ...}
-            Dictionary<string, List<string>> checklistInfo = new Dictionary<string, List<string>>();
+            Dictionary<Category, List<StoreTask>> checklistInfo = new Dictionary<Category, List<StoreTask>>();
 
             //Finds tasks in a category and adds it to a list where the category is the key
             foreach (var cc in checklistCategory)
@@ -142,13 +143,20 @@ namespace BaristaHome.Controllers
                                       join ct in _context.CategoryTask on cat.CategoryId equals ct.CategoryId
                                       join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
                                       where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
-                                      select st.TaskName).ToList();
+                                      select st).ToList();
 
-                checklistInfo[cc.CategoryName] = checklistTasks;
+                checklistInfo[cc] = checklistTasks;
             }
-            
+
+            ChecklistViewModel checklistViewModel = new ChecklistViewModel
+            {
+                ChecklistId = checklist.ChecklistId,
+                ChecklistTitle = checklist.ChecklistTitle,
+                CategoryTasks = checklistInfo
+            };
+
             // a dictionary of key-value pairs of the category name and their list of tasks
-            return checklistInfo;
+            return checklistViewModel;
         }
 
         //Deletes a checklist from the db
@@ -178,8 +186,96 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            ViewBag.ChecklistInfo = GetCategoryTasks(checklist);
-            return View(checklist);
+            ChecklistViewModel checklistViewModel = GetCategoryTasks(checklist);
+            return View(checklistViewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int checklistId, int categoryId, int taskId, string taskName)
+        {
+            // getting the categorytask to update
+            var categoryTask = await (from ct in _context.CategoryTask
+                                              join t in _context.StoreTask on ct.StoreTaskId equals t.StoreTaskId
+                                              where ct.CategoryId == categoryId && t.StoreTaskId == taskId
+                                              select ct).FirstOrDefaultAsync();
+            // getting the checklist to return view
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == checklistId
+                                   select c).FirstOrDefaultAsync();
+
+            if (checklist == null || categoryTask == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingTask = await (from t in _context.StoreTask
+                                              where t.TaskName == taskName
+                                              select t).FirstOrDefaultAsync();
+
+                    CategoryTask newCategoryTask = new CategoryTask { CategoryId = categoryId };
+
+                    // adding new task to db if unique and does not exist anywhere
+                    if (existingTask == null)
+                    {
+                        StoreTask newTask = new StoreTask { TaskName = taskName };
+                        _context.Add(newTask);
+                        await _context.SaveChangesAsync();
+
+                        // updating the categoryTask's id with the new task's id
+                        newCategoryTask.StoreTaskId = newTask.StoreTaskId;
+                    } 
+                    else
+                    {
+                        // updating the categoryTask's id with the existing task's id
+                        newCategoryTask.StoreTaskId = existingTask.StoreTaskId;
+                    }
+
+                    // see if there's any existing tasks in that category with the same name (id)
+                    var existingCategoryTask = await (from ct in _context.CategoryTask
+                                                      join t in _context.StoreTask on ct.StoreTaskId equals t.StoreTaskId
+                                                      where ct.CategoryId == newCategoryTask.CategoryId && t.StoreTaskId == newCategoryTask.StoreTaskId
+                                                      select ct).FirstOrDefaultAsync();
+                    if (existingCategoryTask == null)
+                    {
+                        // for some reason EF advises to not update and change the ID of an existing object, but instead create a new one
+                        _context.CategoryTask.Remove(categoryTask);
+                        await _context.SaveChangesAsync();
+
+                        // now we can "update" the categoryTask by adding a new one with the updated task id
+                        newCategoryTask.IsFinished = false;
+                        _context.Add(newCategoryTask);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+                    }
+                    ModelState.AddModelError(string.Empty, "This task already exists in this category! Please use a differnt one.");
+                    return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+                    
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CategoryTaskExists(categoryId, taskId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }   
+            }
+            ModelState.AddModelError(string.Empty, "There was an error editing this task.");
+            return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+        }
+
+        private bool CategoryTaskExists(int categoryId, int taskId)
+        {
+            return _context.CategoryTask.Any(e => e.CategoryId == categoryId && e.StoreTaskId == taskId);
         }
 
         [HttpPost]

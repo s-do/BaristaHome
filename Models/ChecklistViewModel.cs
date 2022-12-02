@@ -7,9 +7,9 @@ namespace BaristaHome.Models
 {
     public class ChecklistViewModel
     {
+        public int ChecklistId { get; set; }
         public string ChecklistTitle { get; set; }
-        public Category Category { get; set; }
-        public StoreTask StoreTask { get; set; }
+        public Dictionary<Category, List<StoreTask>> CategoryTasks { get; set; }
 
     }
 }
