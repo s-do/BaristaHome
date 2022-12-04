@@ -11,9 +11,9 @@ namespace BaristaHome.Models
 
         // Relationships
         public int ChecklistId { get; set; }
-        public virtual Checklist Checklist { get; set; }
+        public virtual Checklist? Checklist { get; set; }
 
-        public virtual ICollection<CategoryTask> CategoryTasks { get; set; }
+        public virtual ICollection<CategoryTask>? CategoryTasks { get; set; }
 
     }
 }

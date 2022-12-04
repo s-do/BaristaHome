@@ -50,7 +50,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Edit Task</h5>
+                            <h5 class="modal-title">Add Category</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -58,7 +58,8 @@
 
                         <div class="modal-body">
                             <form asp-action="AddCategory" autocomplete="off">
-                                <!--Binding  for Checklist-->
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <!--Binding  for Checklist (ensure name is same as model's property name, case insensitive)-->
                                 <input name="checklistId" type="hidden" value="@Html.DisplayFor(model => model.ChecklistId)" />
 
                                 <label>Name</label>
