@@ -25,6 +25,15 @@
 
         <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" /> 
 
+        <!-- Displaying error message if a new checklist could not be added-->
+        @if (TempData["addChecklistError"] != null)
+        {
+            <script>
+                $(document).ready(function () {
+                    alert('@TempData["addChecklistError"]');
+                });
+            </script>
+        }
     </head>
 
 
@@ -38,12 +47,12 @@
 
                 @*Creates a checklist*@
                 <!-- Button trigger modal -->
-                <a class="nav-link pink-button-right" data-toggle="modal" data-target="#exampleModal">
+                <button class="nav-link pink-button-right" data-toggle="modal" data-target="#addChecklist" style="outline:none; border:none">
                     Create
-                </a>
+                </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="addChecklist" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -52,7 +61,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form method="post">
+                        <form method="post" autocomplete="off">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="modal-body">
                                     <label>Title</label>
@@ -78,24 +87,24 @@
                 {
                     foreach (var c in myList)
                     {
-                                <div class="card">
-                                    @*Name of the checklist*@
-                                    <a asp-action="ViewChecklist" asp-route-id="@c.Key.ChecklistId">
-                                        <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
-                                    </a>
-                                    <div class="card-body">
-                                        @*Shows the # of categories and tasks in a checklist*@
-                                        <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
-                                        <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
-                                        @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
+                        <div class="card">
+                            @*Name of the checklist*@
+                            <a asp-action="ViewChecklist" asp-route-id="@c.Key.ChecklistId">
+                                <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
+                            </a>
+                            <div class="card-body">
+                                @*Shows the # of categories and tasks in a checklist*@
+                                <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
+                                <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
+                                @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
 
-                                        <form method="post">
-                                            <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
-                                            <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
-                                            <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <form method="post">
+                                    <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
+                                    <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
+                                    <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
+                                </form>
+                            </div>
+                        </div>
                     }
                 }
             }

@@ -58,3 +58,11 @@ body {
 .title {
     margin: auto;
 }
+
+a:hover {
+    color: #0a58ca;
+}
+
+button:hover {
+    color: #0a58ca;
+}

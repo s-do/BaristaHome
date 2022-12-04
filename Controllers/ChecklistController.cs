@@ -22,13 +22,10 @@ namespace BaristaHome.Controllers
         //Displays all the checklists in a store
         [HttpGet]
         /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-        public IActionResult Checklist()
-        {
-            //List of a store's checklists
-            var checklist = (from c in _context.Checklist
-                             where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                             select c).ToList();
 
+        // Helper function to get a checklist's respective number of categories and tasks
+        public Dictionary<Checklist, List<int>> GetChecklistInfo(List<Checklist> checklist)
+        {
             //checklistInfo = { {Checklist, {# of categorys, # of tasks}},..., }
             Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
 
@@ -69,8 +66,17 @@ namespace BaristaHome.Controllers
                 count.Add(numOfTask);
                 checklistInfo[check] = count;
             }
-            
-            ViewBag.Checklist = checklistInfo;
+
+            return checklistInfo;
+        }
+        public IActionResult Checklist()
+        {
+            //List of a store's checklists
+            var checklist = (from c in _context.Checklist
+                             where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                             select c).ToList();
+            ViewBag.Checklist = GetChecklistInfo(checklist);
+
             return View();
         }
 
@@ -89,15 +95,15 @@ namespace BaristaHome.Controllers
 
                 if (existingChecklist != null)
                 {
-                    ModelState.AddModelError(string.Empty, "Checklist name already exists! Please use a different one.");
-                    return View(checklist);
+                    TempData["addChecklistError"] = "Checklist name already exists! Please use a different one.";
+                    return RedirectToAction(nameof(Checklist));
                 }
 
                 _context.Add(checklist);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Checklist", "Checklist");
             }
-            ModelState.AddModelError(string.Empty, "There was an issue creating a checklist.");
+            TempData["addChecklistError"] = "There was an issue creating a checklist.";
             return RedirectToAction(nameof(Checklist));
         }
 
@@ -117,12 +123,12 @@ namespace BaristaHome.Controllers
             }
 
             // Call helper function to get a ViewModel of a Checklist an a dictionary of their categories and respective tasks
-            ChecklistViewModel checklistViewModel = GetCategoryTasks(checklist);
+            CategoryViewModel checklistViewModel = GetCategoryTasks(checklist);
             return View(checklistViewModel);
         }
 
         // Helper function to get a checklist's respective categories and tasks
-        public ChecklistViewModel GetCategoryTasks(Checklist checklist)
+        public CategoryViewModel GetCategoryTasks(Checklist checklist)
         {
             //List of a checklist's categories
             var checklistCategory = (from s in _context.Store
@@ -148,7 +154,7 @@ namespace BaristaHome.Controllers
                 checklistInfo[cc] = checklistTasks;
             }
 
-            ChecklistViewModel checklistViewModel = new ChecklistViewModel
+            CategoryViewModel checklistViewModel = new CategoryViewModel
             {
                 ChecklistId = checklist.ChecklistId,
                 ChecklistTitle = checklist.ChecklistTitle,
@@ -186,14 +192,69 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            ChecklistViewModel checklistViewModel = GetCategoryTasks(checklist);
+            CategoryViewModel checklistViewModel = GetCategoryTasks(checklist);
             return View(checklistViewModel);
         }
 
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int checklistId, int categoryId, int taskId, string taskName)
+        public async Task<IActionResult> AddCategory(int checklistId, string categoryName)
+        {
+            if (checklistId == 0)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // see if category name exists in this checklist
+                var existingCategory = await (from cat in _context.Category
+                                              where cat.ChecklistId == checklistId && cat.CategoryName == categoryName
+                                              select cat).FirstOrDefaultAsync();
+                if (existingCategory != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Category already exists in this checklist!");
+                    return RedirectToAction("EditChecklist", new { id = checklistId });
+                }
+
+                // adding new category to checklist and save in db
+                Category newCategory = new Category { ChecklistId = checklistId, CategoryName = categoryName };
+                _context.Add(newCategory);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EditChecklist", new { id = checklistId });
+            }
+            ModelState.AddModelError(string.Empty, "There was an issue creating this category.");
+            return RedirectToAction("EditChecklist", new { id = checklistId });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(int checklistId, int categoryId, string categoryName)
+        {
+            if (checklistId == 0)
+            {
+                return NotFound();
+            }
+
+            // see if category name exists in this checklist
+            var existingCategory = await (from cat in _context.Category
+                                          where cat.CategoryId == checklistId && cat.CategoryName == categoryName
+                                          select cat).FirstOrDefaultAsync();
+
+            if (existingCategory != null)
+            {
+                ModelState.AddModelError(string.Empty, "Category already exists in this checklist!");
+                return RedirectToAction("EditChecklist", new { id = checklistId });
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditTask(int checklistId, int categoryId, int taskId, string taskName)
         {
             // getting the categorytask to update
             var categoryTask = await (from ct in _context.CategoryTask
@@ -269,7 +330,7 @@ namespace BaristaHome.Controllers
                     }
                 }   
             }
-            ModelState.AddModelError(string.Empty, "There was an error editing this task.");
+            ModelState.AddModelError(string.Empty, "There was an issue editing this task.");
             return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
         }
 

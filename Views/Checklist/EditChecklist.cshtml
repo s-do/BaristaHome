@@ -1,4 +1,4 @@
-﻿@model BaristaHome.Models.ChecklistViewModel
+﻿@model BaristaHome.Models.CategoryViewModel
 
 @{
     ViewData["Title"] = "Edit Checklist";
@@ -22,6 +22,16 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- Displaying error message if a new category could not be added-->
+    @if (TempData["addCategoryError"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                alert('@TempData["addCategoryError"]');
+            });
+        </script>
+    }
 </head>
 
 <body>
@@ -33,34 +43,36 @@
             <div class="center">
                 <h1 class="title">Edit Checklist</h1>
             </div>
-            <button class="pink-button-right" data-toggle="modal" data-target="#newModal" style="outline:none; border:none">Add Category</button>
+            <button class="pink-button-right" data-toggle="modal" data-target="#addCategory-@Model.ChecklistId" style="outline:none; border:none">Add Category</button>
 
-            <!-- Add Category Modal -->
+            <!--Add Category Modal-->
             <div class="modal fade" id="addCategory-@Model.ChecklistId" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Add Category</h5>
+                            <h5 class="modal-title">Edit Task</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
 
                         <div class="modal-body">
-                            <form asp-action="" autocomplete="off">
+                            <form asp-action="AddCategory" autocomplete="off">
                                 <!--Binding  for Checklist-->
                                 <input name="checklistId" type="hidden" value="@Html.DisplayFor(model => model.ChecklistId)" />
 
-                                <!--Input for new Category-->
                                 <label>Name</label>
-                                <input name="taskName" placeholder="Enter a new category name" class="form-control" />
+                                <input name="categoryName" placeholder="Enter a new category name" class="form-control" required />
 
-                                <button type="submit" class="btn btn-function">Create</button>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-function">Create</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+
         </nav>
     </header>
 
@@ -90,14 +102,14 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Edit</h5>
+                                                <h5 class="modal-title">Edit Task</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
 
                                             <div class="modal-body">
-                                                <form asp-action="Edit" autocomplete="off">
+                                                <form asp-action="EditTask" autocomplete="off">
                                                     <!--Binding  for Checklist-->
                                                     <input name="checklistId" type="hidden" value="@Html.DisplayFor(model => model.ChecklistId)" />
 
@@ -107,10 +119,10 @@
 
                                                     <!--Binding for StoreTask-->
                                                     <label>Description</label>
-                                                    <input name="taskName" placeholder="@t.TaskName" class="form-control" />
+                                                    <input name="taskName" placeholder="@t.TaskName" class="form-control" required />
 
                                                     <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-function">Create</button>
+                                                        <button type="submit" class="btn btn-function">Submit</button>
                                                     </div>
                                                 </form>
                                             </div>
