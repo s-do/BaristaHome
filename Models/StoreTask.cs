@@ -10,7 +10,7 @@ namespace BaristaHome.Models
         public string TaskName { get; set; }
 
         // Relationships
-        public virtual ICollection<CategoryTask> CategoryTasks { get; set; }
+        public virtual ICollection<CategoryTask>? CategoryTasks { get; set; }
 
     }
 }

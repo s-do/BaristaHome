@@ -3,9 +3,13 @@ using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Web.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Numerics;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace BaristaHome.Controllers
 {
@@ -22,9 +26,50 @@ namespace BaristaHome.Controllers
         //Displays all the checklists in a store
         [HttpGet]
         /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+        public async Task<IActionResult> Checklist()
+        {
+            //List of a store's checklists
+            var checklist = await (from c in _context.Checklist
+                                   where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                   select c).ToListAsync();
+            ChecklistViewModel checklistInfo = GetChecklistInfo(checklist);
+            return View(checklistInfo);
+        }
+
+        //Creates a new checklist
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
+        {
+            var checklistViewModel = await (from c in _context.Checklist
+                                            where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
+                                            select c).ToListAsync();
+
+            checklist.StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value);
+            if (ModelState.IsValid)
+            {
+                //Checks if entered in checklist name already exists or not
+                var existingChecklist = (from c in _context.Checklist
+                                         where c.ChecklistTitle.Equals(checklist.ChecklistTitle) && c.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))
+                                         select c).FirstOrDefault();
+
+                if (existingChecklist != null)
+                {
+                    TempData["addChecklistError"] = "Checklist name already exists! Please use a different one.";
+                    // call helper method to regenerate all of the checklist info for invalid inputs
+                    return View("Checklist", GetChecklistInfo(checklistViewModel));
+                }
+
+                _context.Add(checklist);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Checklist", "Checklist");
+            }
+            TempData["addChecklistError"] = "There was an issue creating a checklist.";
+            return View("Checklist", GetChecklistInfo(checklistViewModel));
+        }
 
         // Helper function to get a checklist's respective number of categories and tasks
-        public Dictionary<Checklist, List<int>> GetChecklistInfo(List<Checklist> checklist)
+        public ChecklistViewModel GetChecklistInfo(List<Checklist> checklist)
         {
             //checklistInfo = { {Checklist, {# of categorys, # of tasks}},..., }
             Dictionary<Checklist, List<int>> checklistInfo = new Dictionary<Checklist, List<int>>();
@@ -67,44 +112,10 @@ namespace BaristaHome.Controllers
                 checklistInfo[check] = count;
             }
 
-            return checklistInfo;
-        }
-        public IActionResult Checklist()
-        {
-            //List of a store's checklists
-            var checklist = (from c in _context.Checklist
-                             where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
-                             select c).ToList();
-            ViewBag.Checklist = GetChecklistInfo(checklist);
+            ChecklistViewModel checklistViewModel = new ChecklistViewModel { ChecklistInfo = checklistInfo };
 
-            return View();
-        }
-
-        //Creates a new checklist
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
-        {
-            checklist.StoreId = Convert.ToInt32(User.FindFirst("StoreId").Value);
-            if (ModelState.IsValid)
-            {
-                //Checks if entered in checklist name already exists or not
-                var existingChecklist = (from c in _context.Checklist
-                                         where c.ChecklistTitle.Equals(checklist.ChecklistTitle) && c.StoreId.Equals(Convert.ToInt32(User.FindFirst("StoreId").Value))
-                                         select c).FirstOrDefault();
-
-                if (existingChecklist != null)
-                {
-                    TempData["addChecklistError"] = "Checklist name already exists! Please use a different one.";
-                    return RedirectToAction(nameof(Checklist));
-                }
-
-                _context.Add(checklist);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Checklist", "Checklist");
-            }
-            TempData["addChecklistError"] = "There was an issue creating a checklist.";
-            return RedirectToAction(nameof(Checklist));
+            // a dictionary of key-value pairs of the checklists and their numbers of tasks and categories
+            return checklistViewModel;
         }
 
         [HttpGet]
@@ -161,7 +172,7 @@ namespace BaristaHome.Controllers
                 CategoryTasks = checklistInfo
             };
 
-            // a dictionary of key-value pairs of the category name and their list of tasks
+            // a dictionary of key-value pairs of the categories and their list of tasks
             return checklistViewModel;
         }
 
@@ -199,6 +210,41 @@ namespace BaristaHome.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCategory([Bind("CategoryName,ChecklistId")] Category category)
+        {
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == category.ChecklistId
+                                   select c).FirstOrDefaultAsync();
+            if (checklist == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // checking for existing cateogry only for those in the same store AND same checklist (dupes are therefore allowed outside these parameters)
+                var existingCategory = await (from cat in _context.Category
+                                              join c in _context.Checklist on cat.ChecklistId equals c.ChecklistId
+                                              where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && cat.CategoryName == category.CategoryName && cat.ChecklistId == category.ChecklistId
+                                              select cat).FirstOrDefaultAsync();
+                if (existingCategory != null)
+                {
+                    TempData["addCategoryError"] = "Category already exists! Please use a different one.";
+                    return View("EditChecklist", GetCategoryTasks(checklist));
+                }
+
+                // reopen the edit page with the new category for that checklist
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EditChecklist", new { id = category.ChecklistId });
+            }
+            TempData["addCategoryError"] = "There was an issue creating a category.";
+            return View("EditChecklist", GetCategoryTasks(checklist));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCategory(int checklistId, int categoryId, string categoryName)
         {
             if (checklistId == 0)
@@ -222,7 +268,62 @@ namespace BaristaHome.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTask(int checklistId, int categoryId, int taskId, string taskName)
+        public async Task<IActionResult> AddTask(int checkListId, int categoryId, [Bind("TaskName")] StoreTask task)
+        {
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == checkListId
+                                   select c).FirstOrDefaultAsync();
+            if (checklist == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // checks if new task already exists in category
+                var existingTask = await (from t in _context.StoreTask
+                                          where t.TaskName == task.TaskName
+                                          select t).FirstOrDefaultAsync();
+                if (existingTask != null)
+                {
+                    if (CategoryTaskExists(categoryId, existingTask.StoreTaskId))
+                    {
+                        TempData["addTaskError"] = "Task already exists in this category! Please use a different one.";
+                        return View("EditChecklist", GetCategoryTasks(checklist));
+                    }
+                }
+
+                // Creating category task based on the task name existing or not
+                CategoryTask newCategoryTask = new CategoryTask { CategoryId = categoryId };
+                // adding new task to db if unique and does not exist anywhere
+                if (existingTask == null)
+                {
+                    StoreTask newTask = new StoreTask { TaskName = task.TaskName };
+                    _context.Add(newTask);
+                    await _context.SaveChangesAsync();
+
+                    // updating the categoryTask's id with the new task's id
+                    newCategoryTask.StoreTaskId = newTask.StoreTaskId;
+                }
+                else
+                {
+                    // updating the categoryTask's id with the existing task's id
+                    newCategoryTask.StoreTaskId = existingTask.StoreTaskId;
+                }
+                newCategoryTask.IsFinished = false;
+
+                _context.Add(newCategoryTask);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+            }
+            TempData["addTaskError"] = "There was an issue creating a Task.";
+            return View("EditChecklist", GetCategoryTasks(checklist));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditTask(int checklistId, int categoryId, int taskId, [Bind("TaskName")] StoreTask task)
         {
             // getting the categorytask to update
             var categoryTask = await (from ct in _context.CategoryTask
@@ -241,103 +342,56 @@ namespace BaristaHome.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                // checking if the edited name already exists in the category
+                var existingTask = await (from t in _context.StoreTask
+                                            where t.TaskName == task.TaskName
+                                            select t).FirstOrDefaultAsync();
+                if (existingTask != null)
                 {
-                    var existingTask = await (from t in _context.StoreTask
-                                              where t.TaskName == taskName
-                                              select t).FirstOrDefaultAsync();
-
-                    CategoryTask newCategoryTask = new CategoryTask { CategoryId = categoryId };
-
-                    // adding new task to db if unique and does not exist anywhere
-                    if (existingTask == null)
+                    if (CategoryTaskExists(categoryId, existingTask.StoreTaskId))
                     {
-                        StoreTask newTask = new StoreTask { TaskName = taskName };
-                        _context.Add(newTask);
-                        await _context.SaveChangesAsync();
-
-                        // updating the categoryTask's id with the new task's id
-                        newCategoryTask.StoreTaskId = newTask.StoreTaskId;
-                    } 
-                    else
-                    {
-                        // updating the categoryTask's id with the existing task's id
-                        newCategoryTask.StoreTaskId = existingTask.StoreTaskId;
+                        TempData["editTaskError"] = "Task already exists in this category! Please use a different one.";
+                        return View("EditChecklist", GetCategoryTasks(checklist));
                     }
-
-                    // see if there's any existing tasks in that category with the same name (id)
-                    var existingCategoryTask = await (from ct in _context.CategoryTask
-                                                      join t in _context.StoreTask on ct.StoreTaskId equals t.StoreTaskId
-                                                      where ct.CategoryId == newCategoryTask.CategoryId && t.StoreTaskId == newCategoryTask.StoreTaskId
-                                                      select ct).FirstOrDefaultAsync();
-                    if (existingCategoryTask == null)
-                    {
-                        // for some reason EF advises to not update and change the ID of an existing object, but instead create a new one
-                        _context.CategoryTask.Remove(categoryTask);
-                        await _context.SaveChangesAsync();
-
-                        // now we can "update" the categoryTask by adding a new one with the updated task id
-                        newCategoryTask.IsFinished = false;
-                        _context.Add(newCategoryTask);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
-                    }
-                    ModelState.AddModelError(string.Empty, "This task already exists in this category! Please use a differnt one.");
-                    return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
-                    
                 }
-                catch (DbUpdateConcurrencyException)
+
+                CategoryTask newCategoryTask = new CategoryTask { CategoryId = categoryId };
+                // adding new task to db if unique and does not exist anywhere
+                if (existingTask == null)
                 {
-                    if (!CategoryTaskExists(categoryId, taskId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }   
+                    StoreTask newTask = new StoreTask { TaskName = task.TaskName };
+                    _context.Add(newTask);
+                    await _context.SaveChangesAsync();
+
+                    // updating the categoryTask's id with the new task's id
+                    newCategoryTask.StoreTaskId = newTask.StoreTaskId;
+                }
+                else
+                {
+                    // updating the categoryTask's id with the existing task's id
+                    newCategoryTask.StoreTaskId = existingTask.StoreTaskId;
+                }
+                newCategoryTask.IsFinished = false;
+
+                // for some reason EF advises to not update and change the ID of an existing object, but instead create a new one
+                _context.CategoryTask.Remove(categoryTask);
+                await _context.SaveChangesAsync();
+
+                // now we can "update" the categoryTask by adding a new one with the updated task id
+                _context.Add(newCategoryTask);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
             }
-            ModelState.AddModelError(string.Empty, "There was an issue editing this task.");
-            return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+            TempData["editTaskError"] = "There was an issue editing this task.";
+            return View("EditChecklist", GetCategoryTasks(checklist));
         }
 
+        // Helper functions for validation checks
         private bool CategoryTaskExists(int categoryId, int taskId)
         {
             return _context.CategoryTask.Any(e => e.CategoryId == categoryId && e.StoreTaskId == taskId);
         }
 
-        [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCategory([Bind("CategoryName,ChecklistId")] Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                // checking for existing cateogry only for those in the same store AND same checklist (dupes are therefore allowed outside these parameters)
-                var existingCategory = await (from cat in _context.Category
-                                              join c in _context.Checklist on cat.ChecklistId equals c.ChecklistId
-                                              where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && cat.CategoryName == category.CategoryName && cat.ChecklistId == category.ChecklistId
-                                              select cat).FirstOrDefaultAsync();
-                var checklist = await (from c in _context.Checklist
-                                       where c.ChecklistId == category.ChecklistId
-                                       select c).FirstOrDefaultAsync();
-                if (existingCategory != null)
-                {
-                    ModelState.AddModelError(string.Empty, "Category name already exists! Please use a different one.");
-                    TempData["addCategoryError"] = "Category already exists! Please use a different one.";
-                    return View("EditChecklist", GetCategoryTasks(checklist));
-                    //return RedirectToAction("EditChecklist", new { id = category.ChecklistId });
-                }
-
-                // reopen the edit page with the new category for that checklist
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("EditChecklist", new { id = category.ChecklistId });
-            }
-            ModelState.AddModelError(string.Empty, "There was an issue creating a category.");
-            return View(category);
-        }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
 
