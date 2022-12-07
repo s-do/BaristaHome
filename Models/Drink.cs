@@ -9,6 +9,7 @@ namespace BaristaHome.Models
 
         [StringLength(32), Display(Name = "Drink Name")]
         public string DrinkName { get; set; }
+        public decimal Price { get; set; } = 0.00M;
 
         [StringLength(1024), Display(Name = "Enter your instructions here")]
         public string Instructions { get; set; }

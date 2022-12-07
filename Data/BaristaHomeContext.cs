@@ -48,6 +48,8 @@ namespace BaristaHome.Data
             });
 
             // Setting decimal precision for Models with decimal properties (2 decimals)
+            builder.Entity<Drink>().Property(table => table.Price).HasPrecision(8, 2);
+
             builder.Entity<InventoryItem>().Property(table =>  table.Quantity).HasPrecision(16, 2);
             builder.Entity<InventoryItem>().Property(table => table.PricePerUnit).HasPrecision(16, 2);
 
