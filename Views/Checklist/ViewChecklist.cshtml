@@ -35,9 +35,10 @@
             </nav>
         </header>
 
-        <div align="center">
+        <div class="container" align="center">
             @*Checklist name*@
-            <h1 class="title">@Html.DisplayFor(model => model.ChecklistTitle)</h1>
+            <button class="title list-group-item list-group-item-action header-color text-black">@Html.DisplayFor(model => model.ChecklistTitle)</button>
+            <p> </p>
         </div>
 
         @*Checklist categories and store tasks*@

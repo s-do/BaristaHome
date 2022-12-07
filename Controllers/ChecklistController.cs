@@ -7,9 +7,11 @@ using Microsoft.Web.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Globalization;
 using System.Numerics;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace BaristaHome.Controllers
 {
@@ -38,9 +40,12 @@ namespace BaristaHome.Controllers
 
         //Creates a new checklist
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checklist([Bind("ChecklistId,ChecklistTitle")] Checklist checklist)
         {
+            // Capitalize the first letter of every word
+            checklist.ChecklistTitle = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(checklist.ChecklistTitle);
             var checklistViewModel = await (from c in _context.Checklist
                                             where c.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
                                             select c).ToListAsync();
@@ -160,6 +165,7 @@ namespace BaristaHome.Controllers
                                       join ct in _context.CategoryTask on cat.CategoryId equals ct.CategoryId
                                       join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
                                       where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
+                                      orderby st.TaskName
                                       select st).ToList();
 
                 checklistInfo[cc] = checklistTasks;
@@ -178,9 +184,15 @@ namespace BaristaHome.Controllers
 
         //Deletes a checklist from the db
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteChecklist(int id)
         {
             var checklist = await _context.Checklist.FindAsync(id);
+            if (checklist == null)
+            {
+                return NotFound();
+            }
             _context.Checklist.Remove(checklist);
             await _context.SaveChangesAsync();
             return RedirectToAction("Checklist", "Checklist");
@@ -202,11 +214,52 @@ namespace BaristaHome.Controllers
             {
                 return NotFound();
             }
-
+            // Generate all of the categories and tasks of the selected checklist
             CategoryViewModel checklistViewModel = GetCategoryTasks(checklist);
             return View(checklistViewModel);
         }
 
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditChecklist([Bind("ChecklistId,ChecklistTitle,StoreId")] Checklist checklist)
+        {
+            // Capitalize the first letter of every word
+            checklist.ChecklistTitle = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(checklist.ChecklistTitle);
+
+            if (ModelState.IsValid)
+            {
+                var existingChecklist = await _context.Checklist.FirstOrDefaultAsync(c => c.ChecklistTitle == checklist.ChecklistTitle && c.StoreId == checklist.StoreId);
+                if (existingChecklist != null)
+                {
+                    TempData["editChecklistError"] = "Checklist already exists! Please use a different one.";
+                    var checklistViewModel1 = await _context.Checklist.FirstOrDefaultAsync(m => m.ChecklistId == checklist.ChecklistId);
+                    return View(GetCategoryTasks(checklistViewModel1));
+                }
+
+                try
+                {
+                    _context.Update(checklist);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ChecklistExists(checklist.ChecklistId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+            }
+            TempData["editChecklistError"] = "There was an issue editing this checklist.";
+            var checklistViewModel = await _context.Checklist.FirstOrDefaultAsync(m => m.ChecklistId == checklist.ChecklistId);
+            return View(GetCategoryTasks(checklistViewModel));
+        }
+        
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
@@ -245,24 +298,70 @@ namespace BaristaHome.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCategory(int checklistId, int categoryId, string categoryName)
+        public async Task<IActionResult> EditCategory([Bind("ChecklistId, CategoryId, CategoryName")] Category category)
         {
-            if (checklistId == 0)
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == category.ChecklistId
+                                   select c).FirstOrDefaultAsync();
+            if (checklist == null)
             {
                 return NotFound();
             }
 
-            // see if category name exists in this checklist
-            var existingCategory = await (from cat in _context.Category
-                                          where cat.CategoryId == checklistId && cat.CategoryName == categoryName
-                                          select cat).FirstOrDefaultAsync();
-
-            if (existingCategory != null)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, "Category already exists in this checklist!");
-                return RedirectToAction("EditChecklist", new { id = checklistId });
+                // see if category name exists in this checklist
+                var existingCategory = await (from cat in _context.Category
+                                              // this Equals() method does a case-sensitive comparison between the strings (cat.CategoryName == category.CategoryName is case-insensitive)
+                                              where cat.ChecklistId == category.ChecklistId && EF.Functions.Collate(cat.CategoryName, "SQL_Latin1_General_CP1_CS_AS") == category.CategoryName
+                                              select cat).FirstOrDefaultAsync();
+                if (existingCategory != null)
+                {
+                    TempData["editCategoryError"] = "Category already exists in this checklist!";
+                    return View("EditChecklist", GetCategoryTasks(checklist));
+                }
+
+                // edit name and save changes
+                try
+                {
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CategoryExists(category.CategoryId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("EditChecklist", new { id = category.ChecklistId });
             }
-            return View();
+            TempData["editCategoryError"] = "There was an issue editing a category.";
+            return View("EditChecklist", GetCategoryTasks(checklist));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCategory(int checklistId, int categoryId)
+        {
+            // query checklist to redisplay view
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == checklistId
+                                   select c).FirstOrDefaultAsync();
+            var category = await _context.Category.FindAsync(categoryId);
+            if (checklist == null || category == null)
+            {
+                return NotFound();
+            }
+
+            _context.Category.Remove(category);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
         }
 
         [HttpPost]
@@ -270,6 +369,8 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTask(int checkListId, int categoryId, [Bind("TaskName")] StoreTask task)
         {
+            // force lower case to prevent case sensitivity upon displaying
+            task.TaskName = task.TaskName.ToLower();
             var checklist = await (from c in _context.Checklist
                                    where c.ChecklistId == checkListId
                                    select c).FirstOrDefaultAsync();
@@ -325,6 +426,8 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTask(int checklistId, int categoryId, int taskId, [Bind("TaskName")] StoreTask task)
         {
+            // force lower case to prevent case sensitivity upon displaying
+            task.TaskName = task.TaskName.ToLower();
             // getting the categorytask to update
             var categoryTask = await (from ct in _context.CategoryTask
                                               join t in _context.StoreTask on ct.StoreTaskId equals t.StoreTaskId
@@ -386,12 +489,39 @@ namespace BaristaHome.Controllers
             return View("EditChecklist", GetCategoryTasks(checklist));
         }
 
+        [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTask(int checklistId, int categoryId, int taskId)
+        {
+            var checklist = await (from c in _context.Checklist
+                                   where c.ChecklistId == checklistId
+                                   select c).FirstOrDefaultAsync();
+            var categoryTask = await _context.CategoryTask.FindAsync(categoryId, taskId);
+            if (checklist == null || categoryTask == null)
+            {
+                return NotFound();
+            }
+            _context.CategoryTask.Remove(categoryTask);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
+        }
+
         // Helper functions for validation checks
         private bool CategoryTaskExists(int categoryId, int taskId)
         {
-            return _context.CategoryTask.Any(e => e.CategoryId == categoryId && e.StoreTaskId == taskId);
+            return _context.CategoryTask.Any(ct => ct.CategoryId == categoryId && ct.StoreTaskId == taskId);
         }
 
+        private bool CategoryExists(int id)
+        {
+            return _context.Category.Any(cat => cat.CategoryId == id);
+        }
+
+        private bool ChecklistExists(int id)
+        {
+            return _context.Checklist.Any(c => c.ChecklistId == id);
+        }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
 

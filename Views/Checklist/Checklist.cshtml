@@ -65,7 +65,7 @@
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="modal-body">
                                     <label>Title</label>
-                                    <input name="ChecklistTitle" placeholder="Enter a new checklist name" class="form-control" />
+                                    <input name="ChecklistTitle" placeholder="Enter a new checklist name" class="form-control" style="text-transform: capitalize;" required />
 
                                 </div>
                                 <div class="modal-footer">
@@ -121,7 +121,6 @@
                                                     <input name="checklistId" type="hidden" value="@c.Key.ChecklistId" />
 
                                                     <h3>Are you sure about that?</h3>
-                                                    <iframe src="https://giphy.com/embed/IfyjWLQMeF6kbG2r0z"></iframe><p><a href="https://giphy.com/gifs/IfyjWLQMeF6kbG2r0z">via GIPHY</a></p>
                                                     <h5>This will delete every category and tasks within this checklist!</h5>
 
                                                     <div class="modal-footer">
