@@ -124,7 +124,7 @@
     object-fit:contain;
 }
 
-#Instructions, #DrinkName, #Description, #DrinkIngredients, #DrinkImage {
+#Instructions, #DrinkName, #Description, #DrinkIngredients, #DrinkImage, #Price, DrinkVideo{
     border: 3px solid #DFB3D3;
 }
 
