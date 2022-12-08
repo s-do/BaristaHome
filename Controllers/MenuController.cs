@@ -46,7 +46,7 @@ namespace BaristaHome.Controllers
 
         //POST add a drink, drink tag, and tag to database
         [HttpPost]
-        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkVideo,StoreId,Image,DrinkTags")] Drink drink, 
+        public async Task<IActionResult> AddItem([Bind("DrinkName,Instructions,Description,DrinkImageData,DrinkVideo,StoreId,Image,DrinkTags,Price")] Drink drink, 
             List<string> tagList, List<string> ingredientList, List<string> amountList, List<string> unitList)
         {
             /*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -54,7 +54,7 @@ namespace BaristaHome.Controllers
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
 
             var existingDrink = (from d in _context.Drink
-                                 where d.DrinkName.Equals(drink.DrinkName) && !d.DrinkId.Equals(drink.DrinkId)
+                                 where d.DrinkName.Equals(drink.DrinkName) && d.StoreId.Equals(storeId)
                                  select d).FirstOrDefault();
 
             if (existingDrink != null)
@@ -198,8 +198,7 @@ namespace BaristaHome.Controllers
 
                 return RedirectToAction("Menu", "Menu");
             }
-/*            ModelState.AddModelError(string.Empty, drink.DrinkName);*/
-            return RedirectToAction("Menu", "Menu");
+            return View(drink);
 
         }
 
@@ -564,7 +563,7 @@ namespace BaristaHome.Controllers
 
             if (existingDrink != null)
             {
-                ModelState.AddModelError(string.Empty, "Drink name in use");
+/*                ModelState.AddModelError(string.Empty, "Drink name in use");*/
                 return View(drink);
             }
 
