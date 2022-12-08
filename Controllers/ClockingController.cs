@@ -325,7 +325,7 @@ namespace BaristaHome.Controllers
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
                              join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == user.UserId
-                             select new ClockingViewModel
+                             select us/*new ClockingViewModel
                              {
                                  UserId = u.UserId,
                                  FirstName = u.FirstName,
@@ -333,7 +333,7 @@ namespace BaristaHome.Controllers
                                  ShiftStatusId = us.ShiftStatusId,
                                  ShiftStatus = ss.ShiftStatusName,
                                  Time = us.Time,
-                             }).ToList();
+                             }*/).ToList();
             ViewBag.AllStatus = allStatus;
 
 
@@ -367,32 +367,37 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")] ClockingViewModel c)
+        public async Task<IActionResult> EditStatus([Bind("UserId,ShiftStatusId,Time")] UserShiftStatus c)
         {
-            UserShiftStatus uss = new UserShiftStatus
+            /*UserShiftStatus uss = new UserShiftStatus
             {
-                UserId = userId,
-                ShiftStatusId = statusId,
-                Time = c.Time
+                UserId = c.UserId,
+                ShiftStatusId = newStatusOptionId,
+                Time = newTime
             };
             var userShiftStatus = (from s in _context.Store
                                    join u in _context.User on s.StoreId equals u.StoreId
                                    join us in _context.UserShiftStatus on u.UserId equals us.UserId
                                    join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == userId
-                                        && us.ShiftStatusId == statusId /*&& us.Time == time*/
+                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == c.UserId
+                                        && us.ShiftStatusId == c.ShiftStatusId *//*&& us.Time == time*//*
                                    select us).ToList();
 
             foreach (var s in userShiftStatus)
             {
                 var a = s;
                 Console.WriteLine(a);
-                if (s.Time.ToString() == time.ToString())
+                if (s.Time.ToString() == c.Time.ToString())
                 {
-                    _context.UserShiftStatus.Update(s);
+                    s.ShiftStatusId = newStatusOptionId;
+                    s.Time = newTime;
+                    _context.Update(s);
                     await _context.SaveChangesAsync();
                 }
-            }
+            }*/
+            var a = c;
+            _context.Update(c);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });
         }

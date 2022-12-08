@@ -1,4 +1,4 @@
-﻿@model BaristaHome.Models.ClockingViewModel
+﻿@model BaristaHome.Models.UserShiftStatus
 @{
     ViewData["Title"] = "View Work Status";
 }
@@ -37,8 +37,8 @@
 
         <div align="center">
 
-            <h1 class="title">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</h1>
-
+@*            <h1 class="title">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</h1>
+*@
             <div class="all-statuses">
                 <table class="table-payroll" style="width:100%">
                     <thead>
@@ -54,44 +54,55 @@
                         </tr>      
                     </thead>
                     <tbody>
-                        @{
-                            var myList = ViewBag.AllStatus==null ? new List<ClockingViewModel>() : (List<ClockingViewModel>)ViewBag.AllStatus;
+                    @{
+                        var myList = ViewBag.AllStatus==null ? new List<UserShiftStatus>() : (List<UserShiftStatus>)ViewBag.AllStatus;
 
-                            if(myList.Any()) {
-                                foreach(var uss in myList)
-                                {
-                                    <tr>
-                                        <td>@uss.ShiftStatus</td>
-                                        <td>@uss.Time</td>
-                                        <td>
+                        if(myList.Any()) {
+                            foreach(var uss in myList)
+                            {
+                                var status = "";
+                                if(@uss.ShiftStatusId == 1){
+                                    status = "Clock In";
+                                }
+                                else if(@uss.ShiftStatusId == 2){
+                                    status = "Clock Out";
+                                }
+                                else if(@uss.ShiftStatusId == 3){
+                                    status = "Start Break";
+                                }
+                                else if(@uss.ShiftStatusId == 4){
+                                    status = "End Break";
+                                }
+                                <tr>
+                                        
+                                    <td>@status</td>
+                                    <td>@uss.Time</td>
+                                    <td>
                                         <form asp-action="EditStatus">
                                             @*<a class="btn btn-function"  asp-action="EditStatus" asp-route-id="@uss.UserId">Edit</a>*@
                                             <!-- Button trigger modal -->
                                             <button type="button" class="btn btn-function" data-toggle="modal" data-target="#exampleModal">
-                                              Edit
+                                                Edit
                                             </button>
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                              <div class="modal-dialog" role="document">
+                                                <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
-                                                  <div class="modal-header">
+                                                    <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel">Edit Shift Status</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                      <span aria-hidden="true">&times;</span>
+                                                        <span aria-hidden="true">&times;</span>
                                                     </button>
-                                                  </div>
-                                                  <div class="modal-body">
-                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                    <form asp-action="EditStatus" id="editForm">
+                                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                                     
-                                                        <input type="hidden" asp-for="UserId"/>
-                                                        <input type="hidden" asp-for="ShiftStatusId"/>
-                                                        <input type="hidden" asp-for="FirstName"/>
-                                                        <input type="hidden" asp-for="LastName"/>
-                                                        @*<input type="hidden" asp-for="ShiftStatus"/>*@
+                                                        <input type="hidden" asp-for="UserId" value="@uss.UserId"/>
 
                                                         <label class="control-label">Shift Status</label>
-                                                        <select asp-for="ShiftStatus" class="form-control" asp-items="ViewBag.StatusOptions"></select>
+                                                        <select asp-for="ShiftStatusId" class="form-control" asp-items="ViewBag.StatusOptions"></select>
 
                                                         
                                                         <div class="form-group">
@@ -99,24 +110,25 @@
                                                             <input type="datetime-local" asp-for="Time" class="form-control" />
                                                             <span asp-validation-for="Time" class="text-danger"></span>
                                                         </div>
-                                                  </div>
-                                                  <div class="modal-footer">
-                                                    <a asp-action="EditStatus" asp-route-userId="@uss.UserId" asp-route-statusId="@uss.ShiftStatusId" asp-route-time="@uss.Time" type="submit" class="btn btn-primary">Save</a>
-                                                  </div>
+                                                    </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    @*<a asp-action="EditStatus" asp-route-userId="@uss.UserId" asp-route-statusId="@uss.ShiftStatusId" asp-route-time="@uss.Time" type="submit" class="btn btn-primary">Save</a>*@
+                                                    <input type="submit" class="btn btn-primary" value="Save"/>
+                                                    </div>
                                                 </div>
-                                              </div>
+                                                </div>
                                             </div>
                                         </form>
                                         <form method="post">
                                             <button type="submit" class="btn btn-function" asp-action="DeleteStatus" asp-route-userId="@uss.UserId" asp-route-statusId="@uss.ShiftStatusId" asp-route-time="@uss.Time">Delete</button>
                                         </form>
                                         
-                                        </td>
-                                    </tr>
-                                }
+                                    </td>
+                                </tr>
                             }
                         }
-
+                    }
                     </tbody>
                 </table>
             </div>
