@@ -58,13 +58,23 @@
         </div>
         @*Drink name and description*@
         <div class = "drink-details">
-            @Html.DisplayNameFor(model => model.DrinkName)
-            <div class="text-display">
-                @Html.DisplayFor(model => model.DrinkName)
+            <div class="name" style="width:47%; float:left; margin-right:6%">
+                @Html.DisplayNameFor(model => model.DrinkName)
+                <div class="text-display">
+                    @Html.DisplayFor(model => model.DrinkName)
+                </div>
             </div>
-            @Html.DisplayNameFor(model => model.Description)
-            <div class="text-display" style="height: 150px;">
-                @Html.DisplayFor(model => model.Description)
+            <div class="price" style="width:47%; float:left">
+                @Html.DisplayNameFor(model => model.Price)
+                <div class="text-display">
+                    $@Html.DisplayFor(model => model.Price)
+                </div>
+            </div>
+            <div class="desc"  sstyle="margin-top:10px">
+                @Html.DisplayNameFor(model => model.Description)
+                <div class="text-display" style="height: 150px;">
+                    @Html.DisplayFor(model => model.Description)
+                </div>
             </div>
     @*ALEX ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
