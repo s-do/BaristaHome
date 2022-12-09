@@ -37,4 +37,11 @@ body {
     background-color: white;
     color: black;
 }
+
+.img-size img {
+    margin-right: 5px;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+}
 /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
