@@ -11,6 +11,28 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/*img {
+    float: right;
+}*/
+
+.table-inventory {
+    width: 105.25%;
+}
+
+.table-inventory th {
+    padding-right: 10px;
+}
+
+.table-inventory td {
+    padding-right: 10px;
+}
+
+
+.table-inventory th:last-child, td:last-child {
+    background: #ffe4bc;
+    width: 5%;
+}
+
 /*Background for checklist cards*/
 .pb-3 {
     background-color: #ffe4bc;
