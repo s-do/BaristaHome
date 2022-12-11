@@ -13,6 +13,10 @@ namespace BaristaHome.Data
         {
         }
 
+        public BaristaHomeContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Creating candidate key for models (multiple columns for pk); This is basically a must for many-to-many relationships

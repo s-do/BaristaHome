@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿@model BaristaHome.Models.RequestViewModel
 
 @{
     ViewData["Title"] = "Shared Calendar";
@@ -84,22 +84,6 @@
 
     <body>
 
-         <!--Testing-->
-        @foreach(var k in ViewBag.UserShifts ){
-            @k.ShiftId
-            <p> </p>
-            @k.StartShift
-            <div> </div>
-        }
-
-        <div>
-            USER ID
-            @ViewData["userId"]
-
-            STORE ID
-            @ViewData["storeId"]
-        </div>
-
         <!--Nav bar area-->
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
@@ -117,27 +101,68 @@
 
             @*User selects their own shift that they'd like to swap out*@
             <p class="instructions">Select a shift that you would like to swap out:</p>
+            
+            <form asp-action="Swap" id="editForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            @*
+             @{
+                var myList = ViewBag.CurrentUserShifts==null ? new List<RequestViewModel>() : (List<RequestViewModel>)ViewBag.CurrentUserShifts;
 
+                @if(myList.Any()) {
+                 <select id="userShift">
+                    @foreach(var t in myList) {
+                        <option value="@t.ShiftId" >@t.StartTime to @t.EndTime</option>
+                    } </select>
+                }
+               }
+            
+             @{
+                var myList2 = ViewBag.workerNamesAndTheirShifts==null ? new List<RequestViewModel>() : (List<RequestViewModel>)ViewBag.workerNamesAndTheirShifts;
 
-            @*Dropdown for selecting a worker*@
-            <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @ViewData["selectedShift"]
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    @foreach(var k in ViewBag.UserShifts ){
-                        <a class="dropdown-item" href="#">@k.StartShift to @k.EndShift</a>
-                    }
+                @if(myList.Any()) {
+                 <select id="userRequestedShift">
+                    @foreach(var t in myList2) {
+                        <option value="@t.ShiftId" name="SelectedRequestedShift">@t.FirstName @t.LastName - @t.StartTime to @t.EndTime</option>
+                    } </select>
+                }
+               }
+            *@
+            <select asp-for="ShiftId" asp-items="@ViewBag.CurrentUserShifts">
+                <option>Please select one</option>
+            </select>
 
-                </div>
-            </div>
-            <input type ="submit" asp-controller="Calendar" asp-action="UpdateSwapForm" > 
-            @ViewData["selectedShift"]
+             <select asp-for="ShiftId2" asp-items="@ViewBag.workerNamesAndTheirShifts">
+                <option>Please select one</option>
+            </select>
+              
+            @*Send button*@
+            <button type="submit"class="send-button" asp-action="Swap">Send</button>
+            </form>
+
+             @*
+               @using (Html.BeginForm("Swap", "Calendar", FormMethod.Post)) {
+                
+                
+               
+                @Html.DropDownListFor(m => m.CurrentUserShiftId, RequestViewModel.GetCurrentUserShifts())
+                @Html.DropDownListFor(m => m.RequestedShiftId, RequestViewModel.GetWorkerNameAndShifts())
+
+                @await Html.PartialAsync("GetCurrentUserShift")
+                @await Html.PartialAsync("GetSelectedWorker")
+                
+
+                <input type="submit" value="Send"/>
+                }
+            *@
+          
+
             @*User selects a coworker who has a shift they want to switch with*@
             <p class="instructions">Select a worker:</p>
 
             @*Dropdown for selecting a worker*@
-            <div class="dropdown ">
+            @*
+                            <div class="dropdown ">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select worker
                 </button>
@@ -148,10 +173,10 @@
                 </div>
             </div>
 
-            @*User selects the coworker's shift that they want to switch with*@
+           
             <p class="instructions">Select one of this worker's shifts to request for:</p>
 
-            @*Dropdown for selecting a worker*@
+           
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle bg-light text-muted" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select coworker's shift
@@ -162,9 +187,10 @@
                     }
                 </div>
             </div>
+            *@
 
-            @*Send button*@
-            <button class="send-button" asp-action="Results">Send</button>
+
+            
         </div>
 
     </body>

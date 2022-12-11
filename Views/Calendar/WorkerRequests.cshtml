@@ -126,27 +126,32 @@
                 </tr>
             </thead>
             <tbody>
-                @*First example row*@
-                @*@foreach (var item in Model)
-                {*@
                 
-                    
+                @*Display each swap request*@
                 @foreach(var k in ViewBag.ShiftRequests) {
                     <tr>
+
+                        @*Display who the current user sent a request to*@
                         <td>
                             @k.RecipientUser.FirstName
                             @k.RecipientUser.LastName
                         </td>
+
+                        @*Display current user's offered shift*@
                         <td>
                             @k.SenderShift.StartShift
                             <div> To </div>
                             @k.SenderShift.EndShift
                         </td>
+
+                        @*Display the shift that the current user is requesting for*@
                         <td>
                             @k.RecipientShift.StartShift
                             <div> To </div>
                             @k.RecipientShift.EndShift
                         </td>
+
+                        @*Display the status of each swap request*@
                         <td>
                             @if(k.Response == true) {
                                 <button class="green-button">
@@ -170,7 +175,6 @@
                     </tr>
                 }
                 
-                @*}*@
             </tbody>
         </table>
 

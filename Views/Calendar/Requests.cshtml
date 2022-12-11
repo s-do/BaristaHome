@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> <!-- probably add custom css changes on this css file -->
+        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> 
             
         <style>
 
@@ -122,26 +122,31 @@
                 </tr>
             </thead>
             <tbody>
-                @*First example row*@
-                @*@foreach (var item in Model)
-                {*@
-
+                @*Display each shift request*@
+               
                 @foreach(var k in ViewBag.ShiftRequests) {
                     <tr>
+                        @*Display the sender's name*@
                         <td>
                             @k.SenderUser.FirstName
                             @k.SenderUser.LastName
                         </td>
+
+                        @*Display their offered shift*@
                         <td>
                             @k.SenderShift.StartShift
                             <div> To </div>
                             @k.SenderShift.EndShift
                         </td>
+
+                        @*Display their requested shift from the current user*@
                         <td>
                             @k.RecipientShift.StartShift
                             <div> To </div>
                             @k.RecipientShift.EndShift
                         </td>
+
+                        @*Display Accept and Decline button*@
                         <td>
                             <button class="green-button">
                                 <a asp-action="SwapShifts" asp-route-RequestId="@k.RequestId">Accept</a> 
