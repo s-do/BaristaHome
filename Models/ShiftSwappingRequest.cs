@@ -18,9 +18,11 @@ namespace BaristaHome.Models
         [ForeignKey("RecipientUser")]
         public int RecipientUserId { get; set; }
 
+        [Required(ErrorMessage = "Please select a shift to swap out.")]
         [ForeignKey("SenderShift")]
         public int SenderShiftId { get; set; }
 
+        [Required(ErrorMessage = "Please select a shift to request for.")]
         [ForeignKey("RecipientShift")]
         public int RecipientShiftId { get; set; }
         

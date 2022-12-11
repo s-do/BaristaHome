@@ -175,8 +175,10 @@ namespace BaristaHome.Controllers
 
         /* CINDIE ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
 
+        //Return Swap view with two dropdown menus, one populated with the shifts belonging to the current user, and the other populated with other coworker's shifts
         public async Task<IActionResult> Swap()
         {
+            //Get current user's shifts
             var currentUserShifts = (from store in _context.Store
                                      join user in _context.User on store.StoreId equals user.StoreId
                                      join shift in _context.Shift on user.UserId equals shift.UserId
@@ -195,11 +197,10 @@ namespace BaristaHome.Controllers
                                          Value = s.ShiftId
                                      })
                                     .ToList(); 
+            //Create a select list (to use in the view's dropdown menu)
             ViewData["CurrentUserShifts"] = new SelectList(currentUserShifts, "Value", "Text");
 
-
-            //ViewBag.CurrentUserShifts = currentUserShifts;
-
+            //Get each coworker's names and shifts
             var workerNamesAndTheirShifts = (from store in _context.Store
                                      join user in _context.User on store.StoreId equals user.StoreId
                                      join shift in _context.Shift on user.UserId equals shift.UserId
@@ -218,33 +219,63 @@ namespace BaristaHome.Controllers
                                          Text = s.FirstName + " " + s.LastName + " - " + s.StartTime + " to " + s.EndTime,
                                          Value = s.ShiftId
                                      })
-                                    .ToList(); 
+                                    .ToList();
+
+            //Create a select list (to use in the view's dropdown menu)
             ViewData["workerNamesAndTheirShifts"] = new SelectList(workerNamesAndTheirShifts, "Value", "Text");
-
-            //ViewBag.workerNamesAndTheirShifts = workerNamesAndTheirShifts;
-
+ 
             return View();
 
         }
 
+        //Save the shift swapping request to the database
         [HttpPost]
-        public async Task<IActionResult> Swap(int ShiftId, int ShiftId2)
+        public async Task<IActionResult> Swap(int CurrentUserShiftId, int ShiftId2)
         {
-            var a = ShiftId;
-            var b = ShiftId2;
+            //Get sender user id, recipient user id, sender shift id, recipient shift id
+            int senderUserId = Convert.ToInt16(User.FindFirst("UserId").Value);
+            var getRecipientUserId = await _context.Shift.FindAsync(ShiftId2);
+            int recipientUserId = getRecipientUserId.UserId;
+            int recipientShiftId = ShiftId2;
+
+            //Create a new shift swapping request, and set all attributes
+            var request = new ShiftSwappingRequest();
+            request.SenderUserId = senderUserId;
+            request.RecipientUserId = recipientUserId;
+            request.SenderShiftId = CurrentUserShiftId;
+            request.RecipientShiftId = recipientShiftId;
+
+            ViewBag.Error = "";
+            if (ModelState.IsValid)
+            {
+                //Get all shift swapping requests from the database
+                var allRequests = await _context.ShiftSwappingRequest.ToListAsync();
+
+                //For each request, check if it has the same current user's shift id and recipient shift id
+                foreach (ShiftSwappingRequest r in allRequests)
+                {
+                    if (r.SenderShiftId == CurrentUserShiftId && r.RecipientShiftId == ShiftId2)
+                    {
+                        //If it matches, display the swap request form again for the user to try again
+                        ViewBag.Error = "This shift swapping request has already been made.";
+                        return RedirectToAction("Swap");
+                    }
+                }
+                try
+                {
+                    //Save the request to the database
+                    _context.Update(request);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction("Shifts");
+            }
             return RedirectToAction("Swap");
-        }
 
-        public int getUserId()
-        {
-            return Convert.ToInt16(User.FindFirst("UserId").Value);
         }
-
-        public int getStoreId()
-        {
-            return Convert.ToInt16(User.FindFirst("StoreId").Value);
-        }
-
 
 
         public async Task<IActionResult> WorkerRequests()
@@ -284,94 +315,6 @@ namespace BaristaHome.Controllers
             return View(shiftRequests);
         }
 
-
-        //Form for submitting a swap request
-        /*
-        public IActionResult Swap()
-        {
-            //User Shifts
-            var shifts = (List<Shift>) (from store in _context.Store
-                                  join user in _context.User on store.StoreId equals user.StoreId
-                                  join shift in _context.Shift on user.UserId equals shift.UserId
-                                  where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
-                                  select shift).ToList();
-
-            ViewBag.UserShifts = shifts;
-
-            /////////////////////////////////////////////////////////////////
-            var testShifts = (from store in _context.Store
-                              join user in _context.User on store.StoreId equals user.StoreId
-                              join shift in _context.Shift on user.UserId equals shift.UserId
-                              where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
-                              select shift)
-                            .Select(s => new
-                            {
-                                Text = s.StartShift + " to " + s.EndShift,
-                                Value = s.ShiftId
-                            })
-                            .ToList();
-
-            ViewBag.testShiftsList = new SelectList(testShifts, "Value", "Text");
-            ////////////////////////////////////////////////////////////////////
-            var testWorkers = (from store in _context.Store
-                              join user in _context.User on store.StoreId equals user.StoreId
-                              join shift in _context.Shift on user.UserId equals shift.UserId
-                              where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                              select shift)
-                            .Select(s => new
-                            {
-                                Text = s.User.FirstName + " " + s.User.LastName + " - " + s.StartShift + " to " + s.EndShift,
-                                Value = s.ShiftId
-                            })
-                            .ToList();
-
-            ViewBag.testWorkersList = new SelectList(testWorkers, "Value", "Text");
-
-            ////////////////////////////////////////////////////////////////////
-
-
-            ViewData["userId"] = User.FindFirst("UserId").Value;
-            ViewData["storeId"] = (User.FindFirst("StoreId").Value);
-
-            //List of workers
-            List<User> users = (from store in _context.Store
-                                join user in _context.User on store.StoreId equals user.StoreId
-                                where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
-                                where (!user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value)))
-                                select user).ToList();
-
-            ViewBag.Users = users;
-
-
-            return View();
-        }*/
-
-        /*
-        [HttpPost]
-        public IActionResult Swap(Shift a, Shift b)
-        {
-            var currentUserShift = a;
-            var requestedShift = b;
-            return RedirectToAction("Swap");
-        }*/
-
-        public PartialViewResult GetCurrentUserShift()
-        {
-            return PartialView("GetCurrentUserShift", new Shift());
-
-        }
-
-        public PartialViewResult GetSelectedWorker()
-        {
-            return PartialView("GetSelectedWorker", new User());
-
-        }
-
-        public PartialViewResult GetSelectedWorkerShift()
-        {
-            return PartialView("GetSelectedWorkerShift", new Shift());
-
-        }
 
         //Switches shifts between users based on request ID
         public async Task<IActionResult> SwapShifts(int RequestId)
