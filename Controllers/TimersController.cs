@@ -47,11 +47,18 @@ namespace BaristaHome.Controllers
             else
             {
                 StoreTimer timer = timers.First();
+                StoreTimer timer2 = timers.First();
+                
+                //get all timers into a list. find out how many there are. 
                 return View(timer);
             }
             
         }
 
+        public PartialViewResult Timer2()
+        {
+            return PartialView("Timer2");
+        }
 
         //Returns a page for creating a timer 
         public async Task<IActionResult> CreateTimer()

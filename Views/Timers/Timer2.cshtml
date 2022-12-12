@@ -1,4 +1,9 @@
-﻿@{
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@{
     ViewData["Title"] = "Timers";
 }
 
@@ -165,18 +170,12 @@
                 </a>
                  <div class="timer"> </div>
                  <p> </p>
+                  <div class="timer"> timer 2 </div>
             </div>
-           <p> </p>
-            <div class="timer-perimeter">
-                <a asp-controller="Timers" asp-action="DeleteTimer" class="trash-can" asp-route-timerId=@Model.StoreTimerId>
-                <span class="material-symbols-outlined" >delete</span>
-                </a>
-                 <div class="timer"> </div>
-                 <p> </p>
-            </div>
-
+           
         </div>
 
+       
 
     
         <script>
@@ -307,11 +306,16 @@
             }
         }
 
-        
-        const timerElements = document.querySelectorAll('.timer');
+        var a = new Timer(document.querySelector(".timer"));
 
-        timerElements.forEach((root) => {
-          const timer = new Timer(root);
+        var b = new Timer(document.querySelector(".timer"));
+
+        window.addEventListener("load", function() { 
+            a.updateInterfaceTime();
+        });
+
+         window.addEventListener("load", function() { 
+            b.updateInterfaceTime();
         });
 
         
