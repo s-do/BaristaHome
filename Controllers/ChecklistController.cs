@@ -512,6 +512,41 @@ namespace BaristaHome.Controllers
             return RedirectToAction("EditChecklist", new { id = checklist.ChecklistId });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> MarkTask(int categoryId, int taskId)
+        {
+            var categoryTask = await (from ct in _context.CategoryTask
+                                      where ct.CategoryId == categoryId && ct.StoreTaskId == taskId
+                                      select ct).FirstOrDefaultAsync();
+
+            var taskName = await (from st in _context.StoreTask
+                                  where st.StoreTaskId == taskId
+                                  select st).FirstOrDefaultAsync();
+
+            TaskViewModel updatedTask = new TaskViewModel { TaskName = "", CategoryId = categoryId, StoreTaskId = taskId };
+
+            if (categoryTask != null && taskName != null)
+            {
+
+                // flip the marked state of the task
+                if (categoryTask.IsFinished)
+                {
+                    categoryTask.IsFinished = false;
+                    updatedTask.TaskName += "❌ " + taskName.TaskName;
+                }
+                else
+                {
+                    categoryTask.IsFinished = true;
+                    updatedTask.TaskName += "✔️ " + taskName.TaskName;
+                }
+
+                _context.Update(categoryTask);
+                await _context.SaveChangesAsync();
+
+            }
+            return Json(updatedTask);
+        }
+
         // Helper functions for validation checks
         private bool CategoryTaskExists(int categoryId, int taskId)
         {
@@ -528,12 +563,5 @@ namespace BaristaHome.Controllers
             return _context.Checklist.Any(c => c.ChecklistId == id);
         }
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
-
-
-        [HttpGet]
-        public IActionResult MarkChecklist()
-        {
-            return View();
-        }
     }
 }

@@ -227,29 +227,19 @@
                             @*Displaying all tasks of respective category*@
                             foreach (var t in c.Value)
                             {
-                                <!-- This amazing random table is purely to add a checked image next to the task :D -->
+                                <!-- This amazing random table is purely to add the delete image next to the task :D -->
                                 <table class="table-inventory">
                                     <tr>
 
                                     @if (t.IsFinished) {
                                         <td class="list-group-item list-group-item-action" id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal-@c.Key.CategoryId-@t.StoreTaskId" data-mdb-toggle="editTask">
-                                            ✔️ @t.TaskName Marked: @t.IsFinished
+                                            ✔️ @t.TaskName
                                         </td>
                                     } else {
                                         <td class="list-group-item list-group-item-action" id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal-@c.Key.CategoryId-@t.StoreTaskId" data-mdb-toggle="editTask">
-                                            ❌ @t.TaskName Marked: @t.IsFinished
+                                            ❌ @t.TaskName
                                         </td>
                                     }
-
-                                    @*<td class="image">
-                                            <!-- Image to Mark Task -->
-                                        <form asp-action="MarkTask">
-                                            <a class="img-size " type="submit" asp-route-id="@c.Key.CategoryId-@t.StoreTaskId">
-                                                <img src="../../images/cross.png" alt="Mark">
-                                            </a>
-                                
-                                        </form>
-                                    </td>*@
 
                                     <td>
                                         <!-- Image to Mark Task -->
@@ -287,7 +277,6 @@
 
                                                     <div class="modal-footer">
                                                         <button type="submit" class="btn btn-function">Edit</button>
-                                                        <button class="btn btn-function" data-dismiss="modal" data-toggle="modal" data-target="#deleteTask-@c.Key.CategoryId-@t.StoreTaskId">Delete</button>
                                                         <button class="btn btn-function" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </form>
@@ -367,34 +356,6 @@
                 }
             }
         }
-    </div>
-
-    @*Modals for editing/adding categories and tasks*@
-
-    <!-- Add Category Modal -->
-    <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newModalLabel">Add Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form asp-action="">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="modal-body">
-                        <label>Title</label>
-                        <input asp-for="ChecklistTitle" class="form-control" />
-                        <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-function">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!--Pretty import one liner that prevents POSTing from happening upon invalid inputs-->
