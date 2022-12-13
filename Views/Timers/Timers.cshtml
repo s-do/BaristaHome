@@ -1,9 +1,12 @@
-﻿@{
+﻿@using System.Web.Helpers
+@using System;
+
+@{
     ViewData["Title"] = "Timers";
 }
 
 @*Cindie*@
-@model BaristaHome.Models.StoreTimer
+@model List<BaristaHome.Models.StoreTimer>
 <html>
     <head>
         <style>
@@ -147,6 +150,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+   
     </head>
 
     <body>
@@ -160,30 +164,28 @@
         @*Timer*@
         <div class="background">
             <div class="timer-perimeter">
-                <a asp-controller="Timers" asp-action="DeleteTimer" class="trash-can" asp-route-timerId=@Model.StoreTimerId>
-                <span class="material-symbols-outlined" >delete</span>
-                </a>
-                 <div class="timer"> </div>
-                 <p> </p>
-            </div>
-           <p> </p>
-            <div class="timer-perimeter">
-                <a asp-controller="Timers" asp-action="DeleteTimer" class="trash-can" asp-route-timerId=@Model.StoreTimerId>
-                <span class="material-symbols-outlined" >delete</span>
-                </a>
-                 <div class="timer"> </div>
-                 <p> </p>
-            </div>
+                @foreach(var timer in Model) {     
+                    <div class="timer-perimeter">
 
+                        
+                        <div class="timer timer-perimeter background" id="timer-container"> </div>
+
+                         <p> </p>
+                    </div>
+                }
+                
+            </div>
         </div>
 
-
-    
+        
         <script>
          @*Timer class*@
         class Timer {
-            constructor(root) {
-                root.innerHTML = Timer.getHTML();
+            constructor(root, timer) {
+                this.timer = timer;
+
+                root.innerHTML = Timer.getHTML(this.timer);
+                console.log(this.timer.durationMin);
 
                  @*References to the span elements in the getHTML() method below*@
                 this.el = {
@@ -193,16 +195,19 @@
                     restart: root.querySelector(".timer__btn--restart")
                 };
 
+                @*Save reference to the timer object*@
+                this.timer = timer;
+
                 @*Initialize timer for when it first loads*@
                 this.interval = null;
-                this.remainingSeconds = @Model.DurationMin * 60;
+                this.remainingSeconds = this.timer.durationMin * 60;
                 this.updateInterfaceTime();
 
                 @*If restart button is clicked*@
                 this.el.restart.addEventListener("click", () => {
                     
                     this.stop();
-                    this.remainingSeconds =  @Model.DurationMin * 60;
+                    this.remainingSeconds =  this.timer.durationMin * 60;
                     this.updateInterfaceTime();
                     
                 });
@@ -282,14 +287,11 @@
             }
 
 
-            static getHTML() {
+            static getHTML(timer) {
                 return `
-                    <div class="timer-title">
-                        @Model.TimerName
-                        
-                    </div>
+                    <div class="timer-title">${timer.timerName}</div>
                     <div class="timer-digits">
-                        <span class="timer__part timer__part--minutes">@Model.DurationMin</span>
+                        <span class="timer__part timer__part--minutes">this.timer.durationMin</span>
                         <span class="timer__part">:</span>
                         <span class="timer__part timer__part--seconds">00</span>
                     </div>
@@ -306,20 +308,22 @@
                 `;
             }
         }
-
         
-        const timerElements = document.querySelectorAll('.timer');
+        const timers = JSON.parse('@Html.Raw(Json.Serialize(Model))');
+        const root = document.getElementById("timer-container");
+        for (let t of timers) {
+            const container = document.createElement("div");
+            container.classList.add("background");
+            container.classList.add("timer-perimeter");
+            container.classList.add("timer");
+            container.classList.add("timer-container");
+      
+            document.body.appendChild(container);
+            const timer = new Timer(container,t);
+        }
 
-        timerElements.forEach((root) => {
-          const timer = new Timer(root);
-        });
-
-        
         </script>
-        
-        
-        
-        
+
         
     </body>
 

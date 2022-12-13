@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

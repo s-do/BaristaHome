@@ -34,10 +34,10 @@ namespace BaristaHome.Controllers
         {
 
             var storeId = Convert.ToInt32(User.FindFirst("StoreId").Value);
-            var timers = (IEnumerable<StoreTimer>)(from s in _context.Store
+            var timers = (List<StoreTimer>)(from s in _context.Store
                                           join t in _context.StoreTimer on s.StoreId equals t.StoreId
                                           where s.StoreId == storeId
-                                          select t);
+                                          select t).ToList();
             //StoreTimer ? timer = await _context.StoreTimer.FindAsync(12);
             
             if (!timers.Any())
@@ -47,10 +47,10 @@ namespace BaristaHome.Controllers
             else
             {
                 StoreTimer timer = timers.First();
-                StoreTimer timer2 = timers.First();
+                ViewBag.x = timers;
                 
                 //get all timers into a list. find out how many there are. 
-                return View(timer);
+                return View(timers);
             }
             
         }
