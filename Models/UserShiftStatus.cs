@@ -10,7 +10,7 @@ namespace BaristaHome.Models
         public DateTime Time { get; set; }
 
         // Relationships
-        public virtual User User { get; set; }
-        public virtual ShiftStatus ShiftStatus { get; set; }
+        public virtual User? User { get; set; }
+        public virtual ShiftStatus? ShiftStatus { get; set; }
     }
 }
