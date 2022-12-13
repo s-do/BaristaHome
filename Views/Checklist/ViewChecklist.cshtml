@@ -48,7 +48,7 @@
         <div class="checklist-info container">
             @{
                 // Quick null check if checklist has no categories or tasks
-                var categoryTasks = Model.CategoryTasks == null ? new Dictionary<Category, List<StoreTask>>() : (Dictionary<Category, List<StoreTask>>)Model.CategoryTasks;
+                var categoryTasks = Model.CategoryTasks == null ? new Dictionary<Category, List<TaskViewModel>>() : (Dictionary<Category, List<TaskViewModel>>)Model.CategoryTasks;
                 if (categoryTasks.Any())
                 {
                     // Displaying category names from the dictionary and their respective tasks
@@ -60,7 +60,14 @@
                             @{
                                 foreach (var t in c.Value)
                                 {
-                                    <a id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action">@t.TaskName</a>
+                                    @if (t.IsFinished)
+                                    {
+                                        <a id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action">✔️ @t.TaskName</a>
+                                    }
+                                    else
+                                    {
+                                        <a id="@t.StoreTaskId" data-toggle="modal" data-target="#editModal" href="#" class="list-group-item list-group-item-action">❌ @t.TaskName</a>
+                                    }
                                 }
                             }
 

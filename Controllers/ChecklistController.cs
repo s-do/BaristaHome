@@ -154,7 +154,7 @@ namespace BaristaHome.Controllers
                                      select cat).ToList();
 
             //checklistInfo = { {categoryName, {list of tasks in category}}, ...}
-            Dictionary<Category, List<StoreTask>> checklistInfo = new Dictionary<Category, List<StoreTask>>();
+            Dictionary<Category, List<TaskViewModel>> checklistInfo = new Dictionary<Category, List<TaskViewModel>>();
 
             //Finds tasks in a category and adds it to a list where the category is the key
             foreach (var cc in checklistCategory)
@@ -166,7 +166,12 @@ namespace BaristaHome.Controllers
                                       join st in _context.StoreTask on ct.StoreTaskId equals st.StoreTaskId
                                       where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && ct.CategoryId == cc.CategoryId
                                       orderby st.TaskName
-                                      select st).ToList();
+                                      select new TaskViewModel
+                                      {
+                                          StoreTaskId = st.StoreTaskId,
+                                          TaskName = st.TaskName,
+                                          IsFinished = ct.IsFinished
+                                      }).ToList();
 
                 checklistInfo[cc] = checklistTasks;
             }
