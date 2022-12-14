@@ -9,8 +9,22 @@
 @model List<BaristaHome.Models.StoreTimer>
 <html>
     <head>
+
+        @*Imported stylesheets to use for CSS styling*@
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Barista Home</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
         <style>
 
+        div {
+            display:flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+                
+        }
         .gfg {
             all: unset;
         }
@@ -30,13 +44,17 @@
             display:flex;
             flex-direction:column;
             align-content:center;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            flex-wrap:nowrap;
         }
 
         .timer-digits{
+            display:block;
             margin-top: 10px;
-            margin-left:5px;
             text-align:center;
             margin-bottom: 10px;
+            flex-wrap:nowrap;
            
         }
 
@@ -45,6 +63,8 @@
             color:navy;
             font-size:25px;
             margin-top:-25px;
+            display:block;
+            flex-wrap:nowrap;
         }
 
         .buttons{
@@ -55,6 +75,7 @@
         .timer__part {
             font-size: 40px;
             font-weight: bold;
+
         }
 
         .timer__btn {
@@ -80,6 +101,9 @@
             background:#f6aa90;
         }
         
+        .timer__btn--remove{
+            background: red;
+        }
         .delete-button{
             align-self:end;
             margin-right: 20px;
@@ -99,6 +123,8 @@
             padding-bottom: 30px;
             padding-left: 30px;
             padding-right: 30px;
+            display: flex;
+            flex-direction: row;
 
         }
 
@@ -114,20 +140,29 @@
 
         }
 
+        @*CSS for delete a timer*@
+
+        .button-area{
+            display:flex;
+           flex-direction: row;
+            justify-content:space-between;
+            
+        }
+
         @*CSS for create a timer button*@
         .pink-button {
-        background-color: pink;
-        color: black;
-        border: none;
-        border-radius: 3px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-bottom: 10px;
-        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
-        transition: background-color 0.15s, color 0.15s;
-        display: inline-block;
+            background-color: pink;
+            color: black;
+            border: none;
+            border-radius: 3px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-bottom: 10px;
+            box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+            transition: background-color 0.15s, color 0.15s;
+            display: inline-block;
         }
 
         .pink-button:hover {
@@ -152,47 +187,54 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
    
     </head>
-
+     
     <body>
+
         <div class="text-center">
-            <h1 class="display-4">Timers</h1>
+            <h1 style="align-self:center;"class="display-4">Timers</h1>
         </div>
 
-        @*Create a timer button*@
-        <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
         
-        @*Timer*@
-        <div class="background">
-            <div class="timer-perimeter">
-                @foreach(var timer in Model) {     
-                    <div class="timer-perimeter">
-
-                        
-                        <div class="timer timer-perimeter background" id="timer-container"> </div>
-
-                         <p> </p>
-                    </div>
-                }
-                
+        <div class="button-area">
+            
+            @*Create a timer button*@  
+            <div>
+                <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
+            </div>
+               
+            
+            @*Delete timer dropdown and delete button*@
+            <div class="delete-timer-area">
+                <form asp-action = "DeleteTimer">
+                <select placeholder="Select Timer" name="timerId" asp-items="ViewBag.Timers"></select>
+                <button class="pink-button" type="submit" asp-action="DeleteTimer" >Delete</button>
+                </form>
             </div>
         </div>
 
+        
+        @*Timer*@
+        <div class="background">
+
+                
+             
+
+            <div  id="timer-container"> </div>
+        </div>
         
         <script>
          @*Timer class*@
         class Timer {
             constructor(root, timer) {
                 this.timer = timer;
-
                 root.innerHTML = Timer.getHTML(this.timer);
-                console.log(this.timer.durationMin);
 
                  @*References to the span elements in the getHTML() method below*@
                 this.el = {
                     minutes: root.querySelector(".timer__part--minutes"),
                     seconds: root.querySelector(".timer__part--seconds"),
                     control: root.querySelector(".timer__btn--control"),
-                    restart: root.querySelector(".timer__btn--restart")
+                    restart: root.querySelector(".timer__btn--restart"),
                 };
 
                 @*Save reference to the timer object*@
@@ -223,6 +265,9 @@
                         this.stop();
                     }
                 });
+
+
+
             }
 
             @*For updating time*@
@@ -287,6 +332,10 @@
             }
 
 
+
+
+
+
             static getHTML(timer) {
                 return `
                     <div class="timer-title">${timer.timerName}</div>
@@ -304,6 +353,8 @@
                         <button type="button" class="timer__btn timer__btn--restart">
                             <span class="material-icons">refresh</span>
                         </button>
+
+
                     </div>
                 `;
             }
@@ -311,21 +362,23 @@
         
         const timers = JSON.parse('@Html.Raw(Json.Serialize(Model))');
         const root = document.getElementById("timer-container");
+        const container = document.createElement("div");
+        document.getElementById("timer-container").appendChild(container);
         for (let t of timers) {
-            const container = document.createElement("div");
-            container.classList.add("background");
-            container.classList.add("timer-perimeter");
-            container.classList.add("timer");
-            container.classList.add("timer-container");
-      
-            document.body.appendChild(container);
-            const timer = new Timer(container,t);
+            const timerDiv = document.createElement("div");
+            timerDiv.classList.add("background");
+            timerDiv.classList.add("timer-perimeter");
+            timerDiv.classList.add("timer");  
+            container.appendChild(timerDiv);
+            const timer = new Timer(timerDiv,t);
         }
 
         </script>
 
         
     </body>
+
+
 
 </html>
 

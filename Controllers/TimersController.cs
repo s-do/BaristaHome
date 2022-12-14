@@ -2,6 +2,7 @@
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace BaristaHome.Controllers
@@ -38,8 +39,20 @@ namespace BaristaHome.Controllers
                                           join t in _context.StoreTimer on s.StoreId equals t.StoreId
                                           where s.StoreId == storeId
                                           select t).ToList();
+
+            var listOfTimers = (from s in _context.Store
+                                                  join t in _context.StoreTimer on s.StoreId equals t.StoreId
+                                                  where s.StoreId == storeId
+                                                  select t)
+                                            .Select(t => new
+                                            {
+                                                Text = t.TimerName,
+                                                Value = t.StoreTimerId
+                                            });
+
+            ViewBag.Timers = new SelectList(listOfTimers, "Value", "Text");
             //StoreTimer ? timer = await _context.StoreTimer.FindAsync(12);
-            
+
             if (!timers.Any())
             {
                 return RedirectToAction("NoTimers");
@@ -53,11 +66,6 @@ namespace BaristaHome.Controllers
                 return View(timers);
             }
             
-        }
-
-        public PartialViewResult Timer2()
-        {
-            return PartialView("Timer2");
         }
 
         //Returns a page for creating a timer 
@@ -74,11 +82,11 @@ namespace BaristaHome.Controllers
             timer.StoreId = storeId;
             _context.Add(timer);
             await _context.SaveChangesAsync();
-            return View(timer);
+            return RedirectToAction("Timers");
         }
 
         //Deletes a timer from the database
-        public async Task<IActionResult> DeleteTimer(int? timerId)
+        public async Task<IActionResult> DeleteTimer(int timerId)
         {
             var timer = await _context.StoreTimer.FindAsync(timerId);
             _context.Remove(timer); 
