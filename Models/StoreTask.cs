@@ -6,11 +6,11 @@ namespace BaristaHome.Models
     {
         public int StoreTaskId { get; set; }
 
-        [StringLength(32)]
+        [Required(ErrorMessage = "You can't add a blank name."), StringLength(64)]
         public string TaskName { get; set; }
 
         // Relationships
-        public virtual ICollection<CategoryTask> CategoryTasks { get; set; }
+        public virtual ICollection<CategoryTask>? CategoryTasks { get; set; }
 
     }
 }

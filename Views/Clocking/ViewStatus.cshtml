@@ -1,4 +1,5 @@
-﻿@model BaristaHome.Models.ClockingViewModel
+﻿@*Selina*@
+@model BaristaHome.Models.ClockingViewModel
 @{
     ViewData["Title"] = "View Work Status";
 }
@@ -38,7 +39,8 @@
         <div align="center">
 
             <h1 class="title">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</h1>
-
+            
+            @*Shows the shift status and time of a user's work status change in a table format*@
             <div class="all-statuses">
                 <table class="table-payroll" style="width:100%">
                     <thead>
@@ -64,6 +66,8 @@
                                         <td>@uss.ShiftStatus</td>
                                         <td>@uss.Time</td>
                                         <td>
+
+                                        @*Pop up window for edit*@
                                         <form asp-action="EditStatus">
                                             @*<a class="btn btn-function"  asp-action="EditStatus" asp-route-id="@uss.UserId">Edit</a>*@
                                             <!-- Button trigger modal -->

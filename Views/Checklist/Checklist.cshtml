@@ -1,4 +1,5 @@
-﻿@model BaristaHome.Models.Checklist
+﻿@*Selina*@
+@model BaristaHome.Models.ChecklistViewModel
 @{
     ViewData["Title"] = "Checklist";
 }
@@ -24,6 +25,15 @@
 
         <link rel="stylesheet" href="~/css/Checklist.css" asp-append-version="true" /> 
 
+        <!-- Displaying error message if a new checklist could not be added-->
+        @if (TempData["addChecklistError"] != null)
+        {
+            <script>
+                $(document).ready(function () {
+                    alert('@TempData["addChecklistError"]');
+                });
+            </script>
+        }
     </head>
 
 
@@ -35,39 +45,35 @@
                     <h1 class="title">Checklist</h1>
                 </div>
 
+                @*Creates a checklist*@
                 <!-- Button trigger modal -->
-                <a class="nav-link pink-button-right" data-toggle="modal" data-target="#exampleModal">
+                <button class="nav-link pink-button-right" data-toggle="modal" data-target="#addChecklist" style="outline:none; border:none">
                     Create
-                </a>
-                
-                @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                  Launch demo modal
-                </button>*@
+                </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create Checklist</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <form method="post">
-                          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                          <div class="modal-body">
-                              <label asp-for="ChecklistTitle"></label>
-                              <input asp-for="ChecklistTitle" class="form-control" />
-                              <span asp-validation-for="ChecklistTitle" class="text-danger"></span>
-                          
-                          </div>
-                          <div class="modal-footer">
-                            <button type="submit" class="btn btn-function">Create</button>
-                          </div>
-                      </form>
+                <div class="modal fade" id="addChecklist" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Create Checklist</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form method="post" autocomplete="off">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="modal-body">
+                                    <label>Title</label>
+                                    <input name="ChecklistTitle" placeholder="Enter a new checklist name" class="form-control" style="text-transform: capitalize;" required />
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-function">Create</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                  </div>
                 </div>
             </nav>
         </header>
@@ -75,7 +81,7 @@
         @*Shows all the existing checklists in the store*@
         <div class="card-columns">
             @{
-                var myList = ViewBag.Checklist==null ? new Dictionary<Checklist, List<int>>() : (Dictionary<Checklist, List<int>>)ViewBag.Checklist;
+                var myList = Model.ChecklistInfo == null ? new Dictionary<Checklist, List<int>>() : (Dictionary<Checklist, List<int>>) Model.ChecklistInfo;
                 if (myList.Any())
                 {
                     foreach (var c in myList)
@@ -86,19 +92,57 @@
                                 <div class="card-header header-color text-black">@c.Key.ChecklistTitle</div>
                             </a>
                             <div class="card-body">
+                                @*Shows the # of categories and tasks in a checklist*@
                                 <p class="card-text"># of Categories: @c.Value.ElementAt(0)</p>
                                 <p class="card-text"># of Task(s): @c.Value.ElementAt(1)</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                <form method="post">
-                                    <a class="btn btn-function" asp-action="EditChecklist">Edit</a>
-                                    <a class="btn btn-function" asp-action="MarkChecklist">Mark</a>
-                                    <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
-                                </form>
+                                @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
+
+                                <a class="btn btn-function" asp-action="EditChecklist" asp-route-id="@c.Key.ChecklistId">Edit</a>
+
+                                <button class="btn btn-function" data-toggle="modal" data-target="#deleteChecklist-@c.Key.ChecklistId" data-mdb-toggle="modal">Delete</button>
+
+
+                                <!--Delete Checklist Modal-->
+                                <div class="modal fade" id="deleteChecklist-@c.Key.ChecklistId" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Delete Checklist</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form asp-action="DeleteChecklist">
+                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                    <!--Binding  for Checklist (ensure name is same as model's property name, case insensitive)-->
+                                                    <input name="checklistId" type="hidden" value="@c.Key.ChecklistId" />
+
+                                                    <h3>Are you sure about that?</h3>
+                                                    <h5>This will delete every category and tasks within this checklist!</h5>
+
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-function" asp-route-id="@c.Key.ChecklistId" asp-action="DeleteChecklist">Delete</button>
+                                                        <button class="btn btn-function" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     }
                 }
             }
         </div>
+
+        <!--Pretty import one liner that prevents POSTing from happening upon invalid inputs-->
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+        }
     </body>
 </html>

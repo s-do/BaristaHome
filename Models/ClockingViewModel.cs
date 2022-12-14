@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//Selina
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+//Model for Admin Clocking System View
 namespace BaristaHome.Models
 {
     public class ClockingViewModel

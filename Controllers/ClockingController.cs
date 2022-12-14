@@ -17,10 +17,13 @@ namespace BaristaHome.Controllers
             _context = context;
         }
 
+        /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+
         //Displays the admin view for clocking system
         [HttpGet]
         public async Task<IActionResult> Clocking()
         {
+            //List of UserShiftStatus objects where it gets the most recent time a user changed their work status
             var latestStatus = (from s in _context.Store
                                 join u in _context.User on s.StoreId equals u.StoreId
                                 join us in _context.UserShiftStatus on u.UserId equals us.UserId
@@ -34,6 +37,7 @@ namespace BaristaHome.Controllers
                                     Time = uss.Max(x => x.Time),
                                 }).ToList();
 
+            //Gets the information of a user based on the latestStatus list
             List<ClockingViewModel> list = new List<ClockingViewModel>();
             foreach (var status in latestStatus)
             {
@@ -52,16 +56,15 @@ namespace BaristaHome.Controllers
                                   }).FirstOrDefault();
                 list.Add(statusView);
             }
-            /*from us in _context.UserShiftStatus
-                                 join u in _context.User on us.UserId equals u.UserId
-                                 join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId*/
+            ViewBag.LatestStatus = list;
 
+            //List of all users in a store
             var listOfUsers = (from s in _context.Store
                                join u in _context.User on s.StoreId equals u.StoreId
                                where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value)
                                select u).ToList();
             ViewBag.ListOfUsers = listOfUsers;
-            ViewBag.LatestStatus = list;
+            
 
             return View();
         }
@@ -202,10 +205,12 @@ namespace BaristaHome.Controllers
                 //User will be taken to "Taking Break" status page
                 return RedirectToAction("StartBreak", "Clocking");
             }
+            /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+           
             //Clock Out (id == 2)
             else
             {
-                //Alex vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+                //Alex vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
                 var userID = Convert.ToInt16(User.FindFirst("UserId").Value);
                 //Start of shift
                 var shiftstart = (from uss in _context.UserShiftStatus
@@ -295,7 +300,7 @@ namespace BaristaHome.Controllers
 
                 _context.Add(payroll);
                 await _context.SaveChangesAsync();
-                //Alex ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                //Alex ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
                 //When a user decides to "Clock Out" their clock out time will be saved
@@ -305,6 +310,8 @@ namespace BaristaHome.Controllers
 
         }
 
+        /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+        //Gets all the work status changes of a user 
         [HttpGet]
         public async Task<IActionResult> ViewStatus(int? id)
         {
@@ -320,6 +327,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
+            //List of a user's information and the history of their working status changes
             var allStatus = (from s in _context.Store
                              join u in _context.User on s.StoreId equals u.StoreId
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
@@ -336,17 +344,20 @@ namespace BaristaHome.Controllers
                              }).ToList();
             ViewBag.AllStatus = allStatus;
 
-
+            //List of the different work statuses
             ViewData["StatusOptions"] = new SelectList(_context.ShiftStatus, "ShiftStatusId", "ShiftStatusName");
 
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteStatus(int userId, int statusId, DateTime time)
         {
 
             /*var userShiftStatus = await _context.UserShiftStatus.FindAsync(userId, statusId, time);*/
+
+            //List of UserShiftStatus that match with the chosen user ID and work status ID
             var userShiftStatus = (from s in _context.Store
                                    join u in _context.User on s.StoreId equals u.StoreId
                                    join us in _context.UserShiftStatus on u.UserId equals us.UserId
@@ -355,6 +366,7 @@ namespace BaristaHome.Controllers
                                         && us.ShiftStatusId == statusId /*&& us.Time == time*/
                                    select us).ToList();
 
+            //Find the UserShiftStatus with the chosen time and deletes it from the db
             foreach (var s in userShiftStatus)
             {
                 if (s.Time.ToString() == time.ToString())
@@ -366,6 +378,7 @@ namespace BaristaHome.Controllers
             return RedirectToAction(nameof(ViewStatus), new { id = userId });
         }
 
+        //Allows an admin to edit an existing UserShiftStatus
         [HttpPost]
         public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")] ClockingViewModel c)
         {
@@ -396,5 +409,6 @@ namespace BaristaHome.Controllers
 
             return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });
         }
+        /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
 }

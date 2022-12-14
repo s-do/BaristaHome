@@ -29,8 +29,26 @@ body {
         text-transform: uppercase;
 }
 
-.modal-content {
+/*.modal-content {
     background: #ffe4b4;
+}*/
+
+.modal-body {
+    background-color: #ffe4bc;
+}
+
+.modal-footer {
+    background-color: #ffe4bc;
+}
+
+.modal-header {
+    background-color: #ffdcf4;
+}
+
+.btn-function {
+    background-color: mistyrose;
+    color: black;
+    border-color: mistyrose;
 }
 
 .btn-primary, .btn-outline-dark {
@@ -39,4 +57,12 @@ body {
 
 .title {
     margin: auto;
+}
+
+a:hover {
+    color: #0a58ca;
+}
+
+button:hover {
+    color: #0a58ca;
 }

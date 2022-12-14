@@ -1,4 +1,4 @@
-﻿/*CSS for Clcoking System*/
+﻿/*CSS for Checklist*/
 
 /*SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 html {
@@ -11,6 +11,28 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/*img {
+    float: right;
+}*/
+
+.table-inventory {
+    width: 105.25%;
+}
+
+.table-inventory th {
+    padding-right: 10px;
+}
+
+.table-inventory td {
+    padding-right: 10px;
+}
+
+
+.table-inventory th:last-child, td:last-child {
+    background: #ffe4bc;
+    width: 5%;
+}
+
 /*Background for checklist cards*/
 .pb-3 {
     background-color: #ffe4bc;
@@ -18,6 +40,7 @@ body {
 
 .card-columns {
     padding-top: 50px;
+    padding-bottom: 50px;
     margin: auto;
     width: 80%;
 }
@@ -35,5 +58,12 @@ body {
 .btn-function:hover {
     background-color: white;
     color: black;
+}
+
+.img-size img {
+    margin-right: 5px;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
 }
 /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
