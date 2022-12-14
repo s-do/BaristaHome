@@ -99,17 +99,17 @@
                                                     <form asp-action="EditStatus" id="editForm">
                                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                                     
-                                                        <input type="hidden" asp-for="UserId" value="@uss.UserId"/>
+                                                        <input type="hidden" name="user" asp-for="UserId" value="@uss.UserId"/>
+                                                        <input type="hidden" name="shift" value="@uss.ShiftStatusId"/>
+                                                        <input type="hidden" name="t" value="@uss.Time"/>
 
                                                         <label class="control-label">Shift Status</label>
                                                         <select asp-for="ShiftStatusId" class="form-control" asp-items="ViewBag.StatusOptions"></select>
-
+                                                        <span asp-validation-for="ShiftStatusId" class="text-danger"></span>
                                                         
-                                                        <div class="form-group">
-                                                            <label class="control-label">Time</label>
-                                                            <input type="datetime-local" asp-for="Time" class="form-control" />
-                                                            <span asp-validation-for="Time" class="text-danger"></span>
-                                                        </div>
+                                                        <label class="control-label">Time</label>
+                                                        <input type="datetime-local" asp-for="Time" class="form-control" />
+                                                        <span asp-validation-for="Time" class="text-danger"></span>
                                                     </form>
                                                     </div>
                                                     <div class="modal-footer">

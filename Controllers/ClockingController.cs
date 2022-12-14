@@ -367,7 +367,7 @@ namespace BaristaHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditStatus([Bind("UserId,ShiftStatusId,Time")] UserShiftStatus c)
+        public async Task<IActionResult> EditStatus(int user, int shift, DateTime t, [Bind("UserId,ShiftStatusId,Time")] UserShiftStatus c)
         {
             /*UserShiftStatus uss = new UserShiftStatus
             {
