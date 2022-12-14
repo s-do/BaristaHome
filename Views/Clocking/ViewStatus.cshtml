@@ -105,7 +105,7 @@
                                                 <button onclick="timeInput('id-'+@count, 'time-'+@count, 'shift-'+@count, '@Html.Raw(@uss.Time.ToString())', @uss.ShiftStatusId)" type="button" class="btn btn-function" data-toggle="modal" data-target="#exampleModal">
                                                     Edit
                                                 </button>
-                                            /*
+                                            @*
                                             <!-- Modal -->
                                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
@@ -132,7 +132,7 @@
                                                         <input type="datetime-local" asp-for="Time" class="form-control" />
                                                         <span asp-validation-for="Time" class="text-danger"></span>
                                                     </form>
-                                            */
+                                            *@
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
