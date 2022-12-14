@@ -153,7 +153,13 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OwnerEdit(User worker)
         {
-            
+            var w = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            w.FirstName = worker.FirstName;
+            w.LastName = worker.LastName;
+            w.Email = worker.Email;
+            w.Image = worker.Image;
+            w.UserImageData = worker.UserImageData;
+
             if (ModelState.IsValid)
             {
                 try
@@ -232,7 +238,6 @@ namespace BaristaHome.Controllers
             }
             return View(w);
         }
-<<<<<<< HEAD
 
         // Returns a delete page based on the selected user's id
         public async Task<IActionResult> Delete(int? id)
