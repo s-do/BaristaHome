@@ -129,7 +129,14 @@ namespace BaristaHome.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!WorkerExists(worker.UserId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return RedirectToAction("Index", "Home");
             }
@@ -175,7 +182,14 @@ namespace BaristaHome.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!WorkerExists(worker.UserId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return View(worker);
             }
@@ -258,6 +272,11 @@ namespace BaristaHome.Controllers
             _context.User.Remove(worker);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool WorkerExists(int id)
+        {
+            return _context.User.Any(worker => worker.UserId == id);
         }
 
         public async Task<IActionResult> Invite()
