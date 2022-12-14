@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Users\" />
     <Folder Include="wwwroot\images\.vs\images\v17\" />
 
   </ItemGroup>

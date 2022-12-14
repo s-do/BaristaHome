@@ -122,11 +122,11 @@
                             }
                             else if (item.RoleId == 2)
                             {
-                                <p>Owner</p>
+                                <p>Manager</p>
                             }
                             else
                             {
-                                <p>Manager</p>
+                                <p>Owner</p>
                             }
                         </div>
 
@@ -136,7 +136,7 @@
                     </td>
 
                     <td>
-                        @if (item.RoleId == 2)
+                        @if (item.RoleId == 3)
                         {
                             <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
                         }

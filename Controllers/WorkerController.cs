@@ -158,7 +158,7 @@ namespace BaristaHome.Controllers
             {
                 try
                 {   
-                    _context.Update(w);
+                    _context.Update(worker);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -167,7 +167,7 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(w);
+            return View(worker);
         }
 
         //Returns an owner self editing page based on their id
@@ -232,7 +232,7 @@ namespace BaristaHome.Controllers
             }
             return View(w);
         }
-<<<<<<< HEAD
+
 
         // Returns a delete page based on the selected user's id
         public async Task<IActionResult> Delete(int? id)
