@@ -1,0 +1,196 @@
+﻿
+@model BaristaHome.Models.User
+
+@{
+    ViewData["Title"] = "Invite An Employee";
+}
+@*Invite page, worker controller
+*@
+
+<style>
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .title{
+        font-size:30px;
+        font-weight: 500;
+        text-align:center;
+        
+    }
+
+    .instructions {
+        text-align:center;
+        padding-bottom: 30px;
+    }
+
+    .pink-button{
+        background-color: pink;
+        color:black;
+        border:none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+    }
+
+    .page{
+        justify-content:center;
+        display:flex;
+        margin-top:50px;
+    }
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+        display:flex;
+        flex-direction:column;
+
+        width: 800px;
+        padding-bottom: 100px;
+        padding-top: 190px;
+        
+
+    }
+
+    .invite-code{
+        text-align: center;
+        font-weight: 500;
+        font-size: 40px;
+        border: none;
+        background: transparent;
+        outline:none;
+    }
+
+    .invite-code-button{
+        margin-top: 50px;
+        width: 160px;
+        height: 50px;
+        align-self:center;
+        background-color:lightpink;
+        color:white;
+        border-color: lightpink;
+        border-style:solid;
+        border-radius: 3px;
+        transition: background-color 0.25s, color 0.25s;
+
+    }
+
+    .invite-code-button:hover{
+        background-color:white;
+        color:lightpink;
+        border-color:lightpink;
+        border-style:solid;
+        border-radius:3px;
+    }
+
+    .invite-code-button:active{
+        background-color:whitesmoke;
+    }
+
+    .white-modal{
+        background-color:white;
+        height: 200px;
+        width: 550px;
+    }
+
+    .page-modal-title{
+        font-size: 14px;
+    }
+
+    .x-button{
+        color:dimgray;
+        background-color:white;
+        border:none;
+        margin-left: 440px;
+        font-size:20px;
+    }
+
+    .invite-icon{
+        position: fixed;
+        top: 100px;
+        height: 190px;
+    }
+</style>
+
+<html>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <button class="pink-button">
+            <a asp-controller="Worker" asp-action="Index">Back</a>
+        </button>
+
+        <div class="page">
+            <img class = "invite-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAOdUlEQVR4nO2dfXBU13XAf+ftaqXVB8IgEB+iBjsgQhzbOJhCA5LlwJgvO27qkGScsZOmM/0j+bPpZDqdCZ2206SZznTS6WT6Rzpx7GRsZxLHThGmosgCO00IOE4AB8nCAiNAEggBkkDS7nunf1yt9bXa3ffe3ZWA/mZ2JO2+d8/TOXu/zjn3XmGWok1NlSSLVoFTi+pqkFWgy4Cy0dddoz8BBoG+0Z+DIOdA2xA5BV4r0USbbN16bWb+k8zITD9ACm1uLmeYDXjOFoQtKGsBx6KI94EDiB7AjRyQXZv7LJYdmBk1gL7SPJcSZzceX0T4EyBSINEu8BboCwzrT+RPG64WSO4UCm4A3aMOGw5vR/UZlCeAkkI/wySGEF4DnuPXda/LHvEKKbxgBtA96rC+ZSfIHuChQsn1h54E+Wfi3o+loSFZCIl5N4A2N0e5EfkSwjdA7823PEu0I3yLEu+5fBsirwbQvc3rEOd7wLp8yskbqr9DnK/Kjrq38iUiLwbQ1385DzfxTYSvYXckMxMoIi/gRP5KHvtkj+3CrRtAGw89Cfp9YJ7tsmeYXlS+IjvrXrVZqDUDaHNzlJvOPwB/bbPcWYai/BuDVV+X3R8bsVGgFUXp/pYVuLwEPGyjvFmPcgTH+5xsbzgTtqjQBhjtaBuBBWHLusW4gugu2f7I/4YpJFQHqY0tjyLOQe485QPMQ6VJ9zZvC1NIYAPovpbPAI1ARZgHuMUpQ5xXdd8bXwhaQKAmSPe98QVUXuDWH2LawkPkadle96LfG30bQPcd+hSqe4Fiv/fe5iQQeVy21+33c5MvA+i+Nx5G5SBQ7uvR7hxuILrFT8ecswFGh5pHgKpAj3bncAnx1uc6RM2pDdejR4tw+RH/r/xcWIA6L+vLJ2O5XJxbJ9oz+B1gY5inusN4mIref8rlwqxNkO49vAvxXsvl2pwpjcOiKqisgOIYoDA0DH3XoesyDFuZ5RvK4rBoAcwpH5N1c1RWt2VZE1GQz8iOup9nuiijUrXx0ALQU9hyrJUUw6rlsLQ6g1DgQjeceh9GEsFllcahdrlR/rSyFDq7oO1MOFnT04vrrZbHGy5Pd0G2Jujb2FJ+1V2weV1m5YP5Siythk2fMN/aIFTPN/dnUj6ACCxbHE5WZuYTlYxN0bQ1QBsPfRL0cKZrcmbhfHhojfmH/ZB04VfvQP9g7vcsqoIHP+pfViJpZA3c8HdfdjxEN003NE1bA7S5OYp6/44N5ZfG4YFa/woBiEaM4aLR3K4vL4WPB5RVFIWHPmZk2sVB5T+0uTntP5G+CbopX0bkASviV9+TuwLTURqHe5b5kBVCgWVxWF4T/P7p+Tg3nWfSfTDFAPryyxGQr1sRW1Fm2uOwLF9ivqGZqKyABRa6qxVL81ELAPmbdLVgag0or/48sNKKzMWWvNSRSHbl2pIVjUJVPqKpei9D8tnJ704wgKoK8A1rMqvuslZUVgNYlWWxrPGo/K3u0Qk6n1gD9h/eAdxnTWBp3FpRlGZJoMv2uU1ZwVnD+pbHxr8x0QAez1oTJZK93fZDLINrJRIxr0LICs+EzvhDA2hTUyXoLmtiVMGzmGbputN/5rlGXiFkhUae1Fea56b+GqsBydjnAYttBnb9LEPD03+m2HUlDOXNPwRQQonzZ6k/xgzg8bR1UVf7C1fW1esWZVksKx0qX0z96sBo82Py8+3S02uvrEtZyuq5YlGWxbLSopu08VdzIFUDkrF68rE4outy5qYjV/quw7WBzNdc7LHT5PX2+fM9BSOKM7IZUgZQGvIixvPgvbPhylCgtSP7da4H7R+ElKXQGjrZLTc8bYCxPuDRvAnq7ILz3cHvP30W+nJcX/fBBVPrgvLeGbhmsd/KzKMAok1NlSRifeQzoTYSgbUf9e+rOXcRTr5nakGuRCPGqzl/bvZrx3P2Arzb7u+ecHgkInMd3OJa8p3N7Lpw7CR0dOY2Xndd+MNpOOFT+WBiCEePw5nzuclKunCyvdDKB3CI6KoorlcbyH/uF1UTZuzsguVLoboKYkUTr7k5ZJqQjs5wHaqnxoAfypoPRWlkXbxkDJW/uHBmxKuNIlJbUKEDN8w3+2Q7xIuhuJgPA+U2Rkzj6R+E421wQiBeMjEob1tWEERqo6C1M7KeQhVuDJlXQWTdNK9ZhdZGQZYWXG7KUVcUNZ1mImna4nxkJoyXFRmVlUhCsiCrULNREwWdk/caUBwzbf7cChO5KitNL9J1TRN1rd/MRnuvmvG9H0qKTZs/dw5UlkPpdLI8uD5gZF25Cpf67DoPc6NCtPHQGdC7rRctmLSQZYthXmWwQLnrwoUeM0TMNDsVYPFCqFkE8+YG+z4lkmYAcPZ8IWbCBqUjCmp/gcXCebBqhYkJhyESMUrt6Z1eKdXzjazy0nCyiqKwbJGRd7HHTMry3T8JFVFspppHI7DmI9mTr/xwvC29oy0ahftW2osFpxBgyUJj2JPt4Wbx2amwF7Iqi8O6++yGIc9eSK+A8lIjK57HfT4iEbi/1syoj7fZDfiMwwGyuBlzoCwOf/yAXeXfHErvhCsrhfX351f541labdwo+Zms9jsg4bxPxTGj/GLLcdST7VNDgyXFsCEPsrJRXWVqg22Ufge8cDXg/lr7Crl6fWpQRDApjpPdF2Hx1NS2G0NmdjxdS7Nkod2+DUDoj4IEj7/dvcRuPk6KjvNT31teY4aYYfE86O41Bu67ZpQ/Xukipo+ZN9ck+s6rHPtszUfM3MSeG6M/Cno+0MDZceDeP7L1IGMkkmbhxHgiTu75oZnKPdNpOvZEhlmwqhny9g+aOUFZHFYuN6OtaATuqYF3T4d7ljE6oyCtgW5dWp2ftvjK1akjjppF4Zqe7l440RbM1TF4E975gzHcA7VQs9hE3qy4TaQ1improB7e9vg7Rbr8/DCyWjvg/XNT3xcxzcucctO5Rxyj1KER08wMTnqOvmvw1tuwdo1Z79DZFfyZUqi2Rok4rXgBxrjxPK3TTtc8lAQcch5vm6qoWJFpOpdWZ87cG7xh+qLOrrEamUjC0RPGp2UDdVqjeLFTMKz47QiGRuyO+1OkSzEcHvZv8PazU5W/bHHuawjKSs1Me/lS0wSlXCGeB1es7AHr4UqbIzs2XAeO+779ovXduwxlaYx64ZK/MvquGwOkEGDNvUahfnP/y0th44N21jlM5Hfy6U39qayIg75vP9dl2krbzE/jzTx3IffMCNVR18G491atgLtDhD0iEXhwzcQhaXj+B1JpKUKz79tV4dgJE1O1mcxaHJu6utFT+M0JMxLJFh+40DOxA11UlX0Ie/oDeOPXpuZMhyOmA7Y18hvVuemFoiMtJGIufrPjXM8Ev9s6TH/gWPKXjKTpiF3XZC60dpj8/elkjXchO45p87Nx8ZKJE1+6AnfNmf66WBGsvNvEtMORRIvfhFEDyNat17Sx5S2gLlBxrle4IIbr5i5r2SL7TruaRXD6nJlBB0U4LNs3XIfx2dHCj0I/3Gxj8UL7ZYqYZi0MygupX8cMEB15CZhtaQPBiRXZG69PJtyIaIhh72epPz40gGzdeg3hF2FKnlWUxtP78JPuWGZE6pWaaHne1M/SBerLwoQ/9efjt8ufPBV8DtgdovTZQ7rRSkenyc6bjo5O8xpPxIGNayfGt2NFZhAQxIMAPxz/x8RFetvq9gEngpQ660g3SgqSguh66d0jwSJk73KkfsKechNqgIioNrZ8C8Y6iVuWdOu8alcYR5pOalaOv2dGNUsWQs2koEssNjW7I5H0n68EIPL3kw+ImOqNGuh+kfLqb2JrtfxMkW6YmPKATiblnoiXwPwcAkzB0lXa6e/6yeQ3p2xVILt3uwjfDiJhVjE0nL+5Sbb1aukQ+UfZvXuKyyD9bin93T8A3vEvZZYRZrVMJrp9G+Bt+rueT/dBWgPI7t0ujvwlUPBkSaucPZ85/BiE7l6TU5o7HqJfS/fthwxblsm2uiPAD3w+3uwikZzolp6Oygrjga3MMnHzPOP38oV8P9NGrpk37ftFcxUR5xRg3RleUNauyew+UEy6era9LX7f6jdV8TKxxGrZsmXaNivjpn3yeMNlHHkW/yu1Zhe/bzXrf6dDyK781g6/yldU/iKT8iGHjVtlW91eVP/Vj+RZh+uOxRP8knTht++mD+xn5l9yOW8mp+mcHj1aRM9gC7fD7rmVFWZClm0Zq+eZqF/7Wf8pKMoRBqs253LOTO6bd+9rXo46R7hdTsuIlxivZiotJRqB4YRJAOi9aoIzyUCRvh7cyMPy+Kaclu37277enBdzkDv71IxM9OPII7Kt7u1cb/B1AobsbDgKPAnMgjWes44R4Ck/yocAR5DIjvqDiHyJW32SZhcPeEZ21P+33xsDnQEj2+teRPgsUIBFvrOeEUSelh31LwW5OVQagza2PAq8AmRIJbitGUDkKb/nxown/EFu/3X4EzheI5CHCPisphvP2Sm7Nh8LU0joY6hk1+ZjRFiH8MuwZd1C/IYIG8MqHyydAyaP1Z+jxKtH+Ttu785ZUb7LQNUmeazer1cuLfaPs93X8gTKf3KrO/Cmchn0z2XHI1YzR6yfhCfb61/Dc1aifJfbozYoIs+DrLGtfMj3keamg/4et+4xt+/g8VXZVZ+3/i2vZ0HKrs3HGOjeCHwFCJ3RWkDaEPkyA93r8ql8KOBOTbpHHda37ATZAzxUKLk+OQF8h7j3Y2loKMiGQgXfKktVhX0t20CeBZ7A9n7V/rkJ+irwQ7bXvy4iBQ0+zejZ79rUVEky9pTZS1k3kS5PKT8kQd4EfZ6ikZ/K1q1WFn0FYUYNMB7dv78MjW3Ec7YgbEFZi90+6n3gAKIHGNKm8QmyM8msMcBk9NU3K4gmasFZhejq0d0da1DKMXsczWVsr6MB4CowgDCAcg60DZVTqNOKK23y6U0F2xLXD/8HSovYvnUcmC4AAAAASUVORK5CYII=">
+
+            <div class="background">
+                <p class= "title">Invite An Employee</p>
+                <p class= "instructions">When a user registers an account, they need to use the invite code below to be added to your store.</P>
+        
+                <input class="invite-code" type="text" READONLY value=@Model.InviteCode.ToString() id="myInput">
+                <button type="button" id="copyButton" class="invite-code-button btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" onclick="myFunction()">Copy Code</button>
+
+            </div>
+        </div>
+
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                  <div class="modal-header border-0">
+                       <button type="button" class="x-button" data-dismiss="modal">x</button>
+                  </div>
+                  <div style="margin-left: 30px; font-size: 20px;" class="modal-body">
+                    Invite code has been copied.
+                  </div>
+                  <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary pink-button" data-dismiss="modal">Ok</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        function myFunction() {
+        // Get the text field
+            var copyText = document.getElementById("myInput");
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.value);
+ 
+        }
+        </script>
+        <script>
+            $(function(){
+                $('#exampleModalCenter').on('show.bs.modal', function(){
+                    var myModal = $(this);
+                    clearTimeout(myModal.data('hideInterval'));
+                    myModal.data('hideInterval', setTimeout(function(){
+                        myModal.modal('hide');
+                    }, 3000));
+                });
+            });
+        </script>
+
+   
+</body>
+</html>
+
+
+

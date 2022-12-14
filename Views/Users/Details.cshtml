@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>RegisterViewModel</h4>
+    <h4>User</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -27,6 +27,27 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Color)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.InviteCode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.InviteCode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.RoleId == 1 ) { <p>Worker</p>}
+            else { <p>Owner</p>}
+            @*@Html.DisplayFor(model => model.Role.RoleId)*@
         </dd>
     </dl>
 </div>

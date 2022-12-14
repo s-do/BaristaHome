@@ -18,7 +18,7 @@ namespace BaristaHome.Models
         public string Email { get; set; }
 
         [Required, DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,24}$",
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,100}$",
             ErrorMessage = "Password must be between 8 and 24 characters and contain " +
             "one uppercase letter, one lowercase letter, one digit and one special character.")]
         public string Password { get; set; }
@@ -35,6 +35,9 @@ namespace BaristaHome.Models
 
         [StringLength(64)]
         public string? UserImage { get; set; }
+
+        [NotMapped]
+        public IFormFile Image { get; set; }
 
         public byte[]? UserImageData { get; set; }
 

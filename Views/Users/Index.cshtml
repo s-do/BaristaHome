@@ -4,13 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-@*index page for account controller*@
 <h1>Index</h1>
 
 <p>
-    <a asp-controller="Account" asp-action="Invite">Invite</a>
+    <a asp-action="Invite">Invite</a>
 </p>
-
 <table class="table">
     <thead>
         <tr>
@@ -23,6 +21,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+
+
             <th></th>
         </tr>
     </thead>
@@ -39,6 +45,14 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Role.RoleId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color)
+            </td>
+
+
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
@@ -47,17 +61,3 @@
 }
     </tbody>
 </table>
-
-<!-- Using this as a way to get info on the user that's logged in-->
-<h2>Confidential Data</h2>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <table class="table table-bordered">
-        @foreach (var claim in User.Claims) {
-            <tr><td>@claim.Type</td><td>@claim.Value</td></tr>
-        }
-    </table>
-
-}
-

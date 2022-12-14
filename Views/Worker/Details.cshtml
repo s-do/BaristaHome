@@ -1,0 +1,195 @@
+﻿@model BaristaHome.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@*details, worker controller*@
+
+
+<style>
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .profile-pic {
+        border-radius: 200px;
+        height: 230px;
+        width: 230px;
+        object-fit: cover;
+        display: flex;
+        margin-right: 50px;
+    }
+
+    .profile-info {
+        display: flex;
+    }
+
+    .profile {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .page-title {
+        display: flex;
+        padding-bottom: 30px;
+        font-size: 30px;
+        padding-left: 20px;
+        font-weight: 500;
+    }
+
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .pink-button {
+        background-color: pink;
+        color: black;
+        border: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+    }
+
+        .pink-button:hover {
+            background-color: lightpink;
+            cursor: pointer;
+        }
+
+        .pink-button:active {
+            background-color: rgba(219, 113, 152, 0.67);
+        }
+
+    .user-profile-title-and-button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .edit-button {
+        background-color: white;
+        border-color: rgba(219, 113, 152, 0.67);
+        color: rgba(219, 113, 152, 0.67);
+        height: 45px;
+        width: 120px;
+        border-style: solid;
+    }
+</style>
+
+<button class="pink-button">
+    <a asp-controller="Worker" asp-action="Index">Back</a>
+</button>
+
+
+
+<div class="background">
+
+    <div class="user-profile-title-and-button-row">
+        <div class="page-title"> Information </div>
+
+
+    </div>
+
+    <div class="profile">
+
+        <label>
+            @if (Model.UserImageData == null)
+            {
+                <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
+            }
+            else
+            {
+                <img class="profile-pic" src="@Url.Action("RenderImage", new { id = Model.UserId})" style="background-color: white; border: 3px solid #DFB3D3" />
+            }
+        </label>
+
+        <div class="profile-info">
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Role)
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.RoleId == (1))
+                    {
+                        <p>Worker</p>
+                    }
+                    else
+                    {
+                        <p>Owner</p>
+                    }
+                </dd>
+                <dt class="col-sm-2">
+                    @if (Model.RoleId == 1)
+                    {
+                        @Html.DisplayNameFor(model => model.Wage)
+                    }
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.RoleId == 1)
+                    {
+                        @if (Model.Wage == null)
+                        {
+                            <p>Wage has not been specified.</p>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(model => model.Wage)
+                        }
+                    }
+
+                </dd>
+                 <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Color)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Color)
+                </dd>
+                <dt class="col-sm-2">
+                    <p>User Description</p>
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.UserDescription)
+                </dd>
+            </dl>
+        </div>
+
+    </div>
+</div>
+
+
+
+
