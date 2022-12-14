@@ -179,10 +179,15 @@
                     @Html.DisplayFor(model => model.Color)
                 </dd>
                 <dt class="col-sm-2">
+                    @if(Model.RoleId != 3) {
                     <p>User Description</p>
+                    }
                 </dt>
                 <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.UserDescription)
+                    @if(Model.RoleId != 3) {
+                        @Html.DisplayFor(model => model.UserDescription)
+                    }
+                    
                 </dd>
             </dl>
         </div>
