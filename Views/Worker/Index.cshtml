@@ -5,82 +5,152 @@
 }
 
 @*index page for worker controller*@
-<h1>Workers</h1>
+<style>
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
-<p>
-    <a asp-controller="Worker" asp-action="Invite">Invite</a>
-</p>
+    .page-title {
+        display: inline-block;
+        padding-bottom: 30px;
+        font-size: 30px;
+        padding-left: 20px;
+        font-weight: 500;
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    .pink-button {
+        background-color: pink;
+        color: black;
+        border: none;
+        height: 50px;
+        width: 200px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+    }
+
+    .pink-button:hover {
+        background-color: lightpink;
+        cursor: pointer;
+    }
+
+    .pink-button:active {
+        background-color: rgba(219, 113, 152, 0.67);
+    }
+
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .page-title-and-button{
+        display:flex;
+        justify-content: space-between;
+    }
+
+
+    .profile-pic {
+        border-radius: 50px;
+        height: 50px;
+        width: 50px;
+        object-fit: cover;
+    }
+    
+    .employee-name{
+        font-weight:bold;
+    }
+
+    .employee-role{
+        color:rgba(80,80,80, 1);
+    }
+</style>
+
+<button style = "width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
+    <a asp-controller="Home" asp-action="Index">Back</a>
+</button>
+
+<div class="background">
+    <div class="page-title-and-button">
+        <p class="page-title">Manage Workers</p>
+        <button class="pink-button">
+            <a asp-controller="Worker" asp-action="Invite">Invite an Employee</a>
+        </button>
+    </div>
+
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @if (item.RoleId == (1))
-                    {
-                        <p>Worker</p>
-                    }
-                    else
-                    {
-                        <p>Owner</p>
-                    }
-                </td>
-                <td>
-                    @if (item.RoleId == (1))
-                    {
-                        <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
-                    }
-                    else
-                    {
-                        <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
-                    }
-                     |
-                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-                </td>
+                <th>
+                    <p>Worker</p>
+                </th>
+                <th>
+                    <p>Name</p>
+                </th>
+                <th>
+                   <p>Email</p>
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (item.UserImageData == null)
+                        {
+                            <img class="profile-pic" src="../images/default-profile-pic.jpg" >
+                        }
+                        else
+                        {
+                            <img class="profile-pic" src="@Url.Action("RenderImage", new { id = item.UserId})"  />
+                        }
+                    </td>
+                    <td>
+                        <div class="employee-name">
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </div>
+                        <div class="employee-role">
+                             @if (item.RoleId == 1)
+                            {
+                                <p>Worker</p>
+                            }
+                            else if (item.RoleId == 2)
+                            {
+                                <p>Owner</p>
+                            }
+                            else
+                            {
+                                <p>Manager</p>
+                            }
+                        </div>
 
-<!-- Using this as a way to get info on the user that's logged in-->
-@*<h2>Confidential Data</h2>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
 
-@if (User.Identity.IsAuthenticated)
-{
-    <table class="table table-bordered">
-        @foreach (var claim in User.Claims)
-        {
-            <tr><td>@claim.Type</td><td>@claim.Value</td></tr>
-        }
+                    <td>
+                        @if (item.RoleId == 2)
+                        {
+                            <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
+                        }
+                        else
+                        {
+                            <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
+                        }
+                        |
+                        <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
+</div>
 
-}
-*@

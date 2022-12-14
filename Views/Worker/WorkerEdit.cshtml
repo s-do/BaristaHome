@@ -5,60 +5,216 @@
 }
 
 @*Worker POV for Edit, worker controller*@
-<h1>Edit</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="WorkerEdit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="InviteCode" />
-            <input type="hidden" asp-for="StoreId" />
-            <input type="hidden" asp-for="Color" />
-            <input type="hidden" asp-for="UserImageData" />
-            <input type="hidden" asp-for="UserImage" />
-            <input type="hidden" asp-for="RoleId" />
-            <input type="hidden" asp-for="Wage" />
-            <input type="hidden" asp-for="UserDescription" />
+<style>
+    .gfg {
+        all: unset;
+    }
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserId" value="@Model.UserId" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .profile-pic {
+        border-radius: 200px;
+        height: 230px;
+        width: 230px;
+        object-fit: cover;
+        display: flex;
+        margin-right: 50px;
+    }
+
+    .profile-info {
+        display: flex;
+    }
+
+    .profile {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .page-title {
+        display: flex;
+        padding-bottom: 30px;
+        font-size: 30px;
+        padding-left: 20px;
+        font-weight: 500;
+    }
+
+    .background {
+        background-color: antiquewhite;
+        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+
+    .pink-button {
+        background-color: pink;
+        color: black;
+        border: none;
+        border-radius:3px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 10px;
+        box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+        transition: background-color 0.15s, color 0.15s;
+        display:inline-block;
+    }
+
+    .pink-button:hover {
+        background-color: lightpink;
+        cursor: pointer;
+    }
+
+    .pink-button:active {
+        background-color: rgba(219, 113, 152, 0.67);
+    }
+
+    .user-profile-title-and-button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .edit-button {
+        background-color: white;
+        border-color: rgba(219, 113, 152, 0.67);
+        color: rgba(219, 113, 152, 0.67);
+        height: 40px;
+        width: 200px;
+        margin-top: 10px;
+        margin-bottom:10px;
+        border-style: solid;
+        transition: background-color 0.15s, color 0.25s;
+
+    }
+
+    .edit-button:hover{
+        background-color: lightpink;
+        border-color: lightpink;
+        color:white;
+
+    }
+
+    .profile-title-and-pic{
+        display: inline-block;
+        vertical-align:middle;
+    }
+
+
+    .profile-title {
+        font-size: 23px;
+        font-weight: 400;
+        margin-bottom: 20px;
+    }
+</style>
+
+
+<div class="pink-button">
+    <a asp-controller="Worker" asp-action="Profile">Back</a>
+</div>
+
+
+<div class="background">
+
+    <div class="page-title">
+        Edit Profile
     </div>
+
+    <div class="row">
+        <div class="user-profile-title-and-button-row">
+            <div class="col-md-4">
+                <form asp-action="WorkerEdit" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="InviteCode" />
+                    <input type="hidden" asp-for="StoreId" />
+                    <input type="hidden" asp-for="Color" />
+                    <input type="hidden" asp-for="UserImageData" />
+                    <input type="hidden" asp-for="UserImage" />
+                    <input type="hidden" asp-for="RoleId" />
+                    <input type="hidden" asp-for="Wage" />
+                    <input type="hidden" asp-for="UserDescription" />
+
+                    <input type="hidden" asp-for="Password" value="@Model.Password" />
+
+                    <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <button style="margin-top:10px;" class="pink-button">
+                        <a asp-controller="Worker" asp-action="ChangePassword">Change Password</a>
+                    </button>
+
+
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <label class="custom-file-label" for="customFile"> Upload an image as your profile picture: </label>
+                            <input asp-for="Image" class="custom-file-input" id="customFile">
+
+                        </div>
+                        <span type="hidden" asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+
+                    <p> </p>
+                    <p> </p>
+                    <p> </p>
+                    <p> </p>
+
+                    <div>
+                        <input type="submit" value="Save" class="pink-button" asp-controller="Worker" asp-action="WorkerEdit" />
+                    </div>
+                </form>
+            </div>
+
+            <div class = "profile-title-and-pic">
+                <div class="profile-title">Current Profile Picture</div>
+                <div class="profile-pic">
+
+                    <label>
+                        @if (Model.UserImageData == null)
+                        {
+                            <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
+                        }
+                        else
+                        {
+                            <img class="profile-pic" src="@Url.Action("RenderImage", new { id = Model.UserId})" style="background-color: white; border: 3px solid #DFB3D3" />
+                        }
+                    </label>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+
 </div>
 
-<div>
-    <a asp-controller= "Home" asp-action="Index">Back to Home</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

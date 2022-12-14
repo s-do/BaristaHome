@@ -1,4 +1,5 @@
 ﻿using BaristaHome.Data;
+using BaristaHome.Migrations;
 using BaristaHome.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,44 +34,26 @@ namespace BaristaHome.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        //Display list of workers that belong to the store
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            //Get the list of all users
-            List<User>? listOfUsers = await _context.User.ToListAsync();
+            var workers = await _context.User
+                            .Where(u => u.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value))
+                            .OrderByDescending(u => u.RoleId)
+                            .ThenBy(u => u.FirstName)
+                            .ToListAsync();
 
-            //Create a new list to store users that belong to the current store
-            List<User> listOfStoreUsers = new List<User>();
-
-            //Get the current user (which should be the owner/admin)
-            var currentUser = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
-
-            //Get their invite code
-            string storeInviteCode = currentUser.InviteCode;
-
-            //Go through the list of all users
-            foreach (var u in listOfUsers)
-            {
-                //And if their invite code is the same, add them to the new list
-                if (storeInviteCode != null && u.InviteCode != null)
-                {
-                    if (u.InviteCode.Equals(storeInviteCode))
-                    {
-                        listOfStoreUsers.Add(u);
-                    }
-                }
-
-            }
-            //Pass the list of store users to the view
-            return View(listOfStoreUsers);
+            return View(workers);
         }
 
+        //Return a worker edit page for the current user
         public async Task<IActionResult> WorkerEdit()
         {
             return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
 
-        // GET: Account/Details/5
+        //Return a details page for the current user
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -88,27 +71,14 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
-        // GET: Account/Edit/UserId
-        /*        public async Task<IActionResult> WorkerEdit(int? id)
-                {
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
 
-                    var registerViewModel = await _context.User.FindAsync(id);
-                    if (registerViewModel == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(registerViewModel);
-                }*/
-
+        //Retrieve all input from the worker edit page, and then update the user model and save the user model in the database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> WorkerEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription")] User worker)
+        public async Task<IActionResult> 
+            WorkerEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
         {
-
+            
             var existingEmail = (from u in _context.User
                                  where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
                                  select u).FirstOrDefault();
@@ -119,12 +89,30 @@ namespace BaristaHome.Controllers
                 return View(worker);
             }
 
+            //Saves worker image as a byte array
+            if (worker.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    worker.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    worker.UserImageData = fileBytes;
+                }
+            }
+
+            var w = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            w.FirstName = worker.FirstName;
+            w.LastName = worker.LastName;
+            w.Email = worker.Email;
+            w.Image = worker.Image;
+            w.UserImage = worker.UserImage;
+            w.UserImageData = worker.UserImageData;
+
             if (ModelState.IsValid)
             {
                 try
-                {
-                    worker.Password = Crypto.HashPassword(worker.Password);
-                    _context.Update(worker);
+                {  
+                    _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -140,9 +128,10 @@ namespace BaristaHome.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(worker);
+            return View(w);
         }
 
+        //Return owner editing page based on their id
         public async Task<IActionResult> OwnerEdit(int? id)
         {
             if (id == null)
@@ -158,11 +147,45 @@ namespace BaristaHome.Controllers
             return View(worker);
         }
 
+
+        //Updates and saves any new changes inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerEdit( [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
+        public async Task<IActionResult> OwnerEdit(User worker)
         {
             
+            if (ModelState.IsValid)
+            {
+                try
+                {   
+                    _context.Update(w);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(w);
+        }
+
+        //Returns an owner self editing page based on their id
+        public async Task<IActionResult> OwnerSelfEdit()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+
+
+        //Saves any new changes to the user information inputted by the user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OwnerSelfEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
+        {
+            worker.Password = Crypto.HashPassword(worker.Password);
+            worker.ConfirmPassword = worker.Password;
+
             var existingEmail = (from u in _context.User
                                  where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
                                  select u).FirstOrDefault();
@@ -172,49 +195,126 @@ namespace BaristaHome.Controllers
                 ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
                 return View(worker);
             }
-            
+
+            //Saves worker image as a byte array
+            if (worker.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    worker.Image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    worker.UserImageData = fileBytes;
+                }
+            }
+
+            var w = await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value);
+            w.FirstName = worker.FirstName;
+            w.LastName = worker.LastName;
+            w.Email = worker.Email;
+            w.Color = worker.Color;
+            w.Image = worker.Image;
+            w.UserImage = worker.UserImage;
+            w.UserImageData = worker.UserImageData;
+           
+
             if (ModelState.IsValid)
             {
                 try
-                {
-                    _context.Update(worker);
+                {   
+                    _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return View(worker);
+                return RedirectToAction("Index", "Home");
             }
-            return View(worker);
+            return View(w);
         }
+<<<<<<< HEAD
 
-        public async Task<IActionResult> OwnerSelfEdit(int? id)
+        // Returns a delete page based on the selected user's id
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.User.FindAsync(id);
+            var worker = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
             if (worker == null)
             {
                 return NotFound();
             }
+
             return View(worker);
         }
 
+
+        // Removes the selected user from the database
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var worker = await _context.User.FindAsync(id);
+            _context.User.Remove(worker);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool WorkerExists(int id)
+        {
+            return _context.User.Any(worker => worker.UserId == id);
+        }
+
+        //Displays an invite code page based on the user id
+        public async Task<IActionResult> Invite()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+        //Displays user profile based on the user id
+        public async Task<IActionResult> Profile()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+        //Returns the current users image to the view
+        public async Task<ActionResult> RenderImage(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var worker = await _context.User.FirstOrDefaultAsync(m => m.UserId == id);
+            if (worker == null)
+            {
+                return NotFound();
+            }
+            var image = (from w in _context.User
+                         where w.UserId == worker.UserId
+                         select worker.UserImageData).First();
+
+
+            return File(image, "image/png");
+        }
+
+        //Returns a change password page based on the user id
+        public async Task<IActionResult> ChangePassword()
+        {
+            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
+        }
+
+        //Updates and saves the new password to the database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerSelfEdit([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
+        public async Task<IActionResult> ChangePassword([Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,Wage,UserDescription")] User worker)
         {
+            worker.Password = Crypto.HashPassword(worker.Password);
+            worker.ConfirmPassword = worker.Password;
 
             /*ViewBag.Roles = new SelectList("1","2");*/
             var existingEmail = (from u in _context.User
@@ -242,46 +342,6 @@ namespace BaristaHome.Controllers
                 //return RedirectToAction(nameof(Index));
             }
             return View(worker);
-        }
-
-        // GET: Account/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var worker = await _context.User
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (worker == null)
-            {
-                return NotFound();
-            }
-
-            return View(worker);
-        }
-
-
-        // POST: Account/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var worker = await _context.User.FindAsync(id);
-            _context.User.Remove(worker);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool WorkerExists(int id)
-        {
-            return _context.User.Any(worker => worker.UserId == id);
-        }
-
-        public async Task<IActionResult> Invite()
-        {
-            return View(await _context.User.FirstOrDefaultAsync(m => m.UserId.ToString() == User.FindFirst("UserId").Value));
         }
     }
 }
