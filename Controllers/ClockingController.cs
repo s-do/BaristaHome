@@ -5,6 +5,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Web.Helpers;
+using System.Transactions;
+using System.Runtime.CompilerServices;
 
 namespace BaristaHome.Controllers
 {
@@ -333,7 +336,7 @@ namespace BaristaHome.Controllers
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
                              join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == user.UserId
-                             select new ClockingViewModel
+                             select us/*new ClockingViewModel
                              {
                                  UserId = u.UserId,
                                  FirstName = u.FirstName,
@@ -341,7 +344,7 @@ namespace BaristaHome.Controllers
                                  ShiftStatusId = us.ShiftStatusId,
                                  ShiftStatus = ss.ShiftStatusName,
                                  Time = us.Time,
-                             }).ToList();
+                             }*/).ToList();
             ViewBag.AllStatus = allStatus;
 
             //List of the different work statuses
@@ -380,34 +383,138 @@ namespace BaristaHome.Controllers
 
         //Allows an admin to edit an existing UserShiftStatus
         [HttpPost]
-        public async Task<IActionResult> EditStatus(int userId, int statusId, DateTime time, [Bind("UserId,FirstName,LastName,ShiftStatusId,ShiftStatus,Time")] ClockingViewModel c)
+        //public async Task<IActionResult> EditStatus(int user, int shift, DateTime t, [Bind("UserId,ShiftStatusId,Time")] UserShiftStatus c)
+        public async Task<IActionResult> EditStatus([Bind("UserId,ShiftStatusId,Time")] UserShiftStatus uss, int originalShift, DateTime originalTime)
         {
-            UserShiftStatus uss = new UserShiftStatus
+            // Requerying to redisplay view for errors
+            var allStatus = (from s in _context.Store
+                             join u in _context.User on s.StoreId equals u.StoreId
+                             join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                             join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                             where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == uss.UserId
+                             select us/*new ClockingViewModel
+                             {
+                                 UserId = u.UserId,
+                                 FirstName = u.FirstName,
+                                 LastName = u.LastName,
+                                 ShiftStatusId = us.ShiftStatusId,
+                                 ShiftStatus = ss.ShiftStatusName,
+                                 Time = us.Time,
+                             }*/).ToList();
+            ViewBag.AllStatus = allStatus;
+
+
+            ViewData["StatusOptions"] = new SelectList(_context.ShiftStatus, "ShiftStatusId", "ShiftStatusName");
+
+            if (ModelState.IsValid)
             {
-                UserId = userId,
-                ShiftStatusId = statusId,
-                Time = c.Time
+                try
+                {
+                    // Attach orginal row to the context
+                    // so for some reason DateTimes is pretty fucking retarded. clearly the purpose of this row is to query the original user shift status whose EXACT values are LITERALLY
+                    // sent back. now here's the fucking stupid thing: it WORKS when the time is in ANY format where the SECONDS is 0, so 10/21/2022 11:48:00 PM works. but if the seconds are 
+                    // not 0? then it just queries null signifying that it "dOEsNT EXIsT HUe hhUE" when it CLEARLY SHOWS THAT IT FUCKING EXIS- yeah no wonder dealing with data in the form of dates is so fucking stupid and cancer
+                    var originalRow = await (from u in _context.UserShiftStatus
+                                             where u.Time.ToString() == originalTime.ToString()
+                                             select u).FirstOrDefaultAsync();
+                    //var originalRow = _context.UserShiftStatus.FirstOrDefault(x => x.UserId == uss.UserId && x.ShiftStatusId == originalShift && x.Time == originalTime); // && x.Time.CompareTo(originalTime) == 0
+
+
+                    if (originalRow == null)
+                    {
+                        /*Added this part to try to fix the seconds thing******************************************************************************/
+                        //Selects all the user's usershiftstatuses that have original old shift id
+                        var userShiftStatus = (from s in _context.Store
+                                               join u in _context.User on s.StoreId equals u.StoreId
+                                               join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                               join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                               //i tried adding us.Time.toString() == originalTime.toString() here in the where clause
+                                               //but it didn't work so I made another loop down there
+                                               where us.UserId == uss.UserId && us.ShiftStatusId == originalShift
+                                               select us).ToList();
+
+                        var originalRow2 = originalRow;
+
+                        //Loops through the chosen usershiftstatuses with the original shift id 
+                        foreach (var s in userShiftStatus)
+                        {
+                            /*Console.WriteLine(s);*/
+                            //Tries to find the original shift time in the db
+                            if (s.Time.ToString() == originalTime.ToString())
+                            {
+                                originalRow2 = s;
+                            }
+                        }
+
+                        if (originalRow2 == null)
+                        {
+                            TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
+                            //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
+                            return View("ViewStatus");
+                        }
+                        originalRow = originalRow2;
+                        /*******************************************************************************************************************************/
+
+                        //TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
+                        //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
+                        //return View("ViewStatus");
+                    }
+
+                    Console.WriteLine(originalRow.Time);
+                    Console.WriteLine(originalTime);
+                    Console.WriteLine(originalRow.Time == originalTime);
+
+                    // similarly to the logic in editing tasks, we "update" the shift status by deleting the row then adding the new one with the updated values :p
+                    _context.UserShiftStatus.Remove(originalRow);
+                    await _context.SaveChangesAsync();
+
+                    // now we "update" this shift status by adding the new one with the new values
+                    _context.UserShiftStatus.Add(uss);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
+            }
+            TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
+            //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
+            return View("ViewStatus");
+
+
+
+            /*UserShiftStatus uss = new UserShiftStatus
+            {
+                UserId = c.UserId,
+                ShiftStatusId = newStatusOptionId,
+                Time = newTime
             };
             var userShiftStatus = (from s in _context.Store
                                    join u in _context.User on s.StoreId equals u.StoreId
                                    join us in _context.UserShiftStatus on u.UserId equals us.UserId
                                    join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == userId
-                                        && us.ShiftStatusId == statusId /*&& us.Time == time*/
+                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == c.UserId
+                                        && us.ShiftStatusId == c.ShiftStatusId *//*&& us.Time == time*//*
                                    select us).ToList();
 
             foreach (var s in userShiftStatus)
             {
                 var a = s;
                 Console.WriteLine(a);
-                if (s.Time.ToString() == time.ToString())
+                if (s.Time.ToString() == c.Time.ToString())
                 {
-                    _context.UserShiftStatus.Update(s);
+                    s.ShiftStatusId = newStatusOptionId;
+                    s.Time = newTime;
+                    _context.Update(s);
                     await _context.SaveChangesAsync();
                 }
-            }
+            }*/
+            /*var a = userShiftStatus;
+            _context.Update(userShiftStatus);
+            await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });
+            return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });*/
         }
         /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }
