@@ -69,88 +69,92 @@
     }
 </style>
 
-<button style = "width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
-    <a asp-controller="Home" asp-action="Index">Back</a>
-</button>
+<div style="padding-left: 200px; padding-right:200px;">
+    <button style="width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
+        <a asp-controller="Home" asp-action="Index">Back</a>
+    </button>
 
-<div class="background">
-    <div class="page-title-and-button">
-        <p class="page-title">Manage Workers</p>
-        <button class="pink-button">
-            <a asp-controller="Worker" asp-action="Invite">Invite an Employee</a>
-        </button>
-    </div>
+    <div class="background">
+        <div class="page-title-and-button">
+            <p class="page-title">Manage Workers</p>
+            <button class="pink-button">
+                <a asp-controller="Worker" asp-action="Invite">Invite an Employee</a>
+            </button>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <p>Worker</p>
-                </th>
-                <th>
-                    <p>Name</p>
-                </th>
-                <th>
-                   <p>Email</p>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @if (item.UserImageData == null)
-                        {
-                            <img class="profile-pic" src="../images/default-profile-pic.jpg" >
-                        }
-                        else
-                        {
-                            <img class="profile-pic" src="@Url.Action("RenderImage", new { id = item.UserId})"  />
-                        }
-                    </td>
-                    <td>
-                        <div class="employee-name">
-                            @Html.DisplayFor(modelItem => item.FirstName)
-                            @Html.DisplayFor(modelItem => item.LastName)
-                        </div>
-                        <div class="employee-role">
-                             @if (item.RoleId == 1)
+                    <th>
+                        <p>Worker</p>
+                    </th>
+                    <th>
+                        <p>Name</p>
+                    </th>
+                    <th>
+                        <p>Email</p>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (item.UserImageData == null)
                             {
-                                <p>Worker</p>
-                            }
-                            else if (item.RoleId == 2)
-                            {
-                                <p>Manager</p>
+                                <img class="profile-pic" src="../images/default-profile-pic.jpg">
                             }
                             else
                             {
-                                <p>Owner</p>
+                                <img class="profile-pic" src="@Url.Action("RenderImage", new { id = item.UserId})" />
                             }
-                        </div>
+                        </td>
+                        <td>
+                            <div class="employee-name">
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </div>
+                            <div class="employee-role">
+                                @if (item.RoleId == 1)
+                                {
+                                    <p>Worker</p>
+                                }
+                                else if (item.RoleId == 2)
+                                {
+                                    <p>Manager</p>
+                                }
+                                else
+                                {
+                                    <p>Owner</p>
+                                }
+                            </div>
 
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
 
-                    <td>
-                        @if (item.RoleId == 3)
-                        {
-                            <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
-                        }
-                        else
-                        {
-                            <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
-                        }
-                        |
-                        <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        <td>
+                            @if (item.RoleId == 3)
+                            {
+                                <a asp-action="OwnerSelfEdit" asp-route-id="@item.UserId">Edit</a>
+                            }
+                            else
+                            {
+                                <a asp-action="OwnerEdit" asp-route-id="@item.UserId">Edit</a>
+                            }
+                            |
+                            <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+
 

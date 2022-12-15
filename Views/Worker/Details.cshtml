@@ -91,110 +91,115 @@
     }
 </style>
 
-<button class="pink-button">
-    <a asp-controller="Worker" asp-action="Index">Back</a>
-</button>
+
+<div style="padding-left: 200px; padding-right:200px;">
+    <button class="pink-button">
+        <a asp-controller="Worker" asp-action="Index">Back</a>
+    </button>
 
 
 
-<div class="background">
+    <div class="background">
 
-    <div class="user-profile-title-and-button-row">
-        <div class="page-title"> Information </div>
+        <div class="user-profile-title-and-button-row">
+            <div class="page-title"> Information </div>
+        </div>
 
+        <div class="profile">
+            <label>
+                @if (Model.UserImageData == null)
+                {
+                    <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
+                }
+                else
+                {
+                    <img class="profile-pic" src="@Url.Action("RenderImage", new { id = Model.UserId})" style="background-color: white; border: 3px solid #DFB3D3" />
+                }
+            </label>
 
-    </div>
-
-    <div class="profile">
-
-        <label>
-            @if (Model.UserImageData == null)
-            {
-                <img class="profile-pic" src="../images/default-profile-pic.jpg" style="background-color: white; border: 3px solid #DFB3D3">
-            }
-            else
-            {
-                <img class="profile-pic" src="@Url.Action("RenderImage", new { id = Model.UserId})" style="background-color: white; border: 3px solid #DFB3D3" />
-            }
-        </label>
-
-        <div class="profile-info">
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.FirstName)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.LastName)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.LastName)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Role)
-                </dt>
-                <dd class="col-sm-10">
-                    @if (Model.RoleId == (1))
-                    {
-                        <p>Worker</p>
-                    }
-                    else
-                    {
-                        <p>Owner</p>
-                    }
-                </dd>
-                <dt class="col-sm-2">
-                    @if (Model.RoleId == 1)
-                    {
-                        @Html.DisplayNameFor(model => model.Wage)
-                    }
-                </dt>
-                <dd class="col-sm-10">
-                    @if (Model.RoleId == 1)
-                    {
-                        @if (Model.Wage == null)
+            <div class="profile-info">
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.FirstName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.FirstName)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.LastName)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Role)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @if (Model.RoleId == (1))
                         {
-                            <p>Wage has not been specified.</p>
+                            <p>Worker</p>
+                        }
+                        else if (Model.RoleId == 2)
+                        {
+                            <p>Manager</p>
                         }
                         else
                         {
-                            @Html.DisplayFor(model => model.Wage)
+                            <p>Owner</p>
                         }
-                    }
+                    </dd>
+                    <dt class="col-sm-2">
+                        @if (Model.RoleId == 1)
+                        {
+                            @Html.DisplayNameFor(model => model.Wage)
+                        }
+                    </dt>
+                    <dd class="col-sm-10">
+                        @if (Model.RoleId == 1)
+                        {
+                            @if (Model.Wage == null)
+                            {
+                                <p>Wage has not been specified.</p>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(model => model.Wage)
+                            }
+                        }
 
-                </dd>
-                 <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Color)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Color)
-                </dd>
-                <dt class="col-sm-2">
-                    @if(Model.RoleId != 3) {
-                    <p>User Description</p>
-                    }
-                </dt>
-                <dd class="col-sm-10">
-                    @if(Model.RoleId != 3) {
-                        @Html.DisplayFor(model => model.UserDescription)
-                    }
-                    
-                </dd>
-            </dl>
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Color)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Color)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @if (Model.RoleId != 3)
+                        {
+                            <p>User Description</p>
+                        }
+                    </dt>
+                    <dd class="col-sm-10">
+                        @if (Model.RoleId != 3)
+                        {
+                            @Html.DisplayFor(model => model.UserDescription)
+                        }
+
+                    </dd>
+                </dl>
+            </div>
+
         </div>
-
     </div>
 </div>
-
 
 
 
