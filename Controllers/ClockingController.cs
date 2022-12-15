@@ -392,75 +392,49 @@ namespace BaristaHome.Controllers
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
                              join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == uss.UserId
-                             select us/*new ClockingViewModel
-                             {
-                                 UserId = u.UserId,
-                                 FirstName = u.FirstName,
-                                 LastName = u.LastName,
-                                 ShiftStatusId = us.ShiftStatusId,
-                                 ShiftStatus = ss.ShiftStatusName,
-                                 Time = us.Time,
-                             }*/).ToList();
+                             select us).ToList();
             ViewBag.AllStatus = allStatus;
-
-
             ViewData["StatusOptions"] = new SelectList(_context.ShiftStatus, "ShiftStatusId", "ShiftStatusName");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Attach orginal row to the context
-                    // so for some reason DateTimes is pretty fucking retarded. clearly the purpose of this row is to query the original user shift status whose EXACT values are LITERALLY
-                    // sent back. now here's the fucking stupid thing: it WORKS when the time is in ANY format where the SECONDS is 0, so 10/21/2022 11:48:00 PM works. but if the seconds are 
-                    // not 0? then it just queries null signifying that it "dOEsNT EXIsT HUe hhUE" when it CLEARLY SHOWS THAT IT FUCKING EXIS- yeah no wonder dealing with data in the form of dates is so fucking stupid and cancer
-                    var originalRow = await (from u in _context.UserShiftStatus
-                                             where u.Time.ToString() == originalTime.ToString()
-                                             select u).FirstOrDefaultAsync();
-                    //var originalRow = _context.UserShiftStatus.FirstOrDefault(x => x.UserId == uss.UserId && x.ShiftStatusId == originalShift && x.Time == originalTime); // && x.Time.CompareTo(originalTime) == 0
+                    /*Added this part to try to fix the seconds thing******************************************************************************/
+                    //Selects all the user's usershiftstatuses that have original old shift id
+                    var userShiftStatus = (from s in _context.Store
+                                            join u in _context.User on s.StoreId equals u.StoreId
+                                            join us in _context.UserShiftStatus on u.UserId equals us.UserId
+                                            join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
+                                            //i tried adding us.Time.toString() == originalTime.toString() here in the where clause
+                                            //but it didn't work so I made another loop down there
+                                            where us.UserId == uss.UserId && us.ShiftStatusId == originalShift
+                                            select us).ToList();
 
+                    UserShiftStatus originalRow = new UserShiftStatus { };
+                    Boolean flag = true;
 
-                    if (originalRow == null)
+                    //Loops through the chosen usershiftstatuses with the original shift id 
+                    foreach (var s in userShiftStatus)
                     {
-                        /*Added this part to try to fix the seconds thing******************************************************************************/
-                        //Selects all the user's usershiftstatuses that have original old shift id
-                        var userShiftStatus = (from s in _context.Store
-                                               join u in _context.User on s.StoreId equals u.StoreId
-                                               join us in _context.UserShiftStatus on u.UserId equals us.UserId
-                                               join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                               //i tried adding us.Time.toString() == originalTime.toString() here in the where clause
-                                               //but it didn't work so I made another loop down there
-                                               where us.UserId == uss.UserId && us.ShiftStatusId == originalShift
-                                               select us).ToList();
-
-                        var originalRow2 = originalRow;
-
-                        //Loops through the chosen usershiftstatuses with the original shift id 
-                        foreach (var s in userShiftStatus)
+                        /*Console.WriteLine(s);*/
+                        //Tries to find the original shift time in the db
+                        if (s.Time.ToString() == originalTime.ToString())
                         {
-                            /*Console.WriteLine(s);*/
-                            //Tries to find the original shift time in the db
-                            if (s.Time.ToString() == originalTime.ToString())
-                            {
-                                originalRow2 = s;
-                            }
+                            originalRow = s;
+                            flag = false;
                         }
-
-                        if (originalRow2 == null)
-                        {
-                            TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
-                            //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
-                            return View("ViewStatus");
-                        }
-                        originalRow = originalRow2;
-                        /*******************************************************************************************************************************/
-
-                        //TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
-                        //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
-                        //return View("ViewStatus");
                     }
 
-                    Console.WriteLine(originalRow.Time);
+                    if (flag)
+                    {
+                        TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
+                        //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
+                        return View("ViewStatus");
+                    }
+                    /*******************************************************************************************************************************/
+                    
+                    Console.WriteLine(originalRow);
                     Console.WriteLine(originalTime);
                     Console.WriteLine(originalRow.Time == originalTime);
 
@@ -479,42 +453,7 @@ namespace BaristaHome.Controllers
                 return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
             }
             TempData["editUserShiftStatusError"] = "There was an issue editing this user's shift status.";
-            //return RedirectToAction(nameof(ViewStatus), new { id = uss.UserId });
             return View("ViewStatus");
-
-
-
-            /*UserShiftStatus uss = new UserShiftStatus
-            {
-                UserId = c.UserId,
-                ShiftStatusId = newStatusOptionId,
-                Time = newTime
-            };
-            var userShiftStatus = (from s in _context.Store
-                                   join u in _context.User on s.StoreId equals u.StoreId
-                                   join us in _context.UserShiftStatus on u.UserId equals us.UserId
-                                   join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
-                                   where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == c.UserId
-                                        && us.ShiftStatusId == c.ShiftStatusId *//*&& us.Time == time*//*
-                                   select us).ToList();
-
-            foreach (var s in userShiftStatus)
-            {
-                var a = s;
-                Console.WriteLine(a);
-                if (s.Time.ToString() == c.Time.ToString())
-                {
-                    s.ShiftStatusId = newStatusOptionId;
-                    s.Time = newTime;
-                    _context.Update(s);
-                    await _context.SaveChangesAsync();
-                }
-            }*/
-            /*var a = userShiftStatus;
-            _context.Update(userShiftStatus);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(ViewStatus), new { id = c.UserId });*/
         }
         /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
     }

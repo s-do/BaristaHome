@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using WebMatrix.WebData;
 
-
 namespace BaristaHome.Controllers
 {
     public class AccountController : Controller
@@ -238,153 +237,10 @@ namespace BaristaHome.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Account");
-        }
-
-        /*
-         * literally a shit ton of code from creating a new scaffolding
-         * this just helps you setup a lot of the crud operations for your model
-         * not sure if we need this and their views or not
-         */
-
-        // GET: Account
-        [Authorize]
-        public async Task<IActionResult> Index()
-        {
-            // Use type casting to return a IEnumerable<Model> with a LINQ query instead of doing await _context.Model.ToListAsync()
-            var userList = (IEnumerable<User>)from u in _context.User
-                                              orderby u.UserId descending
-                                              select u;
-            return View(userList);
-        }
-
-        // GET: Account/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registerViewModel = await _context.User
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (registerViewModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(registerViewModel);
-        }
-
-        // GET: Account/Edit/UserId
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registerViewModel = await _context.User.FindAsync(id);
-            if (registerViewModel == null)
-            {
-                return NotFound();
-            }
-            return View(registerViewModel);
-        }
-
-        // POST: Account/Edit/UserId (overload method)
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color," +
-            "InviteCode,RoleId,StoreId,UserImageData,UserImage")] User registerViewModel)
-        {
-            if (id.ToString().Equals(registerViewModel.UserId.ToString()))
-            {
-                return NotFound();
-            }
-
-            var existingEmail = (from u in _context.User
-                                 where u.Email.Equals(registerViewModel.Email) && !u.UserId.Equals(registerViewModel.UserId)
-                                 select u).FirstOrDefault();
-
-            if (existingEmail != null)
-            {
-                ModelState.AddModelError(string.Empty, "The email you are trying to change already exists on another account! Please use a different one.");
-                return View(registerViewModel);
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    registerViewModel.Password = Crypto.HashPassword(registerViewModel.Password);
-
-                    //Workers only allowed to edit certain attributes
-                    //Set the other attributes to the claim values, so that when we update the database, it doesn't become null
-                    registerViewModel.RoleId = Convert.ToInt32(User.FindFirstValue("RoleId"));
-                    registerViewModel.InviteCode = User.FindFirstValue("InviteCode");
-                    registerViewModel.StoreId = Convert.ToInt32(User.FindFirstValue("StoreId"));
-                    if(User.FindFirstValue("UserImage") != null)
-                    {
-                        registerViewModel.UserImage = User.FindFirstValue("UserImage");
-                    }
-                    if (User.FindFirstValue("UserImageData") != null) {
-                        registerViewModel.UserImageData = Encoding.ASCII.GetBytes(User.FindFirstValue("UserImageData"));
-                    }
-                    registerViewModel.Color = User.FindFirstValue("Color");
-
-                    _context.Update(registerViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RegisterViewModelExists(registerViewModel.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return View(registerViewModel);
-/*                return RedirectToAction(nameof(Index));*/
-            }
-            return View(registerViewModel);
-        }
-
-        // GET: Account/Delete/UserId
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registerViewModel = await _context.User.FirstOrDefaultAsync(m => m.UserId == id);
-            if (registerViewModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(registerViewModel);
-        }
-
-        // POST: Account/Delete/UserId
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var registerViewModel = await _context.User.FindAsync(id);
-            _context.User.Remove(registerViewModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Login", "Account");
         }
 
         private bool RegisterViewModelExists(int id)

@@ -95,6 +95,7 @@ namespace BaristaHome.Controllers
             return Index();
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

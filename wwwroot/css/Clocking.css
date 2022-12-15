@@ -42,3 +42,14 @@
     width: 320px;
     border-radius:5px;
 }
+
+.btn-function {
+    background-color: mistyrose;
+    color: black;
+    border-color: mistyrose;
+}
+
+.btn-function:hover {
+    background-color: white;
+    color: black;
+}

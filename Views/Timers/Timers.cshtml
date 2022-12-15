@@ -13,12 +13,11 @@
         @*Imported stylesheets to use for CSS styling*@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - Barista Home</title>
+        <title>@ViewData["Title"] • Barista Home</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
         <style>
-
         div {
             display:flex;
             flex-direction: row;
@@ -174,6 +173,25 @@
             background-color: rgba(219, 113, 152, 0.67);
         }
         
+        .pink-button-left {
+            background-color: #DFB3D3;
+            color: black;
+            font-family: 'Inter';
+            width: 200px;
+            height: 50px;
+            float: left;
+            margin-left: 45px;
+            text-decoration-line: none;
+            font-size: 25px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .center {
+            width: 75%;
+            text-align: center;
+        }
         </style>
 
         @*Bootstrap imports*@
@@ -189,33 +207,39 @@
     </head>
      
     <body>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Home" asp-action="Index">Back</a>
 
-        <div class="text-center">
-            <h1 style="align-self:center;"class="display-4">Timers</h1>
-        </div>
+                <div class="center">
+                    <h1 class="title">Timers</h1>
+                </div>
+            </nav>
+        </header>
 
-        
-        <div style= "min-width: 1400px;" class="button-area">
+        <div class="container">
+            <div style= "min-width: 1400px;" class="button-area">
             
-            @*Create a timer button*@  
-            <div>
-                <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
-            </div>
+                @*Create a timer button*@  
+                <div>
+                    <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
+                </div>
                
             
-            @*Delete timer dropdown and delete button*@
-            <div class="delete-timer-area">
-                <form asp-action = "DeleteTimer">
-                <select placeholder="Select Timer" name="timerId" asp-items="ViewBag.Timers"></select>
-                <button class="pink-button" type="submit" asp-action="DeleteTimer" >Delete</button>
-                </form>
+                @*Delete timer dropdown and delete button*@
+                <div class="delete-timer-area">
+                    <form asp-action = "DeleteTimer">
+                    <select placeholder="Select Timer" name="timerId" asp-items="ViewBag.Timers"></select>
+                    <button class="pink-button" type="submit" asp-action="DeleteTimer" >Delete</button>
+                    </form>
+                </div>
             </div>
-        </div>
 
         
-        @*Timer*@
-        <div class="background">
-            <div  id="timer-container"> </div>
+            @*Timer*@
+            <div class="background">
+                <div  id="timer-container"> </div>
+            </div>
         </div>
         
         <script>

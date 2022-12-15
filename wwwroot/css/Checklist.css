@@ -27,7 +27,6 @@ body {
     padding-right: 10px;
 }
 
-
 .table-inventory th:last-child, td:last-child {
     background: #ffe4bc;
     width: 5%;
@@ -56,7 +55,7 @@ body {
 }
 
 .btn-function:hover {
-    background-color: white;
+    background-color: #ffdcf4;
     color: black;
 }
 

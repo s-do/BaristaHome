@@ -1,41 +1,43 @@
 ﻿@model BaristaHome.Models.StoreTimer
+@{
+    ViewData["Title"] = "Timers •";
+}
 
 <html>
     <head>
         <style>
+            .gfg {
+                all: unset;
+            }
 
-        .gfg {
-            all: unset;
-        }
+            a {
+                color: inherit;
+                text-decoration: none;
+            }   
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }   
+            .background {
+                background-color: antiquewhite;
+                box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+                padding-top: 30px;
+                padding-bottom: 30px;
+                padding-left: 50px;
+                padding-right: 50px;
+            }
 
-        .background {
-            background-color: antiquewhite;
-            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
-            padding-top: 30px;
-            padding-bottom: 30px;
-            padding-left: 50px;
-            padding-right: 50px;
-        }
-
-        .pink-button {
-            background-color: pink;
-            color: black;
-            border: none;
-            border-radius: 3px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 20px;
-            padding-right: 20px;
-            margin-bottom: 10px;
-            box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
-            transition: background-color 0.15s, color 0.15s;
-            display: inline-block;
-        }
+            .pink-button {
+                background-color: pink;
+                color: black;
+                border: none;
+                border-radius: 3px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 20px;
+                padding-right: 20px;
+                margin-bottom: 10px;
+                box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+                transition: background-color 0.15s, color 0.15s;
+                display: inline-block;
+            }
 
             .pink-button:hover {
                 background-color: lightpink;
@@ -54,31 +56,61 @@
                 padding-left: 20px;
                 font-weight: 500;
             }
-        </style>
 
+            .pink-button-left {
+                background-color: #DFB3D3;
+                color: black;
+                font-family: 'Inter';
+                width: 200px;
+                height: 50px;
+                float: left;
+                margin-left: 45px;
+                text-decoration-line: none;
+                font-size: 25px;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .center {
+                width: 75%;
+                text-align: center;
+            }
+        </style>
 </head>
     <body>
-        <a class="pink-button" asp-area="" asp-controller="Timers" asp-action="Timers">Back</a>
-        <div class="background">
-            <p class="page-title">Create a new timer</p>
-            <form asp-action="CreateTimer" method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="StoreId"/>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <p>Name:</p>
-                    <input asp-for="TimerName" style="width:400px;" class=" form-control" />
-                    <span asp-validation-for="TimerName" class="text-danger"></span>
-                </div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+                <a class="nav-link pink-button-left" asp-area="" asp-controller="Timers" asp-action="Timers">Back</a>
 
-                <div class="form-group">
-                    <p style="margin-top:20px;"> Number of minutes: </p>
-                    <input asp-for="DurationMin" style="width:200px;" class="form-control" />
-                    <span asp-validation-for="DurationMin" class="text-danger"></span>
+            <div class="center">
+                    <h1 class="title">Timers</h1>
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" style="margin-top:20px;" class="pink-button" />
-                </div>
-            </form>
+            </nav>
+        </header>
+
+        <div class="container">
+            <div class="background">
+                <p class="page-title">Create a new timer</p>
+                <form asp-action="CreateTimer" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="StoreId"/>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <p>Name:</p>
+                        <input asp-for="TimerName" style="width:400px;" class=" form-control" autocomplete="off" />
+                        <span asp-validation-for="TimerName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <p style="margin-top:20px;"> Number of minutes: </p>
+                        <input asp-for="DurationMin" style="width:200px;" class="form-control" />
+                        <span asp-validation-for="DurationMin" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" style="margin-top:20px;" class="pink-button" />
+                    </div>
+                </form>
+            </div>
         </div>
 
     </body>
