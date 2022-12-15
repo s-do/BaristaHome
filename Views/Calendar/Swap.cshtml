@@ -1,7 +1,10 @@
-﻿@{
+﻿@model BaristaHome.Models.RequestViewModel
+
+@{
     ViewData["Title"] = "Shared Calendar";
     Layout = null;
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +15,71 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> <!-- probably add custom css changes on this css file -->
+        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> 
+    
+    <style>
+
+        @*CSS Styling*@
+        .background {
+            background-color: antiquewhite;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+            padding-top: 30px;
+            padding-bottom: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            margin: 0 auto;
+            align-self: center;
+            max-width: 1000px;
+        }
+
+        .page-title {
+            display: inline-block;
+            font-size: 30px;
+            font-weight: 500;
+            align-self:center;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .send-button {
+            margin-top: 20px;
+            background: pink;
+            color: black;
+            border: none;
+            border-radius: 20px;
+            height: 40px;
+            width: 140px;
+            box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .send-button:hover {
+            background: lightpink;
+            cursor: pointer;
+        }
+
+        .send-button:active {
+            background-color: pink;
+        }
+
+        .instructions{
+            font-weight:bold;
+            margin-bottom: 10px;
+            margin-top:10px;
+        }
+
+        .dropdown-styling{
+            background:white;
+        }
+    </style>
+    @*Bootstrap imports*@
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     </head>
 
     <body>
@@ -26,6 +93,37 @@
                 </div>
             </nav>
         </header>
+
+        <div class="background">
+            @*Page title and sentence instruction*@
+            <p class="page-title">Shift Swapping Request</p>
+            <p>Fill out the information below to send a shift-swapping request to a coworker.</p>
+
+            @*User selects their own shift that they'd like to swap out*@
+            <p class="instructions">Select a shift that you would like to swap out:</p>
+            
+            <form asp-action="Swap" id="editForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <select asp-for="CurrentUserShiftId" asp-items="@ViewBag.CurrentUserShifts">
+                <option>Please select one</option>
+            </select>
+
+            @*User selects a shift they want to switch with*@
+            <p class="instructions">Select a shift to switch with:</p>
+
+             <select asp-for="RequestedShiftId" asp-items="@ViewBag.workerNamesAndTheirShifts">
+                <option>Please select one</option>
+            </select>
+              
+            <p> </p>
+            @*Send button*@
+            <button type="submit"class="send-button" asp-action="Swap">Send</button>
+            
+            @ViewBag.Error
+            </form>
+  
+        </div>
 
     </body>
 

@@ -9,6 +9,7 @@ using BaristaHome.Data;
 using BaristaHome.Models;
 using BaristaHome.Migrations;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Frameworks;
 
 namespace BaristaHome.Controllers
 {
@@ -205,16 +206,248 @@ namespace BaristaHome.Controllers
         /* PETER ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
         /* CINDIE ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
-        public IActionResult Swap()
+
+        //Return Swap view with two dropdown menus, one populated with the shifts belonging to the current user, and the other populated with other coworker's shifts
+        public async Task<IActionResult> Swap()
         {
-            // TODO: query current user's shifts to display and select the one they want to swap with their other same role workers in the store 
+            //Get current user's shifts
+            var currentUserShifts = (from store in _context.Store
+                                     join user in _context.User on store.StoreId equals user.StoreId
+                                     join shift in _context.Shift on user.UserId equals shift.UserId
+                                     where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                     select new RequestViewModel()
+                                     {
+                                         UserId = user.UserId,
+                                         CurrentUserShiftId = shift.ShiftId,
+                                         FirstName = user.FirstName,
+                                         LastName = user.LastName,
+                                         StartTime = shift.StartShift,
+                                         EndTime = shift.EndShift
+                                     }).Select(s => new
+                                     {
+                                         Text =  s.StartTime + " to " + s.EndTime,
+                                         Value = s.CurrentUserShiftId
+                                     })
+                                    .ToList(); 
+            //Create a select list (to use in the view's dropdown menu)
+            ViewData["CurrentUserShifts"] = new SelectList(currentUserShifts, "Value", "Text");
+
+            //Get each coworker's names and shifts
+            var workerNamesAndTheirShifts = (from store in _context.Store
+                                     join user in _context.User on store.StoreId equals user.StoreId
+                                     join shift in _context.Shift on user.UserId equals shift.UserId
+                                     where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && !user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                     select new RequestViewModel()
+                                     {
+                                         UserId = user.UserId,
+                                         RequestedShiftId = shift.ShiftId,
+                                         FirstName = user.FirstName,
+                                         LastName = user.LastName,
+                                         StartTime = shift.StartShift,
+                                         EndTime = shift.EndShift
+                                     }).Select(s => new
+                                     {
+                                         //Text = s.FirstName + " " + s.LastName+ " - " + s.StartTime + " to " + s.EndTime,
+                                         Text =s.StartTime + " to " + s.EndTime,
+                                         Value = s.RequestedShiftId
+                                     })
+                                    .ToList();
+
+            //Create a select list (to use in the view's dropdown menu)
+            ViewData["workerNamesAndTheirShifts"] = new SelectList(workerNamesAndTheirShifts, "Value", "Text");
+ 
             return View();
+
         }
 
+        //Save the shift swapping request to the database
+        [HttpPost]
+        public async Task<IActionResult> Swap(int CurrentUserShiftId, int RequestedShiftId)
+        {
+            //Get sender user id, recipient user id, sender shift id, recipient shift id
+            int senderUserId = Convert.ToInt16(User.FindFirst("UserId").Value);
+            var getRecipientUserId = await _context.Shift.FindAsync(RequestedShiftId);
+            int recipientUserId = getRecipientUserId.UserId;
+            int recipientShiftId = RequestedShiftId;
+
+            //Create a new shift swapping request, and set all attributes
+            var request = new ShiftSwappingRequest();
+            request.SenderUserId = senderUserId;
+            request.RecipientUserId = recipientUserId;
+            request.SenderShiftId = CurrentUserShiftId;
+            request.RecipientShiftId = recipientShiftId;
+
+            ViewBag.Error = "";
+            if (ModelState.IsValid)
+            {
+                //Get all shift swapping requests from the database
+                var allRequests = await _context.ShiftSwappingRequest.ToListAsync();
+
+                //For each request, check if it has the same current user's shift id and recipient shift id
+                foreach (ShiftSwappingRequest r in allRequests)
+                {
+                    if (r.SenderShiftId == CurrentUserShiftId && r.RecipientShiftId == RequestedShiftId)
+                    {
+                        //If it matches, display the swap request form again for the user to try again
+                        ViewBag.Error = "This shift swapping request has already been made.";
+                        return RedirectToAction("Swap");
+                    }
+                }
+                try
+                {
+                    //Save the request to the database
+                    _context.Update(request);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return RedirectToAction("Shifts");
+            }
+            return RedirectToAction("Swap");
+
+        }
+
+
+        public async Task<IActionResult> WorkerRequests()
+        {
+
+            //Get a list of shift swapping requests to send to the worker requests view
+            List<ShiftSwappingRequest> shiftRequests = (from store in _context.Store
+                                        join user in _context.User on store.StoreId equals user.StoreId
+                                        join shift in _context.Shift on user.UserId equals shift.UserId
+                                        join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.SenderShiftId
+                                        where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                        where shiftRequest.SenderUserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value)) //Get shift swap requests where the sender is the current user
+                                        let senderUser = (from store in _context.Store
+                                                        join user in _context.User on store.StoreId equals user.StoreId
+                                                        where user.UserId.Equals(Convert.ToInt16(shiftRequest.SenderUserId))
+                                                        select user).FirstOrDefault()
+                                        let senderShift = (from store in _context.Store
+                                                            join shift in _context.Shift on store.StoreId equals shift.StoreId
+                                                            where shift.ShiftId.Equals(Convert.ToInt16(shiftRequest.SenderShiftId))
+                                                            select shift).FirstOrDefault()
+                                        select new ShiftSwappingRequest()
+                                        {
+                                            RequestId = shiftRequest.RequestId,
+                                            SenderUserId = shiftRequest.SenderUserId,
+                                            RecipientUserId = shiftRequest.RecipientUserId,
+                                            SenderUser = shiftRequest.SenderUser,
+                                            RecipientUser = shiftRequest.RecipientUser,
+                                            SenderShift = shiftRequest.SenderShift,
+                                            RecipientShift = shiftRequest.RecipientShift,
+                                            Response = shiftRequest.Response
+
+                                        }).ToList();
+            ViewBag.ShiftRequests = shiftRequests;
+
+            //Set the status to either accepted, pending or declined
+            ViewData["Status"] = "Accepted";
+            return View(shiftRequests);
+        }
+
+
+        //Switches shifts between users based on request ID
+        public async Task<IActionResult> SwapShifts(int RequestId)
+        {
+            //Get the shift swapping request based on request ID
+            var ShiftSwappingRequest = await _context.ShiftSwappingRequest.FindAsync(RequestId);
+
+            //Get the Sender's and Recipient's shift id
+            var SenderShiftId = ShiftSwappingRequest.SenderShiftId;
+            var RecipientShiftId = ShiftSwappingRequest.RecipientShiftId;
+
+            //Use the shift ids to find the shifts
+            var SenderShift = await _context.Shift.FindAsync(SenderShiftId);
+            var RecipientShift = await _context.Shift.FindAsync(RecipientShiftId);
+
+            //Get the Sender's and Recipient's user ids
+            var SenderUserId = ShiftSwappingRequest.SenderUserId;
+            var RecipientUserId = ShiftSwappingRequest.RecipientUserId;
+
+            //Swap both shifts' user id's
+            SenderShift.UserId = RecipientUserId;
+            RecipientShift.UserId = SenderUserId;
+
+            //Set the request's response to True (to show that the request is accepted and completed)
+            ShiftSwappingRequest.Response = true;
+
+            //Find list of swap requests that are requesting for the same shift as the one that was swapped above
+            var shifts = (IEnumerable<ShiftSwappingRequest>)(from store in _context.Store
+                                              join user in _context.User on store.StoreId equals user.StoreId
+                                              join shift in _context.Shift on user.UserId equals shift.UserId
+                                              join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.RecipientShiftId
+                                              where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                              where shiftRequest.RecipientShiftId.Equals(RecipientShiftId)
+                                              where (!shiftRequest.RequestId.Equals(RequestId))
+                                              select shiftRequest).ToList();
+
+            //Go through each swap request and set the response to false
+            foreach (ShiftSwappingRequest r in shifts)
+            {
+                r.Response = false;
+                _context.ShiftSwappingRequest.Update(r);
+                await _context.SaveChangesAsync();
+
+            }
+
+            //Update the database
+            _context.Shift.Update(SenderShift);
+            _context.Shift.Update(RecipientShift);
+            _context.ShiftSwappingRequest.Update(ShiftSwappingRequest);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Requests");
+        }
+
+        //Sets the swap request reponse to false (to indicate that it has been declined)
+        public async Task<IActionResult> DeclineSwapRequest(int RequestId)
+        {
+            var ShiftSwappingRequest = await _context.ShiftSwappingRequest.FindAsync(RequestId);
+            ShiftSwappingRequest.Response = false;
+            _context.ShiftSwappingRequest.Update(ShiftSwappingRequest);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Requests");
+
+        }
+
+
+        //Display current user's swap requests from other workers
         public IActionResult Requests()
         {
-            // TODO: display current user's swap requests from other workers (might have to create a table in the db to keep track of this)
-            return View();
+            //Get a list of shift swapping requests 
+            List<ShiftSwappingRequest> shiftRequests = (from store in _context.Store
+                                                    join user in _context.User on store.StoreId equals user.StoreId
+                                                    join shift in _context.Shift on user.UserId equals shift.UserId
+                                                    join shiftRequest in _context.ShiftSwappingRequest on shift.ShiftId equals shiftRequest.RecipientShiftId
+                                                    where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value))
+                                                    //the recipient must be the current user
+                                                    where shiftRequest.RecipientUserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value)) 
+                                                    //the request must be pending (not accepted/rejected)
+                                                    where shiftRequest.Response.Equals(null) 
+                                                    let senderUser = (from store in _context.Store
+                                                                 join user in _context.User on store.StoreId equals user.StoreId
+                                                                 where user.UserId.Equals(Convert.ToInt16(shiftRequest.SenderUserId))
+                                                                 select user).FirstOrDefault()
+                                                    let senderShift = (from store in _context.Store
+                                                                      join shift in _context.Shift on store.StoreId equals shift.StoreId
+                                                                      where shift.ShiftId.Equals(Convert.ToInt16(shiftRequest.SenderShiftId))
+                                                                      select shift).FirstOrDefault()
+                                                    select new ShiftSwappingRequest()
+                                                    {
+                                                        RequestId = shiftRequest.RequestId,
+                                                        SenderUserId = shiftRequest.SenderUserId,
+                                                        RecipientUserId = shiftRequest.RecipientUserId,
+                                                        SenderUser = senderUser,
+                                                        RecipientUser = user,
+                                                        SenderShift = senderShift,
+                                                        RecipientShift = shift
+
+                                                    }).ToList();
+            //Display swap requests
+            ViewBag.ShiftRequests = shiftRequests;
+            return View(shiftRequests);
         }
 
         /* CINDIE ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */

@@ -13,6 +13,10 @@ namespace BaristaHome.Data
         {
         }
 
+        public BaristaHomeContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Creating candidate key for models (multiple columns for pk); This is basically a must for many-to-many relationships
@@ -85,5 +89,6 @@ namespace BaristaHome.Data
         public DbSet<Unit> Unit { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserShiftStatus> UserShiftStatus { get; set; }
+        public DbSet<BaristaHome.Models.ShiftSwappingRequest> ShiftSwappingRequest { get; set; }
     }
 }

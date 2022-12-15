@@ -2,7 +2,9 @@
     ViewData["Title"] = "Shared Calendar";
     Layout = null;
 }
+@model IEnumerable<ShiftSwappingRequest>
 
+@*This page displays all shift swapping requests that were sent to the current user, which they can accept or deny*@
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,20 +14,156 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/BaristaHome.styles.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> <!-- probably add custom css changes on this css file -->
+        <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true" /> 
+            
+        <style>
+
+            @*CSS Styling*@
+            .background {
+                background-color: antiquewhite;
+                box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+                padding-top: 30px;
+                padding-bottom: 30px;
+                padding-left: 30px;
+                padding-right: 30px;
+                margin: 0 auto;
+                align-self:center;
+                max-width:1400px;
+
+            }
+            .page-title {
+                display: inline-block;
+                padding-bottom: 30px;
+                font-size: 30px;
+                padding-left: 20px;
+                font-weight: 500;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .green-button {
+                background: #44CC44;
+                color:white;
+                border: none;
+                border-radius: 20px;
+                height: 35px;
+                width: 100px;
+                box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+                transition: background-color 0.15s, color 0.15s;
+            }
+
+            .green-button:hover {
+                background: #6FE76F;
+                cursor: pointer;
+            }
+
+            .green-button:active {
+                background-color: #44CC44;
+            }
+
+            .red-button {
+                background: tomato;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                height: 35px;
+                width: 100px;
+                box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+                transition: background-color 0.15s, color 0.15s;
+                margin-left: 5px;
+            }
+
+            .red-button:hover {
+                background: rgb(255, 147, 128);
+                cursor: pointer;
+            }
+
+            .red-button:active {
+                background-color: tomato;
+            }
+        </style>
+    
     </head>
 
+    
     <body>
 
         <!--Nav bar area-->
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
-                <a class="nav-link pink-button-left" asp-area="" asp-controller="Calendar" asp-action="Shifts">Back</a>
+                <a  class="nav-link pink-button-left" asp-area="" asp-controller="Calendar" asp-action="Shifts">Back</a>
                 <div class="center">
                     <h1 class="title">Request Inbox</h1>
                 </div>
+            <a style="width: 300px;" class="nav-link pink-button-left" asp-controller="Calendar" asp-action="WorkerRequests">Your Requests</a>
             </nav>
+            
         </header>
+
+        @*Display a table with columns: Request From, Offered shift, Your shift*@
+        <div class="background">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Request From
+                    </th>
+                    <th>
+                        Offered shift
+                    </th>
+                    <th>
+                        Your shift
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @*Display each shift request*@
+               
+                @foreach(var k in ViewBag.ShiftRequests) {
+                    <tr>
+                        @*Display the sender's name*@
+                        <td>
+                            @k.SenderUser.FirstName
+                            @k.SenderUser.LastName
+                        </td>
+
+                        @*Display their offered shift*@
+                        <td>
+                            @k.SenderShift.StartShift
+                            <div> To </div>
+                            @k.SenderShift.EndShift
+                        </td>
+
+                        @*Display their requested shift from the current user*@
+                        <td>
+                            @k.RecipientShift.StartShift
+                            <div> To </div>
+                            @k.RecipientShift.EndShift
+                        </td>
+
+                        @*Display Accept and Decline button*@
+                        <td>
+                            <button class="green-button">
+                                <a asp-action="SwapShifts" asp-route-RequestId="@k.RequestId">Accept</a> 
+                            </button>
+                        
+                            <button class="red-button">
+                                <a asp-action="DeclineSwapRequest" asp-route-RequestId="@k.RequestId">Decline</a>
+                            </button>
+                        </td>
+                    </tr>
+                }
+
+
+                @*}*@
+            </tbody>
+        </table>
+    </div>
 
     </body>
 
