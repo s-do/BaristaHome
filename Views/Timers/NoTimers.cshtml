@@ -1,0 +1,73 @@
+﻿
+@*This page is displayed if there are no existing timers*@
+
+
+<html>
+    <head>
+        <style>
+        .timer-title {
+            text-align: center;
+            color: navy;
+            font-size: 25px;
+            margin-top: -25px;
+        }
+
+        .gfg {
+            all: unset;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .background {
+            background-color: antiquewhite;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+            padding-top: 30px;
+            padding-bottom: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            display:flex;
+            justify-content:center;
+        }
+
+        .pink-button {
+            background-color: pink;
+            color: black;
+            border: none;
+            border-radius: 3px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-bottom: 10px;
+            box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
+            transition: background-color 0.15s, color 0.15s;
+            display: inline-block;
+        }
+
+        .pink-button:hover {
+            background-color: lightpink;
+            cursor: pointer;
+        }
+
+        .pink-button:active {
+            background-color: rgba(219, 113, 152, 0.67);
+        }
+        </style>
+    </head>
+    <body>
+        <div class="text-center">
+            <h1 class="display-4">Timers</h1>
+        </div>
+
+        <a class="pink-button" asp-controller="Timers" asp-action="CreateTimer">Create a timer</a>
+        <div class="background">
+            <p >There are currently no timers added to your store.</p>
+        </div>
+        
+
+    </body>
+</html>
+
