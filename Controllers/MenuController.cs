@@ -1013,7 +1013,7 @@ namespace BaristaHome.Controllers
                 TempData["drinkSold"] = "success";
                 // create a sale to append a record to the db
                 Sale sale = new Sale { UnitsSold = 1,
-                                       Profit = 4.95M,
+                                       Profit = drink.Price,
                                        TimeSold = DateTime.Now,
                                        DrinkId = drink.DrinkId,
                                        StoreId = drink.StoreId,};

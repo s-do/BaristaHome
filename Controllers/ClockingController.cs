@@ -336,6 +336,7 @@ namespace BaristaHome.Controllers
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
                              join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == user.UserId
+                             orderby us.Time
                              select us/*new ClockingViewModel
                              {
                                  UserId = u.UserId,
@@ -367,6 +368,7 @@ namespace BaristaHome.Controllers
                                    join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                                    where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == userId
                                         && us.ShiftStatusId == statusId /*&& us.Time == time*/
+                                   orderby us.Time
                                    select us).ToList();
 
             //Find the UserShiftStatus with the chosen time and deletes it from the db
@@ -392,6 +394,7 @@ namespace BaristaHome.Controllers
                              join us in _context.UserShiftStatus on u.UserId equals us.UserId
                              join ss in _context.ShiftStatus on us.ShiftStatusId equals ss.ShiftStatusId
                              where s.StoreId == Convert.ToInt32(User.FindFirst("StoreId").Value) && us.UserId == uss.UserId
+                             orderby us.Time
                              select us).ToList();
             ViewBag.AllStatus = allStatus;
             ViewData["StatusOptions"] = new SelectList(_context.ShiftStatus, "ShiftStatusId", "ShiftStatusName");

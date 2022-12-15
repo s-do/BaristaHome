@@ -50,17 +50,6 @@
 
                 @*Search bar*@
                 @*Sends search phrase to ShowSearchResults() to display search results*@
-
-
-                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-                @*Multiselect Filter with dropdown*@
-                <div class="filter">
-                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple></select>
-                    <input type="submit" asp-action="Menu" class="btn newTag" value="Filter" style="width:25%;">
-                </div>
-                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
-
-
                 <div class="search">
 
                     <div style="width: 700px;" class="input-group mb-3">
@@ -75,6 +64,14 @@
                         </div>
                     </div>
                 </div>
+
+                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
+                @*Multiselect Filter with dropdown*@
+                <div class="filter">
+                    <select id="multipleSelect" placeholder="Select Tags" name="tagLine" asp-items="ViewBag.Tags" multiple></select>
+                    <button asp-action="Menu" class="btn newTag" style="width:25%;">Filter</button>
+                </div>
+                @*SELINA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*@
 
             </div>
         </form>

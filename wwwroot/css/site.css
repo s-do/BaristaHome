@@ -66,3 +66,34 @@ a:hover {
 button:hover {
     color: #0a58ca;
 }
+
+.pink-button-left {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: left;
+    margin-left: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.pink-button-right {
+    background-color: #DFB3D3;
+    color: black;
+    font-family: 'Inter';
+    width: 200px;
+    height: 50px;
+    float: right;
+    margin-right: 45px;
+    text-decoration-line: none;
+    font-size: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    object-fit: contain;
+}

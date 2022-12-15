@@ -215,6 +215,7 @@ namespace BaristaHome.Controllers
                                      join user in _context.User on store.StoreId equals user.StoreId
                                      join shift in _context.Shift on user.UserId equals shift.UserId
                                      where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                     orderby shift.StartShift
                                      select new RequestViewModel()
                                      {
                                          UserId = user.UserId,
@@ -237,6 +238,7 @@ namespace BaristaHome.Controllers
                                      join user in _context.User on store.StoreId equals user.StoreId
                                      join shift in _context.Shift on user.UserId equals shift.UserId
                                      where store.StoreId.Equals(Convert.ToInt16(User.FindFirst("StoreId").Value)) && !user.UserId.Equals(Convert.ToInt16(User.FindFirst("UserId").Value))
+                                     orderby shift.StartShift
                                      select new RequestViewModel()
                                      {
                                          UserId = user.UserId,
@@ -345,6 +347,20 @@ namespace BaristaHome.Controllers
             //Set the status to either accepted, pending or declined
             ViewData["Status"] = "Accepted";
             return View(shiftRequests);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRequest(int id)
+        {
+            var request = await _context.ShiftSwappingRequest.FindAsync(id);
+            if (request == null)
+            {
+                return NotFound();
+            }
+            _context.ShiftSwappingRequest.Remove(request);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(WorkerRequests));
         }
 
 

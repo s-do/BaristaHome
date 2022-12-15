@@ -94,36 +94,41 @@
 
                     <div class="modal-body">
                         <h5>Sell this drink?</h5>
-                            @if(ViewBag.missingIngredients != null)
+                            @if (ViewBag.missingIngredients != null)
                             {
                                 <p>Not enough/missing from inventory:</p>
                                 var missing = ViewBag.missingIngredients == null ? new List<String>() : (List<String>)ViewBag.missingIngredients;
-                                if(missing.Any()) {
+                                if (missing.Any()) {
                                     foreach(var i in missing) {
                                         <div class="ingr">
                                             @i
                                         </div>
                                     }
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">Close</button>
+                                    </div>
+                                } 
+                                else 
+                                {
+                                    <p>Enough ingredients! Drink can be sold.</p>
+                                    <form asp-action="SellDrink">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input type="hidden" asp-for="DrinkId" />
+                                        <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
+                                        <input type="hidden" asp-for="DrinkName" />
+                                        <input type="hidden" asp-for="Instructions" />
+                                        <input type="hidden" asp-for="Description" />
+
+                                        <div class="modal-footer">
+                                            <div class="btn-group">
+                                                <input type="submit" value="Yes" class="btn btn-outline-dark m-1" />
+                                                <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">No</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 }
                             }
-                            
-                        <form asp-action="SellDrink">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" asp-for="DrinkId" />
-                            <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
-                            <input type="hidden" asp-for="DrinkName" />
-                            <input type="hidden" asp-for="Instructions" />
-                            <input type="hidden" asp-for="Description" />
-
-                            <div class="modal-footer">
-                                <div class="btn-group">
-                                    <input type="submit" value="Yes" class="btn btn-outline-dark m-1" />
-                                    <button type="button" class="btn btn-outline-dark m-1" data-dismiss="modal">No</button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
-
                 </div>
             </div>
         </div>

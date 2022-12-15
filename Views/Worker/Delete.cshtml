@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.User
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete •";
 }
 
 <style>
@@ -46,15 +46,26 @@
         background-color: rgba(219, 113, 152, 0.67);
     }
 
+    .center {
+        width: 75%;
+        text-align: center;
+    }
 </style>
 
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+        <a class="nav-link pink-button-left" asp-controller="Worker" asp-action="Index">Back</a>
+
+        <div class="center">
+            <h1 class="title">Worker Management</h1>
+        </div>
+    </nav>
+</header>
+
 <div style="padding-left: 200px; padding-right:200px;  padding-top: 50px;">
-    <button style="width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
-        <a asp-controller="Worker" asp-action="Index">Back</a>
-    </button>
-    <p class="page-title">Delete</p>
 
     <div class="background">
+        <p class="page-title">Delete</p>
 
         <div>
             <h4>Are you sure you want to delete this worker?</h4>

@@ -1,5 +1,4 @@
 ﻿@*This page displays the current worker's requests and their statuses*@
-
 <html>
     <head>
     <meta charset="utf-8" />
@@ -62,6 +61,17 @@
             margin-left: -20px;
         }
 
+        .green-button:hover span {
+            display:none
+        }
+
+        .green-button:hover:before {
+            content:"Revolve";
+        }
+
+        .green-button:hover {
+            background-color: #ffdcf4;
+        }
 
         .red-button {
             background: tomato;
@@ -78,6 +88,18 @@
             margin-left: -20px;
         }
 
+        .red-button:hover span {
+            display:none
+        }
+
+        .red-button:hover:before {
+            content:"Revolve";
+        }
+
+        .red-button:hover {
+            background-color: #ffdcf4;
+        }
+
         .gray-button {
             background: gray;
             color: black;
@@ -91,6 +113,18 @@
             padding-top: 5px;
             margin-bottom: 0px;
             margin-left: -20px;
+        }
+
+        .gray-button:hover span {
+            display:none
+        }
+
+        .gray-button:hover:before {
+            content:"Cancel";
+        }
+
+        .gray-button:hover {
+            background-color: tomato;
         }
         </style>
     </head>
@@ -151,24 +185,33 @@
                             @k.RecipientShift.EndShift
                         </td>
 
-                        @*Display the status of each swap request*@
+                        @*Display the status of each swap request and delete them upon clicking*@
                         <td>
                             @if(k.Response == true) {
-                                <button class="green-button">
-                                    Accepted
-                                </button>
+                                <form asp-action="DeleteRequest">
+                                    <input type="hidden" name="id" value="@k.RequestId"/>
+                                    <button class="green-button">
+                                        <span>Accepted</span>
+                                    </button>
+                                </form>
                             }
 
-                             @if(k.Response == false) {
-                                <button class="red-button">
-                                    Declined
-                                </button>
+                            @if(k.Response == false) {
+                                <form asp-action="DeleteRequest">
+                                     <input type="hidden" name="id" value="@k.RequestId"/>
+                                     <button class="red-button" type="submit">
+                                         <span>Declined</span>
+                                     </button>
+                                </form>
                             }
 
                             @if(k.Response == null) {
-                                <button class="gray-button">
-                                    Pending
-                                </button>
+                                <form asp-action="DeleteRequest">
+                                     <input type="hidden" name="id" value="@k.RequestId"/>
+                                     <button class="gray-button" type="submit">
+                                         <span>Pending</span>
+                                     </button>
+                                </form>
                             }
 
                         </td>

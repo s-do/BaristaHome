@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.User
 
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Profile •";
 }
 
 @*, worker controller*@
@@ -90,35 +90,38 @@
         width: 125px;
         border:none;
         border-radius: 3px;
+        padding: 0.8rem 1.35rem;
     }
 
-
+    .center {
+        width: 75%;
+        text-align: center;
+    }
 </style>
 
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+        <a class="nav-link pink-button-left" asp-controller="Home" asp-action="Index">Back</a>
+
+        <div class="center">
+            <h1 class="title">Profile</h1>
+        </div>
+    </nav>
+</header>
+
 <div style="padding-left: 200px; padding-right:200px; padding-top: 50px;">
-    <button class="pink-button">
-        <a asp-controller="Home" asp-action="Index">Back</a>
-    </button>
-
-
-
     <div class="background">
 
         <div class="user-profile-title-and-button-row">
             <div class="page-title"> User Profile </div>
             @if (Model.RoleId == 1 || Model.RoleId == 2)
             {
-                <button class="edit-button">
-                    <a asp-controller="Worker" asp-action="WorkerEdit">Edit Profile</a>
-                </button>
+                <a class="edit-button" asp-controller="Worker" asp-action="WorkerEdit">Edit Profile</a>
             }
             else
             {
-                <button class="edit-button">
-                    <a asp-controller="Worker" asp-action="OwnerSelfEdit">Edit Profile</a>
-                </button>
+                <a class="edit-button" asp-controller="Worker" asp-action="OwnerSelfEdit">Edit Profile</a>
             }
-
         </div>
 
         <div class="profile">

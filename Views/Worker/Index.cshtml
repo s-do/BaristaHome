@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<BaristaHome.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Worker Management •";
 }
 
 @*index page for worker controller*@
@@ -27,6 +27,7 @@
         width: 200px;
         box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.15);
         transition: background-color 0.15s, color 0.15s;
+        padding: 0.8rem 1.8rem;
     }
 
     .pink-button:hover {
@@ -67,19 +68,29 @@
     .employee-role{
         color:rgba(80,80,80, 1);
     }
+
+    .center {
+        width: 75%;
+        text-align: center;
+    }
 </style>
 
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+        <a class="nav-link pink-button-left" asp-controller="Home" asp-action="Index">Back</a>
+
+        <div class="center">
+            <h1 class="title">Worker Management</h1>
+        </div>
+    </nav>
+</header>
+
 <div style="padding-left: 200px; padding-right:200px;  padding-top: 50px;">
-    <button style="width: 70px; height: 40px; margin-bottom: 10px;" class="pink-button">
-        <a asp-controller="Home" asp-action="Index">Back</a>
-    </button>
 
     <div class="background">
         <div class="page-title-and-button">
             <p class="page-title">Manage Workers</p>
-            <button class="pink-button">
-                <a asp-controller="Worker" asp-action="Invite">Invite an Employee</a>
-            </button>
+                <a class="pink-button" asp-controller="Worker" asp-action="Invite">Invite an Employee</a>
         </div>
 
         <table class="table">

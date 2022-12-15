@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.User
 
 @{
-    ViewData["Title"] = "OwnerEdit";
+    ViewData["Title"] = "OwnerEdit •";
 }
 
 <style>
@@ -48,6 +48,8 @@
         padding-bottom: 30px;
         padding-left: 30px;
         padding-right: 30px;
+        margin: auto;
+        width: 65%;
     }
 
     .pink-button {
@@ -63,14 +65,14 @@
         transition: background-color 0.15s, color 0.15s;
     }
 
-        .pink-button:hover {
-            background-color: lightpink;
-            cursor: pointer;
-        }
+    .pink-button:hover {
+        background-color: lightpink;
+        cursor: pointer;
+    }
 
-        .pink-button:active {
-            background-color: rgba(219, 113, 152, 0.67);
-        }
+    .pink-button:active {
+        background-color: rgba(219, 113, 152, 0.67);
+    }
 
     .user-profile-title-and-button-row {
         display: flex;
@@ -99,20 +101,30 @@
         padding-bottom: 30px;
         padding-left: 30px;
         padding-right: 30px;
+    }
 
+    .center {
+        width: 75%;
+        text-align: center;
     }
 </style>
 
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+        <a class="nav-link pink-button-left" asp-controller="Worker" asp-action="Index">Back</a>
+
+        <div class="center">
+            <h1 class="title">Worker Management</h1>
+        </div>
+    </nav>
+</header>
+
 <div style="padding-left: 200px; padding-right:200px;  padding-top: 50px;">
-    <button class="pink-button">
-        <a asp-controller="Worker" asp-action="Index">Back</a>
-    </button>
+    <div class="background">
+        <p class="page-title">Edit worker</p>
 
-    <p class="page-title">Edit worker</p>
-
-    <div class="profile-pic-and-name-and-editable-fields">
-        @*Profile picture and name of worker that is being edited*@
         <div class="profile-pic-and-name">
+            @*Profile picture*@
             <div style="display:block;
             align-items: center;
             justify-content: center;">
@@ -127,7 +139,7 @@
                     }
                 </label>
             </div>
-
+            @*Name of worker*@
             <div>
                 <p style="display: flex; display:block;
                     align-items: center;
@@ -135,62 +147,52 @@
             </div>
         </div>
 
-
         @*Editable information fields*@
-        <div style=" width: 1100px; 
-        align-items: center;
-        justify-content: center;" class="row">
-            <div class="col-md-4">
-                <form asp-action="OwnerEdit">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="UserId" />
-                    <input type="hidden" asp-for="InviteCode" />
-                    <input type="hidden" asp-for="StoreId" />
-                    <input type="hidden" asp-for="UserImageData" />
-                    <input type="hidden" asp-for="UserImage" />
-                    <input type="hidden" asp-for="FirstName" />
-                    <input type="hidden" asp-for="LastName" />
-                    <input type="hidden" asp-for="Email" />
-                    <input type="hidden" asp-for="Password" />
-                    <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
-                    <div class="form-group">
-                        <label asp-for="Color" class="control-label"></label>
-                        <input asp-for="Color" class="form-control" />
-                        <span asp-validation-for="Color" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Wage" class="control-label"></label>
-                        <input asp-for="Wage" type="number" min="0" max="999" step=".01" class="form-control" />
-                        <span asp-validation-for="Wage" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Role</label>
-                        <select asp-for="RoleId" class="form-control">
-                            <option value="1">Worker</option>
-                            <option value="2">Manager</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <p style="margin-bottom:0;">User Description</p>
-                        <input asp-for="UserDescription" class="form-control" />
-                        <span asp-validation-for="UserDescription" class="text-danger"></span>
-                    </div>
-                    <div style="margin-top: 10px;" class="form-group">
-                        <input type="submit" value="Save" class="pink-button" />
-                    </div>
-                </form>
-            </div>
+        <div class="col-md-4" style="margin: auto;">
+            <form asp-action="OwnerEdit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="InviteCode" />
+                <input type="hidden" asp-for="StoreId" />
+                <input type="hidden" asp-for="UserImageData" />
+                <input type="hidden" asp-for="UserImage" />
+                <input type="hidden" asp-for="FirstName" />
+                <input type="hidden" asp-for="LastName" />
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="Password" />
+                <input type="hidden" asp-for="ConfirmPassword" value="@Model.Password" />
+                <div class="form-group">
+                    <label asp-for="Color" class="control-label"></label>
+                    <input asp-for="Color" class="form-control" />
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Wage" class="control-label"></label>
+                    <input asp-for="Wage" type="number" min="0" max="999" step=".01" class="form-control" />
+                    <span asp-validation-for="Wage" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Role</label>
+                    <select asp-for="RoleId" class="form-control">
+                        <option value="1">Worker</option>
+                        <option value="2">Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <p style="margin-bottom:0;">User Description</p>
+                    <input asp-for="UserDescription" class="form-control" />
+                    <span asp-validation-for="UserDescription" class="text-danger"></span>
+                </div>
+                <div style="margin-top: 10px;" class="form-group">
+                    <input type="submit" value="Save" class="pink-button" />
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
-
-
-
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}

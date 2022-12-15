@@ -1,7 +1,7 @@
 ﻿@model BaristaHome.Models.User
 
 @{
-    ViewData["Title"] = "WorkerEdit";
+    ViewData["Title"] = "WorkerEdit •";
 }
 
 @*Worker POV for Edit, worker controller*@
@@ -114,14 +114,24 @@
         font-weight: 400;
         margin-bottom: 20px;
     }
+
+    .center {
+        width: 75%;
+        text-align: center;
+    }
 </style>
 
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#ffdcf4">
+        <a class="nav-link pink-button-left" asp-controller="Worker" asp-action="Profile">Back</a>
+
+        <div class="center">
+            <h1 class="title">Profile</h1>
+        </div>
+    </nav>
+</header>
+
 <div style="padding-left: 200px; padding-right:200px;  padding-top: 50px;">
-    <div class="pink-button">
-        <a asp-controller="Worker" asp-action="Profile">Back</a>
-    </div>
-
-
     <div class="background">
 
         <div class="page-title">

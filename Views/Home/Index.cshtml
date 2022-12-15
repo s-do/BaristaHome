@@ -29,7 +29,7 @@
             <!--Using Claims to display different views based on user's role-->
             @if (User.FindFirst("RoleId").Value.Equals("1") || User.FindFirst("RoleId").Value.Equals("2")) // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
             {
-                <a class="nav-link pink-button-right" asp-area="" asp-controller="Worker" asp-action="Profile" >Account</a>
+                <a class="nav-link pink-button-right" asp-area="" asp-controller="Worker" asp-action="Profile">Profile</a>
             }
             else
             {
@@ -165,9 +165,9 @@
                     </div>
                 </a>*@
 
-                @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+                @if (User.FindFirst("RoleId").Value == "3") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
                 {
-                    <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="worker">
+                    <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="owner">
                         <div class="top">
                             <img class="contain" src="../images/feedback2.png">
                         </div>
@@ -178,7 +178,7 @@
                 }
                 else
                 {
-                    <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="owner">
+                    <a class="nav-link feature" asp-area="" asp-controller="feedback" asp-action="worker">
                         <div class="top">
                             <img class="contain" src="../images/feedback2.png">
                         </div>
