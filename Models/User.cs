@@ -38,7 +38,7 @@ namespace BaristaHome.Models
         public string? UserImage { get; set; }
 
         [NotMapped]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         public byte[]? UserImageData { get; set; }
 

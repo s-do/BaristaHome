@@ -75,10 +75,10 @@ namespace BaristaHome.Controllers
         //Retrieve all input from the worker edit page, and then update the user model and save the user model in the database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> 
-            WorkerEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
+        public async Task<IActionResult>
+            WorkerEdit([Bind(include: ("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
         {
-            
+
             var existingEmail = (from u in _context.User
                                  where u.Email.Equals(worker.Email) && !u.UserId.Equals(worker.UserId)
                                  select u).FirstOrDefault();
@@ -111,7 +111,7 @@ namespace BaristaHome.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {  
+                {
                     _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
@@ -153,11 +153,11 @@ namespace BaristaHome.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OwnerEdit(User worker)
         {
-            
+
             if (ModelState.IsValid)
             {
                 try
-                {   
+                {
                     _context.Update(worker);
                     await _context.SaveChangesAsync();
                 }
@@ -181,7 +181,7 @@ namespace BaristaHome.Controllers
         //Saves any new changes to the user information inputted by the user
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OwnerSelfEdit([Bind(include:("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
+        public async Task<IActionResult> OwnerSelfEdit([Bind(include: ("UserId,FirstName,LastName,Email,Password,ConfirmPassword,Color,InviteCode,RoleId,StoreId,UserImageData,UserImage,UserDescription,Image"))] User worker)
         {
             worker.Password = Crypto.HashPassword(worker.Password);
             worker.ConfirmPassword = worker.Password;
@@ -215,12 +215,12 @@ namespace BaristaHome.Controllers
             w.Image = worker.Image;
             w.UserImage = worker.UserImage;
             w.UserImageData = worker.UserImageData;
-           
+
 
             if (ModelState.IsValid)
             {
                 try
-                {   
+                {
                     _context.Update(w);
                     await _context.SaveChangesAsync();
                 }
