@@ -12,6 +12,27 @@
 BaristaHome is a web application that aims to help shop owners who are focused on drinks to manage their stores. This application has features that will not only be helpful for store owners, but for the baristas as well. Owners will be able to manage their workers’ shift hours and days, inventories, and all other features that their workers are able to access. The owner is able to add drink recipes and instructions to their store profile on the web application to allow baristas to view the drinks and see how each one is made. Baristas are able to view step by step instructions of each drink to properly learn how to make the drinks and have access to a timer option to track the cook times of teas, coffees, and tapioca pearls. The application comes with other features such as a clocking system, customizable checklists, and different store management options that provide shop owners and their workers with tools to perform tasks with much more convenience. The application will also help owners improve their stores by providing a statistic and feedback system for owners to learn from. The goal of this application is to make store management more easy and convenient since everything is all in one place.
 
 # Preview
+![Home Page](/wwwroot/images/preview/home_page.png?raw=true "Home Page")
+
+![Menu Page](/wwwroot/images/preview/menu_page.png?raw=true "Menu Page")
+
+![Shared Calendar Page](/wwwroot/images/preview/shared_calendar_page.png?raw=true "Shared Calendar Page")
+
+![Clocking Page](/wwwroot/images/preview/clocking_page.png?raw=true "Clocking Page")
+
+![Payroll Page](/wwwroot/images/preview/payroll_page.png?raw=true "Payroll Page")
+
+![Inventory Page](/wwwroot/images/preview/inventory_page.png?raw=true "Inventory Page")
+
+![Feedback Page](/wwwroot/images/preview/feedback_page.png?raw=true "Feedback Page")
+
+![Timers Page](/wwwroot/images/preview/timers_page.png?raw=true "Timers Page")
+
+![Checklist Page](/wwwroot/images/preview/checklist_page.png?raw=true "Checklist Page")
+
+![Profile Page](/wwwroot/images/preview/profile_page.png?raw=true "Profile Page")
+
+![Worker Managment Page](/wwwroot/images/preview/worker_management_page.png?raw=true "Worker Managment Page")
 
 ## Documents
 [Requirements Specification](https://docs.google.com/document/d/1EQzkZ7v82dggZAIdWPIKSBNyEXBgeZXdHUloI5ceqVM/edit?usp=share_link)
