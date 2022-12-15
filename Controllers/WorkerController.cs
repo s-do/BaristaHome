@@ -338,9 +338,19 @@ namespace BaristaHome.Controllers
                 {
                     throw;
                 }
-                return View(worker);
+                if (worker.RoleId == 1 || worker.RoleId == 2)
+                {
+                    return RedirectToAction("WorkerEdit");
+                }
+                else
+                {
+                    return RedirectToAction("OwnerSelfEdit");
+                }
                 //return RedirectToAction(nameof(Index));
             }
+
+
+
             return View(worker);
         }
     }
