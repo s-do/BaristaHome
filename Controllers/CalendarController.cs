@@ -186,7 +186,7 @@ namespace BaristaHome.Controllers
                                      select new RequestViewModel()
                                      {
                                          UserId = user.UserId,
-                                         ShiftId = shift.ShiftId,
+                                         CurrentUserShiftId = shift.ShiftId,
                                          FirstName = user.FirstName,
                                          LastName = user.LastName,
                                          StartTime = shift.StartShift,
@@ -194,7 +194,7 @@ namespace BaristaHome.Controllers
                                      }).Select(s => new
                                      {
                                          Text =  s.StartTime + " to " + s.EndTime,
-                                         Value = s.ShiftId
+                                         Value = s.CurrentUserShiftId
                                      })
                                     .ToList(); 
             //Create a select list (to use in the view's dropdown menu)
@@ -208,16 +208,16 @@ namespace BaristaHome.Controllers
                                      select new RequestViewModel()
                                      {
                                          UserId = user.UserId,
-                                         ShiftId = shift.ShiftId,
-                                         ShiftId2 = shift.ShiftId,
+                                         RequestedShiftId = shift.ShiftId,
                                          FirstName = user.FirstName,
                                          LastName = user.LastName,
                                          StartTime = shift.StartShift,
                                          EndTime = shift.EndShift
                                      }).Select(s => new
                                      {
-                                         Text = s.FirstName + " " + s.LastName + " - " + s.StartTime + " to " + s.EndTime,
-                                         Value = s.ShiftId
+                                         //Text = s.FirstName + " " + s.LastName+ " - " + s.StartTime + " to " + s.EndTime,
+                                         Text =s.StartTime + " to " + s.EndTime,
+                                         Value = s.RequestedShiftId
                                      })
                                     .ToList();
 
@@ -230,13 +230,13 @@ namespace BaristaHome.Controllers
 
         //Save the shift swapping request to the database
         [HttpPost]
-        public async Task<IActionResult> Swap(int CurrentUserShiftId, int ShiftId2)
+        public async Task<IActionResult> Swap(int CurrentUserShiftId, int RequestedShiftId)
         {
             //Get sender user id, recipient user id, sender shift id, recipient shift id
             int senderUserId = Convert.ToInt16(User.FindFirst("UserId").Value);
-            var getRecipientUserId = await _context.Shift.FindAsync(ShiftId2);
+            var getRecipientUserId = await _context.Shift.FindAsync(RequestedShiftId);
             int recipientUserId = getRecipientUserId.UserId;
-            int recipientShiftId = ShiftId2;
+            int recipientShiftId = RequestedShiftId;
 
             //Create a new shift swapping request, and set all attributes
             var request = new ShiftSwappingRequest();
@@ -254,7 +254,7 @@ namespace BaristaHome.Controllers
                 //For each request, check if it has the same current user's shift id and recipient shift id
                 foreach (ShiftSwappingRequest r in allRequests)
                 {
-                    if (r.SenderShiftId == CurrentUserShiftId && r.RecipientShiftId == ShiftId2)
+                    if (r.SenderShiftId == CurrentUserShiftId && r.RecipientShiftId == RequestedShiftId)
                     {
                         //If it matches, display the swap request form again for the user to try again
                         ViewBag.Error = "This shift swapping request has already been made.";

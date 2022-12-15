@@ -28,6 +28,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using WebMatrix.WebData;
+using Xunit.Sdk;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace BaristaHome.Models
 {
@@ -35,8 +40,12 @@ namespace BaristaHome.Models
     {
         
         public int UserId { get; set; }
-        public int ShiftId { get; set; }
-        public int ShiftId2 { get; set; }
+       
+        [Required(ErrorMessage = "Please select a shift to swap out.")]
+        public int CurrentUserShiftId { get; set; }
+
+        [Required(ErrorMessage = "Please select a shift to request for.")]
+        public int RequestedShiftId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }    
         public DateTime StartTime { get; set; } 
