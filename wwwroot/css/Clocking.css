@@ -32,16 +32,25 @@
     width: 80%;
 }
 
-.user-img {
+/*.user-img {
     width:inherit;
     height: 160px;
     object-fit: contain;
 }
+*/
+
 
 .card {
     width: 320px;
     border-radius:5px;
 }
+
+    .card .user-img {
+        width: inherit;
+        height: 160px;
+        object-fit: contain;
+    }
+
 
 .btn-function {
     background-color: mistyrose;

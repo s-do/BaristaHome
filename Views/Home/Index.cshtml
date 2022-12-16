@@ -82,7 +82,7 @@
 
                 <!--SELINAvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
                 <!--Using Claims to display different views based on user's role-->
-                @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+                @if (User.FindFirst("RoleId").Value != "3") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
                 {
                     //User can go to the corresponding page to change their shift status
                     <a type="submit" class="nav-link feature" asp-controller="Clocking" asp-action="ShiftStatus" asp-route-id="@ViewBag.NewestShiftStatus">

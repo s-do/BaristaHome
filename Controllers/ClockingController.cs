@@ -459,5 +459,25 @@ namespace BaristaHome.Controllers
             return View("ViewStatus");
         }
         /*SELINA^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        public async Task<ActionResult> RenderImage(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var worker = await _context.User
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (worker == null)
+            {
+                return NotFound();
+            }
+            var image = (from u in _context.User
+                         where u.UserId == worker.UserId
+                         select worker.UserImageData).First();
+
+
+            return File(image, "image/png");
+        }
     }
 }
