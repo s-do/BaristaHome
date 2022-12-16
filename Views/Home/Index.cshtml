@@ -111,7 +111,7 @@
                 
                 <!--ALEXvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
                 <!--Using Claims to display different views based on user's role-->
-                @if (User.FindFirst("RoleId").Value == "1") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
+                @if (User.FindFirst("RoleId").Value != "3") // Finding the value of the specified claim (RoleId) and checking if it's a worker (1)
                 {
                     <a class="nav-link feature" asp-area="" asp-controller="payroll" asp-action="worker" asp-route-id=@User.FindFirst("UserId").Value>
                         <div class="top">
