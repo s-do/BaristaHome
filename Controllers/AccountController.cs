@@ -95,6 +95,14 @@ namespace BaristaHome.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
+            /*
+             * For hard-coding lost accounts lol
+             * var acc = _context.User.Find(80);
+            acc.Password = Crypto.HashPassword("amogus");
+            acc.ConfirmPassword = acc.Password;
+            _context.User.Update(acc);
+            _context.SaveChanges();*/
+
             if (User.Identity.IsAuthenticated) 
                 return RedirectToAction("Index", "Home");
             return View();

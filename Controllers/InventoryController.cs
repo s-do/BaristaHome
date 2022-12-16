@@ -229,8 +229,7 @@ namespace BaristaHome.Controllers
                 return NotFound();
             }
 
-            var editViewModel = await _context.InventoryItem.FirstOrDefaultAsync(m => m.ItemId == id);
-
+            var editViewModel = await _context.InventoryItem.FirstOrDefaultAsync(m => m.ItemId == id && m.StoreId == Convert.ToInt16(User.FindFirst("StoreId").Value));
 
             var itemName = (from i in _context.Item
                             where i.ItemId == id
