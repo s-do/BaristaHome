@@ -114,6 +114,7 @@
                                     <form asp-action="SellDrink">
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <input type="hidden" asp-for="DrinkId" />
+                                        <input type="hidden" asp-for="Price" />
                                         <input type="hidden" asp-for="StoreId" value="@User.FindFirst("StoreId").Value" />
                                         <input type="hidden" asp-for="DrinkName" />
                                         <input type="hidden" asp-for="Instructions" />

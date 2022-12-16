@@ -1006,7 +1006,7 @@ namespace BaristaHome.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SellDrink([Bind("DrinkId,DrinkName,Instructions,Description,StoreId")] Drink drink)
+        public async Task<IActionResult> SellDrink([Bind("DrinkId,DrinkName,Price,Instructions,Description,StoreId")] Drink drink)
         {
             if (ModelState.IsValid)
             {
@@ -1113,11 +1113,14 @@ namespace BaristaHome.Controllers
             var d = await _context.Drink.FindAsync(drink.DrinkId);
             //Delete/Clean up tags
             //Get
-            var tags = (from dr in _context.Drink
-                        join dt in _context.DrinkTag on dr.DrinkId equals dt.DrinkId
-                        join t in _context.Tag on dt.TagId equals t.TagId
-                        where dr.DrinkId == drink.DrinkId
-                        select t).ToList();
+            var tags = await (from dr in _context.Drink
+                              join dt in _context.DrinkTag on dr.DrinkId equals dt.DrinkId
+                              join t in _context.Tag on dt.TagId equals t.TagId
+                              where dr.DrinkId == drink.DrinkId
+                              select t).ToListAsync();
+            var salesOfDrink = await (from s in _context.Sale
+                                      where s.DrinkId == d.DrinkId && s.StoreId == d.StoreId
+                                      select s).ToListAsync();
             foreach(var t in tags)
             {
                 //Check if more than 1 drink is using tag
@@ -1131,6 +1134,13 @@ namespace BaristaHome.Controllers
                     await _context.SaveChangesAsync();
                 }
 
+            }
+
+            //Delete Sales
+            foreach (var sale in salesOfDrink)
+            {
+                _context.Sale.Remove(sale);
+                await _context.SaveChangesAsync();
             }
             //Delete Drink
             _context.Drink.Remove(d);
